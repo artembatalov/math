@@ -1,0 +1,335 @@
+% !TEX program = xelatex
+% Самодостаточный конспект. Компилировать XeLaTeX/LuaLaTeX (tectonic 02-racionalnye-trig-funkcii.tex).
+\documentclass[11pt,a4paper]{article}
+\newcommand{\coursename}{Математический анализ}
+\newcommand{\rightheader}{§2. Рациональные и тригонометрические функции}
+\newcommand{\doctitle}{Интегрирование рациональных и тригонометрических функций}
+% ==== Общая преамбула конспектов (собирается в каждый .tex как самодостаточная) ====
+% Перед этим файлом должны быть определены: \documentclass и макросы
+%   \coursename  — название курса (левый колонтитул, подзаголовок),
+%   \rightheader — правый колонтитул (напр. «§2. Рациональные дроби»),
+%   \doctitle    — заголовок раздела на титуле.
+\usepackage{fontspec}
+\setmainfont{cmunrm.otf}[
+  BoldFont       = cmunbx.otf,
+  ItalicFont     = cmunti.otf,
+  BoldItalicFont = cmunbi.otf]
+\usepackage{polyglossia}
+\setdefaultlanguage{russian}
+\setotherlanguage{english}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{xcolor}
+\definecolor{accent}{HTML}{1F6FEB}
+\definecolor{rulecol}{HTML}{D0D7DE}
+\usepackage[colorlinks=true,linkcolor=accent,urlcolor=accent,citecolor=accent]{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+
+% ----- Колонтитулы -----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape \coursename}
+\fancyhead[R]{\small\itshape \rightheader}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{rulecol}\leaders\hrule height \headrulewidth\hfill}}
+
+% ----- Заголовки -----
+\titleformat{\section}{\large\bfseries\color{accent}}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\bfseries}{\thesubsection.}{0.5em}{}
+
+% ----- Теоремные окружения (стиль конспекта) -----
+\theoremstyle{definition}
+\newtheorem{definition}{Определение}[section]
+\newtheorem{example}[definition]{Пример}
+\newtheorem{remark}[definition]{Замечание}
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Теорема}
+\newtheorem{lemma}[definition]{Лемма}
+\newtheorem{corollary}[definition]{Следствие}
+\newtheorem{property}[definition]{Свойство}
+\newtheorem{criterion}[definition]{Критерий}
+\renewcommand{\proofname}{Доказательство}
+
+% ----- Операторы и сокращения -----
+\DeclareMathOperator{\tg}{tg}
+\DeclareMathOperator{\ctg}{ctg}
+\DeclareMathOperator{\arctg}{arctg}
+\DeclareMathOperator{\arcctg}{arcctg}
+\DeclareMathOperator{\sh}{sh}
+\DeclareMathOperator{\ch}{ch}
+\DeclareMathOperator{\Th}{th}
+\DeclareMathOperator{\cth}{cth}
+\DeclareMathOperator{\Const}{const}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\rang}{rang}
+\DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\Img}{Im}
+\DeclareMathOperator{\tr}{tr}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\dx}{\,dx}
+\newcommand{\dt}{\,dt}
+\newcommand{\du}{\,du}
+\newcommand{\eps}{\varepsilon}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\renewcommand{\le}{\leqslant}
+\renewcommand{\ge}{\geqslant}
+\newcommand{\scal}[2]{\left( #1,\,#2\right)}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+
+\begin{document}
+\begin{center}
+  {\LARGE\bfseries \doctitle}\\[4pt]
+  {\large\itshape \coursename}
+\end{center}
+\vspace{6pt}
+
+\section{Рациональные дроби и разложение на элементарные}
+
+\begin{definition}[рациональная функция]
+\emph{Рациональной функцией} называется отношение многочленов $R(x)=\dfrac{P_m(x)}{Q_n(x)}$. Дробь
+называется \emph{правильной}, если $m<n$, и \emph{неправильной}, если $m\ge n$.
+\end{definition}
+
+\begin{remark}
+Всякую неправильную дробь делением «уголком» представляют в виде
+$R(x)=L(x)+\dfrac{P_k(x)}{Q_n(x)}$, где $L$ — многочлен (целая часть), а $\dfrac{P_k}{Q_n}$ —
+правильная дробь $(k<n)$. Поэтому интегрирование рациональной функции сводится к интегрированию
+\emph{правильной} дроби.
+\end{remark}
+
+Пусть знаменатель разложен на неприводимые над $\R$ множители:
+\[
+  Q_n(x)=\prod_i (x-a_i)^{s_i}\cdot\prod_j (x^2+p_j x+q_j)^{t_j},\qquad p_j^2-4q_j<0 .
+\]
+
+\begin{theorem}[о разложении на элементарные дроби; без доказательства]
+Любая правильная рациональная дробь однозначно представляется суммой элементарных дробей
+четырёх видов:
+\[
+  \text{(I) }\frac{A}{x-a},\quad
+  \text{(II) }\frac{A}{(x-a)^k}\,(k>1),\quad
+  \text{(III) }\frac{Ax+B}{x^2+px+q},\quad
+  \text{(IV) }\frac{Ax+B}{(x^2+px+q)^k}\,(k>1),
+\]
+где $x^2+px+q$ имеет отрицательный дискриминант.
+\end{theorem}
+
+\section{Нахождение неопределённых коэффициентов}
+
+\paragraph{Метод приравнивания коэффициентов.} После приведения к общему знаменателю
+приравнивают коэффициенты при одинаковых степенях $x$ в числителях — получается линейная система
+на неизвестные $A,B,\dots$ Универсален, но громоздок.
+
+\paragraph{Метод частных значений.} В тождество для числителей подставляют удобные значения $x$
+(прежде всего корни знаменателя), мгновенно обнуляющие часть слагаемых.
+
+\begin{example}
+$\displaystyle\int\frac{x+1}{x^2+4x-5}\dx$. Так как $x^2+4x-5=(x+5)(x-1)$, ищем
+$\dfrac{x+1}{(x+5)(x-1)}=\dfrac{A}{x+5}+\dfrac{B}{x-1}$, то есть $x+1=A(x-1)+B(x+5)$. Подставляя
+$x=1$ и $x=-5$: $\;2=6B\Rightarrow B=\tfrac13$, $\;-4=-6A\Rightarrow A=\tfrac23$. Поэтому
+\[
+  \int\frac{x+1}{x^2+4x-5}\dx=\tfrac23\ln\abs{x+5}+\tfrac13\ln\abs{x-1}+C.
+\]
+\end{example}
+
+\paragraph{Метод Хевисайда.} Если знаменатель имеет только \emph{простые вещественные} корни
+$a_1,\dots,a_n$, то коэффициент при $\dfrac1{x-a_i}$ равен
+\[
+  A_i=\lim_{x\to a_i}\frac{P(x)}{Q(x)}(x-a_i)=\frac{P(a_i)}{Q'(a_i)} .
+\]
+\begin{proof}[Обоснование]
+Вблизи $a_i$ имеем $\dfrac{P(x)}{Q(x)}=\dfrac{A_i}{x-a_i}+(\text{гладкая часть})$. Умножая на
+$(x-a_i)$ и переходя к пределу $x\to a_i$, получаем $A_i=\lim(x-a_i)\dfrac{P}{Q}$. Поскольку
+$Q(a_i)=0$, по определению производной $\dfrac{Q(x)}{x-a_i}\to Q'(a_i)$, откуда
+$A_i=\dfrac{P(a_i)}{Q'(a_i)}$.
+\end{proof}
+
+\begin{example}
+$\displaystyle\int\frac{x^2+2x+6}{(x-1)(x-2)(x-4)}\dx$. По Хевисайду
+\[
+  A=\frac{1+2+6}{(1-2)(1-4)}=3,\quad
+  B=\frac{4+4+6}{(2-1)(2-4)}=-7,\quad
+  C=\frac{16+8+6}{(4-1)(4-2)}=5,
+\]
+поэтому интеграл равен $3\ln\abs{x-1}-7\ln\abs{x-2}+5\ln\abs{x-4}+C$.
+\end{example}
+
+\section{Интегрирование элементарных дробей}
+
+\paragraph{Типы I–II.}
+\[
+  \int\frac{dx}{x-a}=\ln\abs{x-a}+C,\qquad
+  \int\frac{dx}{(x-a)^k}=\frac{1}{(1-k)(x-a)^{k-1}}+C\ (k>1).
+\]
+
+\paragraph{Тип III: алгоритм двух шагов.} Для $\displaystyle\int\frac{Ax+B}{x^2+px+q}\dx$
+выделяем в числителе производную знаменателя $(x^2+px+q)'=2x+p$:
+\[
+  Ax+B=\frac{A}{2}(2x+p)+\Bigl(B-\frac{Ap}{2}\Bigr).
+\]
+Тогда
+\[
+  \int\frac{Ax+B}{x^2+px+q}\dx
+   =\frac{A}{2}\ln(x^2+px+q)
+   +\Bigl(B-\tfrac{Ap}{2}\Bigr)\!\int\frac{dx}{\bigl(x+\frac p2\bigr)^2+\bigl(q-\frac{p^2}4\bigr)} ,
+\]
+а последний интеграл — табличный арктангенс (так как $q-\tfrac{p^2}4>0$).
+
+\begin{example}
+$\displaystyle\int\frac{x+1}{x^2+2x+5}\dx$: поскольку $(x^2+2x+5)'=2x+2=2(x+1)$,
+\[
+  \int\frac{x+1}{x^2+2x+5}\dx=\frac12\int\frac{2x+2}{x^2+2x+5}\dx=\frac12\ln(x^2+2x+5)+C.
+\]
+\end{example}
+
+\paragraph{Тип IV: рекуррентная формула.} Тем же выделением производной знаменателя интеграл
+$\displaystyle\int\frac{Ax+B}{(x^2+px+q)^n}\dx$ сводится к степенной части (берётся явно) и к
+\[
+  I_n=\int\frac{dt}{(t^2+a^2)^n},\qquad t=x+\tfrac p2,\ a^2=q-\tfrac{p^2}4 .
+\]
+
+\begin{theorem}[рекуррентная формула]
+При $n\ge2$
+\[
+  I_n=\frac{1}{a^2}\left[\frac{2n-3}{2n-2}\,I_{n-1}+\frac{t}{2(n-1)(t^2+a^2)^{n-1}}\right].
+\]
+\end{theorem}
+
+\begin{proof}
+Запишем $a^2=(t^2+a^2)-t^2$:
+\[
+  I_n=\frac1{a^2}\int\frac{(t^2+a^2)-t^2}{(t^2+a^2)^n}\dt
+     =\frac1{a^2}\left(I_{n-1}-\int\frac{t\cdot t}{(t^2+a^2)^n}\dt\right).
+\]
+Последний интеграл берём по частям: $u=t$, $dv=\dfrac{t\dt}{(t^2+a^2)^n}$, откуда
+$v=-\dfrac{1}{2(n-1)(t^2+a^2)^{n-1}}$ и
+\[
+  \int\frac{t\cdot t}{(t^2+a^2)^n}\dt
+   =-\frac{t}{2(n-1)(t^2+a^2)^{n-1}}+\frac{1}{2(n-1)}\,I_{n-1}.
+\]
+Подставляя и приводя подобные при $I_{n-1}$ (множитель $1-\tfrac1{2(n-1)}=\tfrac{2n-3}{2n-2}$),
+получаем формулу.
+\end{proof}
+
+\begin{example}
+$\displaystyle\int\frac{dx}{(x^2+1)^2}$ ($a=1$, $n=2$): по формуле
+$I_2=\tfrac12 I_1+\dfrac{x}{2(x^2+1)}=\tfrac12\arctg x+\dfrac{x}{2(x^2+1)}+C$.
+\end{example}
+
+\section{Метод Остроградского}
+
+Когда знаменатель имеет \emph{кратные} корни, удобно заранее выделить рациональную часть
+первообразной, не вычисляя громоздких степенных интегралов:
+\[
+  \int\frac{P(x)}{Q(x)}\dx=\frac{P_1(x)}{Q_1(x)}+\int\frac{P_2(x)}{Q_2(x)}\dx,
+\]
+где $Q_1=\mathrm{НОД}\bigl(Q,Q'\bigr)$ собирает все кратные множители $Q$ в степени на единицу
+меньшей, а $Q_2=Q/Q_1$ содержит все множители $Q$ в первой степени. Многочлены $P_1,P_2$ (степеней
+на единицу меньше соответствующих знаменателей) находят методом неопределённых коэффициентов,
+дифференцируя тождество
+$\dfrac{P}{Q}=\Bigl(\dfrac{P_1}{Q_1}\Bigr)'+\dfrac{P_2}{Q_2}$. Метод целесообразен, когда $Q$
+имеет кратные корни: оставшийся интеграл $\int\frac{P_2}{Q_2}$ содержит лишь простые множители.
+
+\begin{example}
+$\displaystyle\int\frac{dx}{(x^2+1)^2}$. Здесь $Q=(x^2+1)^2$, $Q_1=\mathrm{НОД}\bigl(Q,Q'\bigr)=x^2+1$,
+$Q_2=x^2+1$. Ищем
+\[
+  \frac{1}{(x^2+1)^2}=\Bigl(\frac{Ax+B}{x^2+1}\Bigr)'+\frac{Cx+D}{x^2+1}.
+\]
+Сравнение коэффициентов даёт $C=0$, $B=0$, $A=D=\tfrac12$, поэтому
+\[
+  \int\frac{dx}{(x^2+1)^2}=\frac{x}{2(x^2+1)}+\frac12\int\frac{dx}{x^2+1}
+   =\frac{x}{2(x^2+1)}+\frac12\arctg x+C
+\]
+— тот же ответ, что и по рекуррентной формуле.
+\end{example}
+
+\section{Рационализация тригонометрических выражений}
+
+Рассматриваем $\displaystyle\int R(\cos x,\sin x)\dx$, где $R$ — рациональная функция.
+
+\begin{theorem}[универсальная подстановка]
+Подстановка $t=\tg\dfrac x2$, $x\in(-\pi,\pi)$, сводит интеграл $\int R(\cos x,\sin x)\dx$ к
+интегралу от рациональной функции, причём
+\[
+  \sin x=\frac{2t}{1+t^2},\qquad \cos x=\frac{1-t^2}{1+t^2},\qquad \dx=\frac{2\,dt}{1+t^2}.
+\]
+\end{theorem}
+
+Подстановка универсальна, но часто приводит к громоздким дробям; поэтому используют частные
+подстановки.
+
+\section{Частные тригонометрические подстановки}
+
+Условие применимости определяется чётностью/нечётностью $R$ по аргументам.
+\begin{enumerate}[label=\arabic*),leftmargin=*]
+  \item \textbf{Нечётность по синусу:} $R(-\sin x,\cos x)=-R(\sin x,\cos x)$ — берём $t=\cos x$,
+        $dt=-\sin x\dx$.
+  \item \textbf{Нечётность по косинусу:} $R(\sin x,-\cos x)=-R(\sin x,\cos x)$ — берём $t=\sin x$,
+        $dt=\cos x\dx$.
+  \item \textbf{Чётность по совокупности:} $R(-\sin x,-\cos x)=R(\sin x,\cos x)$ — берём $t=\tg x$,
+        при этом $\sin^2 x=\dfrac{t^2}{1+t^2}$, $\cos^2 x=\dfrac{1}{1+t^2}$, $\dx=\dfrac{dt}{1+t^2}$.
+\end{enumerate}
+
+\begin{example}
+$\displaystyle\int\frac{dx}{\sin x}$ (нечётность по синусу, $t=\cos x$):
+\[
+  \int\frac{dx}{\sin x}=\int\frac{\sin x\dx}{\sin^2 x}=-\int\frac{dt}{1-t^2}
+   =\frac12\ln\abs[\Big]{\frac{\cos x-1}{\cos x+1}}+C .
+\]
+\end{example}
+
+\begin{example}
+$\displaystyle\int\frac{dx}{\sin^3 x\,\cos x}$ (чётность по совокупности, $t=\tg x$):
+\[
+  \int\frac{dx}{\sin^3 x\cos x}=\int\frac{(1+t^2)\,dt}{t^3}
+   =-\frac{1}{2t^2}+\ln\abs{t}+C
+   =-\frac12\ctg^2 x+\ln\abs{\tg x}+C .
+\]
+\end{example}
+
+\section{Возвратные интегралы и формулы понижения}
+
+Для интегралов $\displaystyle I_n=\int\sin^n x\dx$ (и аналогично $\int\cos^n x\dx$) интегрирование
+по частям даёт рекуррентную формулу понижения степени.
+
+\begin{theorem}[понижение степени]
+При $n\ge2$
+\[
+  I_n=\int\sin^n x\dx=-\frac{\sin^{n-1}x\,\cos x}{n}+\frac{n-1}{n}\,I_{n-2}.
+\]
+\end{theorem}
+
+\begin{proof}
+Берём $u=\sin^{n-1}x$, $dv=\sin x\dx$, тогда $du=(n-1)\sin^{n-2}x\cos x\dx$, $v=-\cos x$:
+\[
+  I_n=-\sin^{n-1}x\cos x+(n-1)\int\sin^{n-2}x\cos^2 x\dx .
+\]
+Заменяя $\cos^2 x=1-\sin^2 x$, получаем
+$I_n=-\sin^{n-1}x\cos x+(n-1)(I_{n-2}-I_n)$. Перенося $(n-1)I_n$ влево и деля на $n$, приходим к
+формуле.
+\end{proof}
+
+\noindent Базовые значения: $I_1=\displaystyle\int\sin x\dx=-\cos x+C$ и
+$I_2=\displaystyle\int\sin^2 x\dx=\frac12\Bigl(x-\tfrac12\sin 2x\Bigr)+C$.
+
+\begin{example}
+$\displaystyle\int\sin^3 x\dx=\int\sin^2 x\,d(-\cos x)=-\int(1-\cos^2 x)\,d\cos x
+ =-\cos x+\frac{\cos^3 x}{3}+C.$
+\end{example}
+
+\end{document}

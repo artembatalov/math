@@ -1,0 +1,260 @@
+% !TEX program = xelatex
+% Самодостаточный конспект. Компилировать XeLaTeX/LuaLaTeX (tectonic 09-konechnye-raznosti.tex).
+\documentclass[11pt,a4paper]{article}
+\newcommand{\coursename}{Математический анализ}
+\newcommand{\rightheader}{§9. Метод конечных разностей}
+\newcommand{\doctitle}{Метод конечных разностей}
+% ==== Общая преамбула конспектов (собирается в каждый .tex как самодостаточная) ====
+% Перед этим файлом должны быть определены: \documentclass и макросы
+%   \coursename  — название курса (левый колонтитул, подзаголовок),
+%   \rightheader — правый колонтитул (напр. «§2. Рациональные дроби»),
+%   \doctitle    — заголовок раздела на титуле.
+\usepackage{fontspec}
+\setmainfont{cmunrm.otf}[
+  BoldFont       = cmunbx.otf,
+  ItalicFont     = cmunti.otf,
+  BoldItalicFont = cmunbi.otf]
+\usepackage{polyglossia}
+\setdefaultlanguage{russian}
+\setotherlanguage{english}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{xcolor}
+\definecolor{accent}{HTML}{1F6FEB}
+\definecolor{rulecol}{HTML}{D0D7DE}
+\usepackage[colorlinks=true,linkcolor=accent,urlcolor=accent,citecolor=accent]{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+
+% ----- Колонтитулы -----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape \coursename}
+\fancyhead[R]{\small\itshape \rightheader}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{rulecol}\leaders\hrule height \headrulewidth\hfill}}
+
+% ----- Заголовки -----
+\titleformat{\section}{\large\bfseries\color{accent}}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\bfseries}{\thesubsection.}{0.5em}{}
+
+% ----- Теоремные окружения (стиль конспекта) -----
+\theoremstyle{definition}
+\newtheorem{definition}{Определение}[section]
+\newtheorem{example}[definition]{Пример}
+\newtheorem{remark}[definition]{Замечание}
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Теорема}
+\newtheorem{lemma}[definition]{Лемма}
+\newtheorem{corollary}[definition]{Следствие}
+\newtheorem{property}[definition]{Свойство}
+\newtheorem{criterion}[definition]{Критерий}
+\renewcommand{\proofname}{Доказательство}
+
+% ----- Операторы и сокращения -----
+\DeclareMathOperator{\tg}{tg}
+\DeclareMathOperator{\ctg}{ctg}
+\DeclareMathOperator{\arctg}{arctg}
+\DeclareMathOperator{\arcctg}{arcctg}
+\DeclareMathOperator{\sh}{sh}
+\DeclareMathOperator{\ch}{ch}
+\DeclareMathOperator{\Th}{th}
+\DeclareMathOperator{\cth}{cth}
+\DeclareMathOperator{\Const}{const}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\rang}{rang}
+\DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\Img}{Im}
+\DeclareMathOperator{\tr}{tr}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\dx}{\,dx}
+\newcommand{\dt}{\,dt}
+\newcommand{\du}{\,du}
+\newcommand{\eps}{\varepsilon}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\renewcommand{\le}{\leqslant}
+\renewcommand{\ge}{\geqslant}
+\newcommand{\scal}[2]{\left( #1,\,#2\right)}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+
+\begin{document}
+\begin{center}
+  {\LARGE\bfseries \doctitle}\\[4pt]
+  {\large\itshape \coursename}
+\end{center}
+\vspace{6pt}
+
+\section{Конечная разность — дискретная производная}
+
+Метод конечных разностей — дискретный аналог дифференциального и интегрального исчисления, где
+производную заменяет конечная разность, а интеграл — суммирование.
+
+\begin{definition}
+Для функции дискретного аргумента $f(x)$ (или последовательности $a_k=f(k)$, $x=1,2,\dots$)
+\emph{(правой) конечной разностью} называют
+\[
+  \Delta f(x)=f(x+1)-f(x).
+\]
+Это аналог производной $f'(x)=\lim_{h\to0}\frac{f(x+h)-f(x)}{h}$ при шаге $h=1$.
+\end{definition}
+
+\begin{example}
+$\Delta 1=0$; $\ \Delta x=(x+1)-x=1$; $\ \Delta x^2=(x+1)^2-x^2=2x+1$.
+\end{example}
+
+\begin{property}[свойства оператора $\Delta$]\leavevmode
+\begin{enumerate}[label=\arabic*),leftmargin=*]
+  \item $\Delta(c\,f)=c\,\Delta f$, $\ c\in\R$;
+  \item $\Delta(f+g)=\Delta f+\Delta g$;
+  \item $\Delta(f\cdot g)=\Delta f(x)\cdot g(x)+\Delta g(x)\cdot f(x+1)$ (дискретное правило Лейбница).
+\end{enumerate}
+\end{property}
+
+\section{Факториальные степени}
+
+Степенная функция $x^m$ неудобна тем, что $\Delta x^m\ne mx^{m-1}$. Её роль в дискретном анализе
+играют факториальные степени.
+
+\begin{definition}
+Для $m\in\N$ \emph{убывающая факториальная степень}
+\[
+  x^{\underline{m}}=\underbrace{x(x-1)(x-2)\cdots(x-m+1)}_{m\text{ множителей}},\qquad
+  x^{\underline 0}=1 .
+\]
+Для $m\in\N$ \emph{отрицательная} факториальная степень
+$\displaystyle x^{\underline{-m}}=\frac{1}{(x+1)(x+2)\cdots(x+m)}$.
+\end{definition}
+
+\begin{theorem}
+Для любого целого $m$ справедливо $\Delta\bigl(x^{\underline m}\bigr)=m\,x^{\underline{m-1}}$ —
+точный аналог $\bigl(x^m\bigr)'=mx^{m-1}$.
+\end{theorem}
+
+\begin{proof}
+Для $m\in\N$:
+\[
+  \Delta x^{\underline m}=(x+1)x(x-1)\cdots(x-m+2)-x(x-1)\cdots(x-m+1)
+   =x^{\underline{m-1}}\bigl[(x+1)-(x-m+1)\bigr]=m\,x^{\underline{m-1}}.
+\]
+Случай $m\le0$ проверяется аналогично прямой подстановкой.
+\end{proof}
+
+\section{Неопределённая сумма и дискретная формула Ньютона–Лейбница}
+
+\begin{definition}
+\emph{Неопределённой суммой} (дискретной первообразной) называют оператор $\Sigma$, обратный к
+$\Delta$:
+\[
+  \sum f(x)\,\delta x=g(x)+C\quad\iff\quad \Delta g(x)=f(x)
+\]
+(обозначение Д.~Кнута). Аналогично $\displaystyle\sum x^{\underline m}\,\delta x
+=\frac{x^{\underline{m+1}}}{m+1}+C$ для $m\ne-1$.
+\end{definition}
+
+\begin{theorem}[дискретная формула Ньютона–Лейбница]
+Для целых $a\le b$
+\[
+  \sum_{x=a}^{b-1}\Delta f(x)=f(x)\Big|_a^b=f(b)-f(a).
+\]
+Эквивалентно (определённая сумма Кнута):
+$\displaystyle\sum_{x=a}^{b-1}f(x)=\sum f(x)\,\delta x\,\Big|_a^b$.
+\end{theorem}
+
+\begin{proof}
+Сумма телескопическая:
+\[
+  \sum_{x=a}^{b-1}\bigl(f(x+1)-f(x)\bigr)=\bigl(f(a+1)-f(a)\bigr)+\dots+\bigl(f(b)-f(b-1)\bigr)
+   =f(b)-f(a).
+\]
+\end{proof}
+
+\subsection{Таблица дискретных первообразных}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{ll}
+$\Delta(x^{\underline{m}})=m\,x^{\underline{m-1}}$ & $\displaystyle\sum x^{\underline m}\delta x
+  =\frac{x^{\underline{m+1}}}{m+1}+C\ (m\ne-1)$\\
+$\Delta(2^{x})=2^{x}$ & $\displaystyle\sum 2^{x}\delta x=2^{x}+C$\\
+$\Delta(c^{x})=c^{x}(c-1)$ & $\displaystyle\sum c^{x}\delta x=\frac{c^{x}}{c-1}+C\ (c\ne1)$\\
+$\Delta(H_n)=\dfrac{1}{n+1}$ & $\displaystyle\sum \frac{1}{n+1}\,\delta n=H_n+C$\\
+$\Delta(F_n)=F_{n-1}$ & $\displaystyle\sum F_n\,\delta n=F_{n+1}+C$\\
+\end{tabular}
+\end{center}
+(здесь $H_n$ — гармонические числа, $F_n$ — числа Фибоначчи; роль $\sum c^x$ — точный аналог
+$\int a^x\,dx=\tfrac{a^x}{\ln a}$).
+
+\begin{example}
+$\displaystyle\sum_{x=1}^{10}\frac{1}{x(x+1)(x+2)}=\sum_{1}^{11}x^{\underline{-3}}\,\delta x
+=\frac{x^{\underline{-2}}}{-2}\Big|_1^{11}
+=\frac12\Bigl(\frac{1}{1\cdot2}-\frac{1}{11\cdot12}\Bigr)=\frac{65}{264}.$
+\end{example}
+
+\section{Суммирование многочленов}
+
+Многочлен раскладывают по факториальным степеням и суммируют почленно. Коэффициенты разложения
+дают \emph{дискретная формула Тейлора} и \emph{таблица конечных разностей}.
+
+\begin{theorem}[дискретная формула Тейлора]
+Для многочлена $P_m$
+\[
+  P_m(n)=\sum_{k=0}^{m}\frac{\Delta^k P_m(0)}{k!}\,n^{\underline k},
+\]
+где $\Delta^0 f=f$, а $\Delta^k$ — $k$-кратная разность (аналог формулы Маклорена с заменой
+$f^{(k)}\to\Delta^k$, $n^k\to n^{\underline k}$).
+\end{theorem}
+
+\begin{example}[сумма квадратов]
+Для $f(n)=n^2$ таблица разностей в нуле даёт $\Delta^0 f(0)=0$, $\Delta f(0)=1$,
+$\Delta^2 f(0)=2$, поэтому $n^2=n^{\underline1}+n^{\underline2}$. Тогда
+\[
+  \sum_{n=a}^{b-1}n^2=\sum_a^b\bigl(n^{\underline1}+n^{\underline2}\bigr)
+   =\Bigl(\frac{n^{\underline2}}{2}+\frac{n^{\underline3}}{3}\Bigr)\Big|_a^b .
+\]
+\end{example}
+
+\begin{example}[сумма кубов]
+$n^3=n^{\underline1}+3n^{\underline2}+n^{\underline3}$ (из таблицы разностей: $\Delta^k n^3(0)$
+равны $0,1,6,6$). Поэтому
+\[
+  \sum_{n=1}^{N}n^3=\Bigl(\frac{n^{\underline2}}{2}+n^{\underline3}+\frac{n^{\underline4}}{4}\Bigr)
+   \Big|_1^{N+1}=\frac{(N+1)^2 N^2}{4}=\Bigl(\frac{N(N+1)}{2}\Bigr)^2 .
+\]
+\end{example}
+
+\section{Суммирование по частям (формула Абеля)}
+
+\begin{theorem}[суммирование по частям]
+\[
+  \sum u(x)\,\Delta v(x)=u(x)v(x)-\sum \Delta u(x)\cdot v(x+1),
+\]
+или в определённой форме
+$\displaystyle\sum_{x=a}^{b-1}u(x)\,\Delta v(x)=u(x)v(x)\Big|_a^b-\sum_{x=a}^{b-1}\Delta u(x)\,
+v(x+1)$.
+\end{theorem}
+
+\begin{example}
+$\displaystyle\sum_{x=2}^{N}2^{x}\,x(x-1)$. Берём $u=x^{\underline2}$, $\Delta v=2^x$ (т.е.
+$v=2^x$):
+\[
+  \sum_{2}^{N+1}x^{\underline2}\,\Delta(2^x)=x^{\underline2}2^{x}\Big|_2^{N+1}
+   -\sum_{2}^{N+1}2x^{\underline1}\,2^{x+1},
+\]
+и повторное применение формулы доводит сумму до замкнутого вида — дискретный аналог
+$\int x^2 e^x\,dx$ двукратным интегрированием по частям.
+\end{example}
+
+\end{document}

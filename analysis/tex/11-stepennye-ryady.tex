@@ -1,0 +1,212 @@
+% !TEX program = xelatex
+% Самодостаточный конспект. Компилировать XeLaTeX/LuaLaTeX (tectonic 11-stepennye-ryady.tex).
+\documentclass[11pt,a4paper]{article}
+\newcommand{\coursename}{Математический анализ}
+\newcommand{\rightheader}{§11. Степенные ряды}
+\newcommand{\doctitle}{Степенные ряды}
+% ==== Общая преамбула конспектов (собирается в каждый .tex как самодостаточная) ====
+% Перед этим файлом должны быть определены: \documentclass и макросы
+%   \coursename  — название курса (левый колонтитул, подзаголовок),
+%   \rightheader — правый колонтитул (напр. «§2. Рациональные дроби»),
+%   \doctitle    — заголовок раздела на титуле.
+\usepackage{fontspec}
+\setmainfont{cmunrm.otf}[
+  BoldFont       = cmunbx.otf,
+  ItalicFont     = cmunti.otf,
+  BoldItalicFont = cmunbi.otf]
+\usepackage{polyglossia}
+\setdefaultlanguage{russian}
+\setotherlanguage{english}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{xcolor}
+\definecolor{accent}{HTML}{1F6FEB}
+\definecolor{rulecol}{HTML}{D0D7DE}
+\usepackage[colorlinks=true,linkcolor=accent,urlcolor=accent,citecolor=accent]{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+
+% ----- Колонтитулы -----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape \coursename}
+\fancyhead[R]{\small\itshape \rightheader}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{rulecol}\leaders\hrule height \headrulewidth\hfill}}
+
+% ----- Заголовки -----
+\titleformat{\section}{\large\bfseries\color{accent}}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\bfseries}{\thesubsection.}{0.5em}{}
+
+% ----- Теоремные окружения (стиль конспекта) -----
+\theoremstyle{definition}
+\newtheorem{definition}{Определение}[section]
+\newtheorem{example}[definition]{Пример}
+\newtheorem{remark}[definition]{Замечание}
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Теорема}
+\newtheorem{lemma}[definition]{Лемма}
+\newtheorem{corollary}[definition]{Следствие}
+\newtheorem{property}[definition]{Свойство}
+\newtheorem{criterion}[definition]{Критерий}
+\renewcommand{\proofname}{Доказательство}
+
+% ----- Операторы и сокращения -----
+\DeclareMathOperator{\tg}{tg}
+\DeclareMathOperator{\ctg}{ctg}
+\DeclareMathOperator{\arctg}{arctg}
+\DeclareMathOperator{\arcctg}{arcctg}
+\DeclareMathOperator{\sh}{sh}
+\DeclareMathOperator{\ch}{ch}
+\DeclareMathOperator{\Th}{th}
+\DeclareMathOperator{\cth}{cth}
+\DeclareMathOperator{\Const}{const}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\rang}{rang}
+\DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\Img}{Im}
+\DeclareMathOperator{\tr}{tr}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\dx}{\,dx}
+\newcommand{\dt}{\,dt}
+\newcommand{\du}{\,du}
+\newcommand{\eps}{\varepsilon}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\renewcommand{\le}{\leqslant}
+\renewcommand{\ge}{\geqslant}
+\newcommand{\scal}[2]{\left( #1,\,#2\right)}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+
+\begin{document}
+\begin{center}
+  {\LARGE\bfseries \doctitle}\\[4pt]
+  {\large\itshape \coursename}
+\end{center}
+\vspace{6pt}
+
+\section{Степенной ряд и область сходимости}
+
+\begin{definition}
+\emph{Степенным рядом} называют функциональный ряд вида
+\[
+  \sum_{n=0}^\infty a_n(x-x_0)^n=a_0+a_1(x-x_0)+a_2(x-x_0)^2+\dots,
+\]
+где $a_n$ — коэффициенты, $x_0$ — центр ряда. Заменой $x-x_0\mapsto x$ всегда можно считать
+$x_0=0$: $\sum a_n x^n$.
+\end{definition}
+
+\begin{theorem}[первая теорема Абеля]
+Если ряд $\sum a_n x^n$ сходится в точке $x_0\ne0$, то он сходится абсолютно при всех $x$ с
+$\abs x<\abs{x_0}$. Если ряд расходится в точке $x_1$, то он расходится при всех $\abs x>\abs{x_1}$.
+\end{theorem}
+
+\begin{proof}
+Из сходимости $\sum a_n x_0^n$ следует $a_n x_0^n\to0$, значит $\abs{a_n x_0^n}\le M$. При
+$\abs x<\abs{x_0}$, положив $q=\abs{x/x_0}<1$,
+\[
+  \abs{a_n x^n}=\abs{a_n x_0^n}\cdot\abs[\Big]{\frac{x}{x_0}}^n\le M q^n ,
+\]
+и ряд мажорируется сходящейся геометрической прогрессией — абсолютная сходимость. Вторая часть —
+контрапозиция первой.
+\end{proof}
+
+Следствие: область сходимости — это интервал $(-R,R)$ (возможно, с концами), где $R$ —
+\emph{радиус сходимости}.
+
+\section{Радиус сходимости}
+
+\begin{definition}
+\[
+  R=\lim_{n\to\infty}\abs[\Big]{\frac{a_n}{a_{n+1}}}\quad(\text{по Даламберу, если предел есть}),
+  \qquad
+  R=\frac{1}{\varlimsup\limits_{n\to\infty}\sqrt[n]{\abs{a_n}}}\quad(\text{по Коши}).
+\]
+\end{definition}
+
+\begin{theorem}[Коши–Адамар]
+Ряд $\sum a_n x^n$ сходится абсолютно на $(-R,R)$ и расходится на
+$(-\infty,-R)\cup(R,+\infty)$, где $R=1/\varlimsup\sqrt[n]{\abs{a_n}}$.
+\end{theorem}
+
+\begin{proof}
+Применим радикальный признак Коши к $\sum\abs{a_n x^n}$:
+$q(x)=\varlimsup\sqrt[n]{\abs{a_n x^n}}=\abs x\cdot\varlimsup\sqrt[n]{\abs{a_n}}=\dfrac{\abs x}{R}$.
+При $q<1$, т.е. $\abs x<R$, ряд сходится; при $q>1$, т.е. $\abs x>R$, общий член не стремится к
+нулю — расходимость. Случаи $R=0$ и $R=+\infty$ соответствуют $\varlimsup=+\infty$ и $0$.
+\end{proof}
+
+\begin{example}
+$\displaystyle\sum_{n=1}^\infty\frac{x^n}{n}$: $\dfrac1R=\varlimsup\sqrt[n]{1/n}=1$, $R=1$. При
+$x=1$ — гармонический ряд (расходится), при $x=-1$ — знакочередующийся (сходится). Область
+сходимости $[-1,1)$.
+\end{example}
+
+\section{Свойства степенного ряда внутри интервала сходимости}
+
+\begin{theorem}[равномерная сходимость]
+$\sum a_n x^n$ сходится равномерно на любом отрезке $[-\rho,\rho]\subset(-R,R)$.
+\end{theorem}
+
+\begin{proof}
+При $\abs x\le\rho$ имеем $\abs{a_n x^n}\le\abs{a_n}\rho^n$, а ряд $\sum\abs{a_n}\rho^n$ сходится
+(так как $\rho<R$). По признаку Вейерштрасса сходимость равномерна.
+\end{proof}
+
+\begin{corollary}\leavevmode
+\begin{enumerate}[label=\arabic*),leftmargin=*]
+  \item \textbf{Непрерывность:} сумма $S(x)$ непрерывна на $(-R,R)$.
+  \item \textbf{Почленное интегрирование:}
+        $\displaystyle\int_0^x S(t)\dt=\sum_{n=0}^\infty\frac{a_n}{n+1}x^{n+1}$ с тем же радиусом
+        сходимости (используется $\sqrt[n]{n}\to1$).
+  \item \textbf{Почленное дифференцирование:}
+        $\displaystyle S'(x)=\sum_{n=1}^\infty n\,a_n x^{n-1}$ с тем же радиусом сходимости.
+\end{enumerate}
+\end{corollary}
+
+\begin{theorem}[вторая теорема Абеля]
+Если $\sum a_n x^n$ сходится при $x=R$ (или $x=-R$), то $S(x)$ непрерывна в этой точке слева
+(соответственно справа).
+\end{theorem}
+
+\begin{example}[вывод $\ln2$]
+Из $\displaystyle\sum_{n=0}^\infty x^n=\frac1{1-x}$ заменой $x\mapsto-x$ и почленным
+интегрированием:
+\[
+  \ln(1+x)=\sum_{n=1}^\infty\frac{(-1)^{n+1}}{n}x^n,\qquad \abs x<1 .
+\]
+При $x=1$ ряд $\sum\dfrac{(-1)^{n+1}}{n}$ сходится (Лейбниц), и по второй теореме Абеля
+$\ln2=1-\tfrac12+\tfrac13-\tfrac14+\dots$.
+\end{example}
+
+\section{Суммирование степенных рядов}
+
+Суммы находят, сводя ряд к геометрической прогрессии $\sum x^n=\dfrac1{1-x}$ и применяя почленное
+дифференцирование/интегрирование.
+
+\begin{example}
+$\displaystyle\sum_{n=1}^\infty n x^n$ ($R=1$): дифференцируя $\sum_{n\ge0}x^n=\dfrac1{1-x}$,
+получаем $\sum_{n\ge1}n x^{n-1}=\dfrac1{(1-x)^2}$, откуда
+\[
+  \sum_{n=1}^\infty n x^n=x\cdot\frac{1}{(1-x)^2}=\frac{x}{(1-x)^2}.
+\]
+\end{example}
+
+\begin{example}
+$\displaystyle\sum_{n=1}^\infty\frac{x^n}{n}$ ($R=1$): интегрируя $\sum_{n\ge0}x^n=\dfrac1{1-x}$,
+получаем $\displaystyle\sum_{n=1}^\infty\frac{x^n}{n}=-\ln(1-x)$, $\abs x<1$.
+\end{example}
+
+\end{document}

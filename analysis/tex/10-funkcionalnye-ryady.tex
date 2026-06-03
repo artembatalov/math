@@ -1,0 +1,249 @@
+% !TEX program = xelatex
+% Самодостаточный конспект. Компилировать XeLaTeX/LuaLaTeX (tectonic 10-funkcionalnye-ryady.tex).
+\documentclass[11pt,a4paper]{article}
+\newcommand{\coursename}{Математический анализ}
+\newcommand{\rightheader}{§10. Функциональные последовательности и ряды}
+\newcommand{\doctitle}{Функциональные последовательности и ряды}
+% ==== Общая преамбула конспектов (собирается в каждый .tex как самодостаточная) ====
+% Перед этим файлом должны быть определены: \documentclass и макросы
+%   \coursename  — название курса (левый колонтитул, подзаголовок),
+%   \rightheader — правый колонтитул (напр. «§2. Рациональные дроби»),
+%   \doctitle    — заголовок раздела на титуле.
+\usepackage{fontspec}
+\setmainfont{cmunrm.otf}[
+  BoldFont       = cmunbx.otf,
+  ItalicFont     = cmunti.otf,
+  BoldItalicFont = cmunbi.otf]
+\usepackage{polyglossia}
+\setdefaultlanguage{russian}
+\setotherlanguage{english}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{xcolor}
+\definecolor{accent}{HTML}{1F6FEB}
+\definecolor{rulecol}{HTML}{D0D7DE}
+\usepackage[colorlinks=true,linkcolor=accent,urlcolor=accent,citecolor=accent]{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+
+% ----- Колонтитулы -----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape \coursename}
+\fancyhead[R]{\small\itshape \rightheader}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{rulecol}\leaders\hrule height \headrulewidth\hfill}}
+
+% ----- Заголовки -----
+\titleformat{\section}{\large\bfseries\color{accent}}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\bfseries}{\thesubsection.}{0.5em}{}
+
+% ----- Теоремные окружения (стиль конспекта) -----
+\theoremstyle{definition}
+\newtheorem{definition}{Определение}[section]
+\newtheorem{example}[definition]{Пример}
+\newtheorem{remark}[definition]{Замечание}
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Теорема}
+\newtheorem{lemma}[definition]{Лемма}
+\newtheorem{corollary}[definition]{Следствие}
+\newtheorem{property}[definition]{Свойство}
+\newtheorem{criterion}[definition]{Критерий}
+\renewcommand{\proofname}{Доказательство}
+
+% ----- Операторы и сокращения -----
+\DeclareMathOperator{\tg}{tg}
+\DeclareMathOperator{\ctg}{ctg}
+\DeclareMathOperator{\arctg}{arctg}
+\DeclareMathOperator{\arcctg}{arcctg}
+\DeclareMathOperator{\sh}{sh}
+\DeclareMathOperator{\ch}{ch}
+\DeclareMathOperator{\Th}{th}
+\DeclareMathOperator{\cth}{cth}
+\DeclareMathOperator{\Const}{const}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\rang}{rang}
+\DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\Img}{Im}
+\DeclareMathOperator{\tr}{tr}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\dx}{\,dx}
+\newcommand{\dt}{\,dt}
+\newcommand{\du}{\,du}
+\newcommand{\eps}{\varepsilon}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\renewcommand{\le}{\leqslant}
+\renewcommand{\ge}{\geqslant}
+\newcommand{\scal}[2]{\left( #1,\,#2\right)}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+
+\begin{document}
+\begin{center}
+  {\LARGE\bfseries \doctitle}\\[4pt]
+  {\large\itshape \coursename}
+\end{center}
+\vspace{6pt}
+
+\section{Поточечная и равномерная сходимость}
+
+Пусть на множестве $X\subset\R$ задана последовательность функций $\{f_n(x)\}$.
+
+\begin{definition}[поточечная сходимость]
+$f_n\to f$ \emph{поточечно} на $X$, если при каждом фиксированном $x\in X$ числовая
+последовательность $\{f_n(x)\}$ сходится к $f(x)$:
+\[
+  \forall x\in X\ \forall\eps>0\ \exists N(\eps,x)\ \forall n>N:\ \abs{f_n(x)-f(x)}<\eps .
+\]
+Здесь номер $N$ зависит и от $x$.
+\end{definition}
+
+\begin{definition}[равномерная сходимость]
+$f_n\rightrightarrows f$ \emph{равномерно} на $X$, если номер $N$ можно выбрать общим для всех $x$:
+\[
+  \forall\eps>0\ \exists N(\eps)\ \forall n>N\ \forall x\in X:\ \abs{f_n(x)-f(x)}<\eps .
+\]
+Геометрически: начиная с номера $N$, весь график $f_n$ лежит в $\eps$-полосе вокруг графика $f$.
+\end{definition}
+
+\begin{criterion}[супремум-критерий]
+$f_n\rightrightarrows f$ на $X$ тогда и только тогда, когда
+$\displaystyle\rho_n=\sup_{x\in X}\abs{f_n(x)-f(x)}\to0$.
+\end{criterion}
+
+\begin{example}\leavevmode
+\begin{enumerate}[label=\arabic*),leftmargin=*]
+  \item $f_n(x)=x^n$ на $[0,1)$: поточечно $f_n\to0$, но
+        $\rho_n=\sup_{[0,1)}\abs{x^n}=1\not\to0$ — сходимость не равномерна.
+  \item «Бегущий горб» $f_n(x)=nxe^{-nx^2}$ на $[0,1]$: поточечно $f_n\to0$, однако в точке
+        $x_n=\tfrac{1}{\sqrt{2n}}$ имеем $f_n(x_n)=\sqrt{\tfrac{n}{2}}\,e^{-1/2}\to\infty$, так что
+        $\rho_n\to\infty$ — равномерной сходимости нет.
+\end{enumerate}
+\end{example}
+
+\begin{criterion}[Коши для последовательностей]
+$\{f_n\}$ равномерно сходится на $X$ тогда и только тогда, когда
+\[
+  \forall\eps>0\ \exists N\ \forall n>N\ \forall p\in\N\ \forall x\in X:\
+  \abs{f_{n+p}(x)-f_n(x)}<\eps .
+\]
+\end{criterion}
+
+\begin{proof}
+$(\Rightarrow)$ Если $f_n\rightrightarrows f$, то по $\tfrac\eps2$ найдётся $N$: при $n>N$
+$\abs{f_n(x)-f(x)}<\tfrac\eps2$ для всех $x$; тогда
+$\abs{f_{n+p}(x)-f_n(x)}\le\abs{f_{n+p}-f}+\abs{f-f_n}<\eps$. $(\Leftarrow)$ При каждом $x$
+последовательность $\{f_n(x)\}$ фундаментальна, значит сходится к некоторому $f(x)$. Переходя в
+неравенстве $\abs{f_{n+p}(x)-f_n(x)}<\eps$ к пределу $p\to\infty$, получаем
+$\abs{f(x)-f_n(x)}\le\eps$ для всех $x$ при $n>N$, т.е. сходимость равномерна.
+\end{proof}
+
+\section{Функциональные ряды}
+
+\begin{definition}
+Ряд $\displaystyle\sum_{k=1}^\infty u_k(x)$ называют \emph{функциональным}; его частичные суммы
+$S_n(x)=\sum_{k=1}^n u_k(x)$. Множество $x$, где $\{S_n(x)\}$ сходится поточечно, — \emph{область
+сходимости}. Ряд сходится \emph{равномерно} на $X$, если $S_n\rightrightarrows S$ на $X$.
+\end{definition}
+
+\begin{definition}
+\emph{Остаток ряда} $\displaystyle R_n(x)=S(x)-S_n(x)=\sum_{k=n+1}^\infty u_k(x)$. Удобный
+критерий: ряд сходится равномерно $\iff\displaystyle\sup_{x\in X}\abs{R_n(x)}\to0$.
+\end{definition}
+
+\begin{criterion}[Коши для рядов]
+$\sum u_k(x)$ сходится равномерно на $X$ тогда и только тогда, когда
+\[
+  \forall\eps>0\ \exists N\ \forall n>N\ \forall p\in\N\ \forall x\in X:\
+  \abs[\Big]{\sum_{k=n+1}^{n+p}u_k(x)}<\eps .
+\]
+\end{criterion}
+
+\begin{theorem}[признак Вейерштрасса, мажорантный]
+Если $\abs{u_k(x)}\le a_k$ для всех $x\in X$ и числовой ряд $\sum a_k$ сходится, то
+$\sum u_k(x)$ сходится равномерно (и абсолютно) на $X$.
+\end{theorem}
+
+\begin{proof}
+По критерию Коши для $\sum a_k$: $\sum_{k=n+1}^{n+p}a_k<\eps$ при $n>N$. Тогда
+$\abs[\big]{\sum_{k=n+1}^{n+p}u_k(x)}\le\sum_{k=n+1}^{n+p}\abs{u_k(x)}\le\sum_{k=n+1}^{n+p}a_k<\eps$
+равномерно по $x$ — выполнен критерий Коши для $\sum u_k$.
+\end{proof}
+
+\begin{example}
+$\displaystyle\sum_{n=1}^\infty\frac{\sin nx}{n^2}$ сходится равномерно на $\R$:
+$\abs[\big]{\tfrac{\sin nx}{n^2}}\le\tfrac1{n^2}$, а $\sum\tfrac1{n^2}$ сходится (мажоранта).
+\end{example}
+
+\begin{remark}[признак Дирихле]
+Ряд $\sum f_k(x)g_k(x)$ сходится равномерно на $X$, если частичные суммы $\sum f_k$ ограничены в
+совокупности ($\abs{\sum_{k=1}^n f_k(x)}\le M$) и $g_k(x)\rightrightarrows0$ монотонно по $k$.
+Пример: $\sum\dfrac{\sin nx}{n^p}$ ($p>0$) равномерно сходится на $[\delta,2\pi-\delta]$.
+\end{remark}
+
+\section{Свойства равномерно сходящихся рядов}
+
+\begin{theorem}[непрерывность суммы]
+Если все $u_k$ непрерывны на $X$ и $\sum u_k\rightrightarrows S$, то $S$ непрерывна на $X$.
+\end{theorem}
+
+\begin{proof}[Метод «трёх $\eps$»]
+Фиксируем $x_0\in X$ и $\eps>0$. Так как $S=S_n+R_n$,
+\[
+  \abs{S(x)-S(x_0)}\le\abs{S_n(x)-S_n(x_0)}+\abs{R_n(x)}+\abs{R_n(x_0)} .
+\]
+В силу равномерной сходимости выберем $n$, при котором $\abs{R_n}<\tfrac\eps3$ всюду. При этом $n$
+сумма $S_n$ непрерывна (конечная сумма непрерывных), поэтому $\exists\delta>0$: при
+$\abs{x-x_0}<\delta$ имеем $\abs{S_n(x)-S_n(x_0)}<\tfrac\eps3$. Итог:
+$\abs{S(x)-S(x_0)}<\tfrac\eps3+\tfrac\eps3+\tfrac\eps3=\eps$.
+\end{proof}
+
+\begin{theorem}[почленное интегрирование]
+Если $u_k$ непрерывны на $[a,b]$ и $\sum u_k\rightrightarrows S$, то
+\[
+  \int_a^b S(x)\dx=\int_a^b\sum_{k=1}^\infty u_k(x)\dx=\sum_{k=1}^\infty\int_a^b u_k(x)\dx .
+\]
+\end{theorem}
+
+\begin{proof}
+$S$ непрерывна, значит интегрируема. Оценим разность:
+\[
+  \abs[\Big]{\int_a^b S-\int_a^b S_n}=\abs[\Big]{\int_a^b R_n}\le\int_a^b\abs{R_n}
+   \le\int_a^b\frac{\eps}{b-a}\dx=\eps
+\]
+при $n>N$ (равномерность). Значит $\int_a^b S_n\to\int_a^b S$, т.е. интеграл суммы равен сумме
+интегралов.
+\end{proof}
+
+\begin{theorem}[почленное дифференцирование]
+Пусть $u_k\in C^1[a,b]$, ряд $\sum u_k'(x)\rightrightarrows\sigma(x)$ равномерно на $[a,b]$, и
+$\sum u_k(x_0)$ сходится хотя бы в одной точке $x_0$. Тогда $\sum u_k\rightrightarrows S$ на
+$[a,b]$, $S$ дифференцируема и $S'(x)=\sigma(x)=\sum u_k'(x)$.
+\end{theorem}
+
+\begin{proof}
+По теореме о почленном интегрировании равномерно сходящегося ряда $\sum u_k'$:
+$\int_{x_0}^x\sigma(t)\dt=\sum_k\bigl(u_k(x)-u_k(x_0)\bigr)$, т.е.
+$\sum u_k(x)=\int_{x_0}^x\sigma+\sum u_k(x_0)$. Правая часть дифференцируема с производной
+$\sigma(x)$ (по теореме Барроу), значит $S'=\sigma$.
+\end{proof}
+
+\begin{remark}
+Условие равномерной сходимости \emph{ряда производных} существенно: его отсутствие делает
+почленное дифференцирование недопустимым. Так, для $f_n(x)=\tfrac{\sin nx}{\sqrt n}$ имеем
+$f_n\rightrightarrows0$, но $f_n'(x)=\sqrt n\cos nx$ не стремится к нулю.
+\end{remark}
+
+\end{document}

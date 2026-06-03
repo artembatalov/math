@@ -1,0 +1,318 @@
+\section{Евклидово пространство функций. Пространство $L_2$}
+
+Пусть $E$ — множество функций, заданных на отрезке $[a,b]$.
+
+\begin{definition}
+$E$ называется \emph{евклидовым} (предгильбертовым) пространством, если на нём задано
+\emph{скалярное произведение} $(f,g)$ — билинейная, симметричная, положительно определённая форма.
+В пространстве $L_2[a,b]$ интегрируемых с квадратом функций
+\[
+  (f,g)=\int_a^b f(x)g(x)\dx,\qquad
+  \norm{f}_2=\sqrt{(f,f)}=\sqrt{\int_a^b f^2(x)\dx}.
+\]
+\end{definition}
+
+\begin{theorem}[неравенство Коши--Буняковского--Шварца]
+Для любых $f,g\in L_2[a,b]$
+\[
+  \abs{(f,g)}\le\norm{f}_2\cdot\norm{g}_2,\qquad\text{т.е.}\qquad
+  \Bigl(\int_a^b fg\dx\Bigr)^{\!2}\le\int_a^b f^2\dx\cdot\int_a^b g^2\dx .
+\]
+\end{theorem}
+
+\begin{proof}
+При любом $t\in\R$ квадратичный по $t$ многочлен
+$\norm{f-tg}^2=\norm f^2-2t(f,g)+t^2\norm g^2\ge0$ неотрицателен, значит его дискриминант
+$\le0$: $4(f,g)^2-4\norm f^2\norm g^2\le0$, что и даёт неравенство.
+\end{proof}
+
+\begin{remark}[фактор-пространство]
+Строго говоря, $\norm f_2=0$ не влечёт $f\equiv0$ (функция может быть отлична от нуля на множестве
+меры нуль). Поэтому $L_2$ рассматривают как \emph{фактор-пространство}: функции, различающиеся на
+множестве меры нуль, отождествляются. На классах эквивалентности $\norm{\cdot}_2$ — уже настоящая
+норма.
+\end{remark}
+
+\begin{definition}
+Евклидово функциональное пространство называется \emph{гильбертовым}, если оно \emph{полно} по
+норме $\norm{\cdot}_2$, т.е. всякая фундаментальная последовательность функций сходится (в
+$L_2$) к элементу пространства. Пространство $L_2[a,b]$ гильбертово.
+\end{definition}
+
+\section{Ортогональные системы. Тригонометрическая система}
+
+\begin{definition}
+Система функций $\{\varphi_n(x)\}_{n=1}^\infty$ называется \emph{ортогональной} в $L_2[a,b]$, если
+$(\varphi_n,\varphi_m)=0$ при $n\ne m$ и $\norm{\varphi_n}\ne0$. Если вдобавок
+$\norm{\varphi_n}=1$, система \emph{ортонормирована}.
+\end{definition}
+
+\begin{example}[тригонометрическая система]
+Система $\;1,\ \cos x,\ \sin x,\ \cos2x,\ \sin2x,\ \dots,\ \cos nx,\ \sin nx,\ \dots$
+ортогональна в $L_2[-\pi,\pi]$.
+\end{example}
+
+\begin{proof}
+Достаточно проверить попарную ортогональность. Например, при любых $n,m$
+\[
+  (\cos nx,\sin mx)=\int_{-\pi}^{\pi}\cos nx\,\sin mx\dx
+   =\frac12\int_{-\pi}^{\pi}\bigl(\sin(n+m)x+\sin(m-n)x\bigr)\dx=0
+\]
+(интеграл нечётной функции по симметричному отрезку). Аналогично $(\cos nx,\cos mx)=0$ и
+$(\sin nx,\sin mx)=0$ при $n\ne m$. Нормы:
+\[
+  \norm1^2=2\pi,\qquad \norm{\cos nx}^2=\int_{-\pi}^{\pi}\cos^2nx\dx=\pi,\qquad
+  \norm{\sin nx}^2=\int_{-\pi}^{\pi}\sin^2nx\dx=\pi .
+\]
+\end{proof}
+
+\section{Ряд Фурье. Коэффициенты Фурье}
+
+\begin{definition}
+Пусть $\{\varphi_n\}$ — ортогональная система и $f\in L_2[a,b]$. \emph{Рядом Фурье} функции $f$ по
+этой системе называют формальный ряд
+\[
+  f\sim\sum_{n=1}^\infty c_n\varphi_n(x),\qquad c_n=\frac{(f,\varphi_n)}{\norm{\varphi_n}^2}
+  \quad(\text{коэффициенты Фурье}).
+\]
+\end{definition}
+
+Для тригонометрической системы на $[-\pi,\pi]$ ряд Фурье записывают в виде
+\[
+  f(x)\sim\frac{a_0}{2}+\sum_{n=1}^\infty\bigl(a_n\cos nx+b_n\sin nx\bigr),
+\]
+\[
+  a_n=\frac1\pi\int_{-\pi}^{\pi}f(x)\cos nx\dx,\quad
+  b_n=\frac1\pi\int_{-\pi}^{\pi}f(x)\sin nx\dx,\quad
+  a_0=\frac1\pi\int_{-\pi}^{\pi}f(x)\dx .
+\]
+
+\begin{theorem}[экстремальное свойство коэффициентов Фурье]
+Среди всех многочленов $\sum_{n=1}^N\alpha_n\varphi_n$ среднеквадратичное отклонение
+$\delta_N=\norm[\big]{f-\sum_{n=1}^N\alpha_n\varphi_n}^2$ достигает минимума тогда и только тогда,
+когда $\alpha_n=c_n$ — коэффициенты Фурье.
+\end{theorem}
+
+\begin{proof}
+Обозначим $S_N=\sum_{n=1}^N\alpha_n\varphi_n$. В силу ортогональности
+\[
+  \delta_N=\norm{f}^2-2\sum_{n=1}^N\alpha_n(f,\varphi_n)+\sum_{n=1}^N\alpha_n^2\norm{\varphi_n}^2 .
+\]
+Подставив $(f,\varphi_n)=c_n\norm{\varphi_n}^2$ и выделив полный квадрат,
+\[
+  \delta_N=\norm{f}^2-\sum_{n=1}^N c_n^2\norm{\varphi_n}^2
+   +\sum_{n=1}^N(\alpha_n-c_n)^2\norm{\varphi_n}^2 .
+\]
+Последняя сумма $\ge0$ и зависит только от $\alpha_n$; минимум достигается при $\alpha_n=c_n$.
+\end{proof}
+
+\begin{theorem}[неравенство Бесселя]
+Для любой $f\in L_2[a,b]$
+\[
+  \sum_{n=1}^\infty c_n^2\norm{\varphi_n}^2\le\norm{f}^2 .
+\]
+Для тригонометрической системы:
+$\displaystyle\frac{a_0^2}{2}+\sum_{n=1}^\infty(a_n^2+b_n^2)\le\frac1\pi\int_{-\pi}^{\pi}f^2\dx$.
+\end{theorem}
+
+\begin{proof}
+При $\alpha_n=c_n$ из предыдущего доказательства
+$0\le\delta_N=\norm{f}^2-\sum_{n=1}^N c_n^2\norm{\varphi_n}^2$, откуда
+$\sum_{n=1}^N c_n^2\norm{\varphi_n}^2\le\norm{f}^2$ при всех $N$. Переход $N\to\infty$ даёт
+неравенство Бесселя. В частности, $c_n^2\norm{\varphi_n}^2\to0$ — коэффициенты Фурье стремятся к
+нулю.
+\end{proof}
+
+\section{Замкнутость и полнота. Теорема Стеклова}
+
+\begin{definition}
+Ортогональная система $\{\varphi_n\}$ \emph{замкнута}, если для всех $f\in L_2[a,b]$ выполнено
+\emph{равенство Парсеваля}
+\[
+  \norm{f}^2=\sum_{n=1}^\infty c_n^2\norm{\varphi_n}^2
+\]
+(неравенство Бесселя обращается в равенство, т.е.\ $S_N\to f$ по норме $L_2$).
+\end{definition}
+
+\begin{definition}
+Ортогональная система \emph{полна} в $L_2[a,b]$, если из $(f,\varphi_n)=0$ для всех $n$ следует
+$f\equiv0$ (в смысле $L_2$): ни одна ненулевая функция не ортогональна всем $\varphi_n$.
+\end{definition}
+
+\begin{theorem}[Стеклов: эквивалентность полноты и замкнутости]
+Ортогональная система в $L_2[a,b]$ замкнута тогда и только тогда, когда она полна.
+\end{theorem}
+
+\begin{proof}
+$(\Rightarrow)$ Пусть система замкнута и $(f,\varphi_n)=0$ для всех $n$, т.е.\ все $c_n=0$. По
+равенству Парсеваля $\norm{f}^2=\sum c_n^2\norm{\varphi_n}^2=0$, значит $f\equiv0$ — система полна.
+
+$(\Leftarrow)$ Пусть система полна. Для $f\in L_2$ рассмотрим остаток
+$R_N=f-\sum_{n=1}^N c_n\varphi_n$; по неравенству Бесселя $\sum c_n^2\norm{\varphi_n}^2$ сходится,
+поэтому $\{S_N\}$ фундаментальна и (полнота $L_2$) сходится к некоторой $g$. Разность $f-g$
+ортогональна всем $\varphi_n$, а в силу полноты системы $f-g\equiv0$, т.е.\ $S_N\to f$. Тогда
+$\norm{R_N}^2=\norm{f}^2-\sum_{n=1}^N c_n^2\norm{\varphi_n}^2\to0$ — равенство Парсеваля.
+\end{proof}
+
+\begin{example}[ортогонализация: многочлены Лежандра]
+В $L_2[-1,1]$ система $1,x,x^2,\dots$ не ортогональна; применяя процесс Грама--Шмидта, получаем
+ортогональную систему многочленов Лежандра:
+\[
+  \psi_0=1,\quad \psi_1=x-\frac{(x,1)}{\norm1^2}\cdot1=x,\quad
+  \psi_2=x^2-\frac{(x^2,1)}{\norm1^2}\cdot1=x^2-\frac13,\ \dots
+\]
+\end{example}
+
+\begin{theorem}
+Тригонометрическая система $1,\cos x,\sin x,\dots,\cos nx,\sin nx,\dots$ полна (а значит, и
+замкнута) в $L_2[-\pi,\pi]$. Следовательно, ряд Фурье любой $f\in L_2$ сходится к $f$ по норме
+$L_2$ и выполняется равенство Парсеваля.
+\end{theorem}
+
+\section{Сходимость в точке. Ядро Дирихле}
+
+Перейдём от сходимости «в среднем» ($L_2$) к \emph{поточечной} сходимости ряда Фурье. Пусть $f$
+$2\pi$-периодична и интегрируема. Частичная сумма
+\[
+  S_N(x)=\frac{a_0}{2}+\sum_{n=1}^N(a_n\cos nx+b_n\sin nx).
+\]
+
+\begin{definition}
+\emph{Ядро Дирихле}
+\[
+  D_N(t)=\frac12+\sum_{n=1}^N\cos nt=\frac{\sin\bigl((N+\tfrac12)t\bigr)}{2\sin\tfrac t2}.
+\]
+\end{definition}
+
+\begin{theorem}[интегральное представление]
+\[
+  S_N(x)=\frac1\pi\int_{-\pi}^{\pi}f(x+t)\,D_N(t)\dt,\qquad
+  \frac1\pi\int_{-\pi}^{\pi}D_N(t)\dt=1 .
+\]
+\end{theorem}
+
+\begin{proof}
+Подставим выражения для $a_n,b_n$ в $S_N(x)$ и соберём под одним интегралом по $u$:
+\[
+  S_N(x)=\frac1\pi\int_{-\pi}^{\pi}f(u)\Bigl[\tfrac12+\sum_{n=1}^N\cos n(u-x)\Bigr]\du
+   =\frac1\pi\int_{-\pi}^{\pi}f(u)D_N(u-x)\du .
+\]
+Замена $t=u-x$ и $2\pi$-периодичность дают первую формулу. Замкнутую форму $D_N$ получаем,
+домножив $\tfrac12+\sum\cos nt$ на $2\sin\tfrac t2$ и свернув телескопически
+($2\sin\tfrac t2\cos nt=\sin(n+\tfrac12)t-\sin(n-\tfrac12)t$). Нормировка следует из
+$\int_{-\pi}^{\pi}\cos nt\dt=0$ при $n\ge1$.
+\end{proof}
+
+\begin{lemma}[Римана--Лебега]
+Если $f$ интегрируема на $[a,b]$, то
+$\displaystyle\int_a^b f(x)\sin(\lambda x)\dx\to0$ и $\displaystyle\int_a^b f(x)\cos(\lambda x)\dx\to0$
+при $\lambda\to\infty$. В частности, коэффициенты Фурье $a_n,b_n\to0$.
+\end{lemma}
+
+\begin{proof}
+Для $f\in C^1$ — интегрированием по частям: $\int f\sin\lambda x\dx
+=-\tfrac{f\cos\lambda x}{\lambda}\big|+\tfrac1\lambda\int f'\cos\lambda x\dx=O(1/\lambda)\to0$.
+Общий случай — приближением интегрируемой $f$ гладкими функциями в среднем (ступенчатые функции
+плотны в $L_1$).
+\end{proof}
+
+\begin{theorem}[принцип локализации]
+Сходимость ряда Фурье в точке $x$ и его сумма зависят только от поведения $f$ в сколь угодно малой
+окрестности точки $x$.
+\end{theorem}
+
+\begin{proof}
+$S_N(x)-S=\tfrac1\pi\int_{-\pi}^{\pi}\bigl(f(x+t)-S\bigr)D_N(t)\dt$. Вне окрестности $\abs t<\delta$
+знаменатель $2\sin\tfrac t2$ отделён от нуля, поэтому
+$\dfrac{f(x+t)-S}{2\sin(t/2)}$ интегрируема, и по лемме Римана--Лебега вклад
+$\int_{\delta\le\abs t\le\pi}\dots\sin\bigl((N+\tfrac12)t\bigr)\dt\to0$. Остаётся лишь интеграл по
+$\abs t<\delta$.
+\end{proof}
+
+\section{Признаки сходимости: Дини и Липшиц}
+
+\begin{theorem}[признак Дини]
+Пусть существует число $S$ такое, что
+$\displaystyle\int_0^{\pi}\frac{\abs{f(x+t)+f(x-t)-2S}}{t}\dt<\infty$.
+Тогда ряд Фурье функции $f$ сходится в точке $x$ к $S$.
+\end{theorem}
+
+\begin{proof}
+В силу чётности $D_N$ запишем
+$S_N(x)-S=\tfrac1\pi\int_0^{\pi}\bigl(f(x+t)+f(x-t)-2S\bigr)D_N(t)\dt$. Представим
+$D_N(t)=\dfrac{\sin((N+\frac12)t)}{2\sin(t/2)}$ и обозначим
+$g(t)=\dfrac{f(x+t)+f(x-t)-2S}{2\sin(t/2)}$. Условие Дини (с учётом $\sin\tfrac t2\sim\tfrac t2$)
+гарантирует интегрируемость $g$, и по лемме Римана--Лебега
+$\int_0^\pi g(t)\sin\bigl((N+\tfrac12)t\bigr)\dt\to0$, т.е.\ $S_N(x)\to S$.
+\end{proof}
+
+\begin{theorem}[признак Липшица/Гёльдера]
+Если $f$ непрерывна в точке $x$ и удовлетворяет условию Гёльдера
+$\abs{f(x+t)-f(x)}\le L\abs t^{\alpha}$ ($0<\alpha\le1$) в окрестности $x$, то ряд Фурье сходится
+в этой точке к $f(x)$. В частности, это верно для дифференцируемых (и кусочно-гладких) функций.
+\end{theorem}
+
+\begin{proof}
+Берём $S=f(x)$. Тогда $\abs{f(x+t)+f(x-t)-2S}\le 2L\abs t^\alpha$, поэтому
+$\dfrac{\abs{f(x+t)+f(x-t)-2S}}{t}\le 2L\,t^{\alpha-1}$ интегрируема в нуле ($\alpha>0$) —
+выполнено условие Дини.
+\end{proof}
+
+\section{Точки разрыва. Сходимость к полусумме}
+
+\begin{theorem}
+Пусть $f$ кусочно-гладкая и в точке $x$ имеет разрыв первого рода с односторонними пределами
+$f(x\pm0)$. Тогда ряд Фурье сходится к полусумме
+\[
+  \lim_{N\to\infty}S_N(x)=\frac{f(x+0)+f(x-0)}{2}.
+\]
+\end{theorem}
+
+\begin{proof}
+Применяем признак Дини с $S=\tfrac12\bigl(f(x+0)+f(x-0)\bigr)$: для кусочно-гладкой $f$ разность
+$f(x+t)-f(x+0)=O(t)$ справа и $f(x-t)-f(x-0)=O(t)$ слева, поэтому
+$f(x+t)+f(x-t)-2S=O(t)$ и подынтегральное выражение $O(1)$ интегрируемо. Значит $S_N(x)\to S$.
+\end{proof}
+
+\begin{example}[формула Лейбница для $\pi$]
+Разложим в ряд Фурье на $[-\pi,\pi]$ нечётную функцию $f(x)=\tfrac\pi4\sign x$. Тогда $a_n=0$, а
+\[
+  b_n=\frac1\pi\int_{-\pi}^{\pi}\frac\pi4\sign x\,\sin nx\dx
+   =\frac12\int_0^{\pi}\sin nx\dx\cdot\ldots=\frac{1-(-1)^n}{2n},
+\]
+т.е.\ $b_{2k}=0$, $b_{2k-1}=\dfrac{1}{2k-1}$. Получаем
+$\dfrac\pi4\sign x=\sum_{k=1}^\infty\dfrac{\sin(2k-1)x}{2k-1}$. В точке $x=\tfrac\pi2$ функция
+непрерывна и равна $\tfrac\pi4$, а $\sin(2k-1)\tfrac\pi2=(-1)^{k+1}$, откуда
+\[
+  \frac\pi4=1-\frac13+\frac15-\frac17+\dots \qquad\text{(ряд Лейбница).}
+\]
+\end{example}
+
+\section{Комплексная форма ряда Фурье}
+
+\begin{definition}
+Подставив $\cos nx=\tfrac12(e^{inx}+e^{-inx})$, $\sin nx=\tfrac1{2i}(e^{inx}-e^{-inx})$, получаем
+\emph{комплексную форму}
+\[
+  f(x)\sim\sum_{n=-\infty}^{\infty}c_n e^{inx},\qquad
+  c_n=\frac1{2\pi}\int_{-\pi}^{\pi}f(x)e^{-inx}\dx .
+\]
+\end{definition}
+
+Связь с вещественными коэффициентами:
+\[
+  c_0=\frac{a_0}{2},\qquad c_n=\frac{a_n-ib_n}{2},\qquad c_{-n}=\frac{a_n+ib_n}{2}\quad(n\ge1).
+\]
+Система $\{e^{inx}\}_{n\in\Z}$ ортогональна в комплексном $L_2[-\pi,\pi]$ со скалярным
+произведением $(f,g)=\int_{-\pi}^{\pi}f\bar g\dx$ и $\norm{e^{inx}}^2=2\pi$. Равенство Парсеваля
+принимает вид
+\[
+  \frac1{2\pi}\int_{-\pi}^{\pi}\abs{f(x)}^2\dx=\sum_{n=-\infty}^{\infty}\abs{c_n}^2 .
+\]
+
+\begin{example}
+Для $f(x)=e^{ax}$ на $[-\pi,\pi]$:
+$\displaystyle c_n=\frac1{2\pi}\int_{-\pi}^{\pi}e^{(a-in)x}\dx
+=\frac{(-1)^n\operatorname{sh}(a\pi)}{\pi(a-in)}$, откуда восстанавливается вещественное
+разложение через $\operatorname{sh}$ и $\operatorname{ch}$.
+\end{example}

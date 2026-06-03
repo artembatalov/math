@@ -1,0 +1,167 @@
+% !TEX program = xelatex
+% Самодостаточный конспект. Компилировать XeLaTeX/LuaLaTeX (tectonic 07-znakoperemennye-ryady.tex).
+\documentclass[11pt,a4paper]{article}
+\newcommand{\coursename}{Математический анализ}
+\newcommand{\rightheader}{§7. Знакопеременные ряды}
+\newcommand{\doctitle}{Знакопеременные ряды}
+% ==== Общая преамбула конспектов (собирается в каждый .tex как самодостаточная) ====
+% Перед этим файлом должны быть определены: \documentclass и макросы
+%   \coursename  — название курса (левый колонтитул, подзаголовок),
+%   \rightheader — правый колонтитул (напр. «§2. Рациональные дроби»),
+%   \doctitle    — заголовок раздела на титуле.
+\usepackage{fontspec}
+\setmainfont{cmunrm.otf}[
+  BoldFont       = cmunbx.otf,
+  ItalicFont     = cmunti.otf,
+  BoldItalicFont = cmunbi.otf]
+\usepackage{polyglossia}
+\setdefaultlanguage{russian}
+\setotherlanguage{english}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{xcolor}
+\definecolor{accent}{HTML}{1F6FEB}
+\definecolor{rulecol}{HTML}{D0D7DE}
+\usepackage[colorlinks=true,linkcolor=accent,urlcolor=accent,citecolor=accent]{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+
+% ----- Колонтитулы -----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape \coursename}
+\fancyhead[R]{\small\itshape \rightheader}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{rulecol}\leaders\hrule height \headrulewidth\hfill}}
+
+% ----- Заголовки -----
+\titleformat{\section}{\large\bfseries\color{accent}}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\bfseries}{\thesubsection.}{0.5em}{}
+
+% ----- Теоремные окружения (стиль конспекта) -----
+\theoremstyle{definition}
+\newtheorem{definition}{Определение}[section]
+\newtheorem{example}[definition]{Пример}
+\newtheorem{remark}[definition]{Замечание}
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Теорема}
+\newtheorem{lemma}[definition]{Лемма}
+\newtheorem{corollary}[definition]{Следствие}
+\newtheorem{property}[definition]{Свойство}
+\newtheorem{criterion}[definition]{Критерий}
+\renewcommand{\proofname}{Доказательство}
+
+% ----- Операторы и сокращения -----
+\DeclareMathOperator{\tg}{tg}
+\DeclareMathOperator{\ctg}{ctg}
+\DeclareMathOperator{\arctg}{arctg}
+\DeclareMathOperator{\arcctg}{arcctg}
+\DeclareMathOperator{\sh}{sh}
+\DeclareMathOperator{\ch}{ch}
+\DeclareMathOperator{\Th}{th}
+\DeclareMathOperator{\cth}{cth}
+\DeclareMathOperator{\Const}{const}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\rang}{rang}
+\DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\Img}{Im}
+\DeclareMathOperator{\tr}{tr}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\dx}{\,dx}
+\newcommand{\dt}{\,dt}
+\newcommand{\du}{\,du}
+\newcommand{\eps}{\varepsilon}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\renewcommand{\le}{\leqslant}
+\renewcommand{\ge}{\geqslant}
+\newcommand{\scal}[2]{\left( #1,\,#2\right)}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+
+\begin{document}
+\begin{center}
+  {\LARGE\bfseries \doctitle}\\[4pt]
+  {\large\itshape \coursename}
+\end{center}
+\vspace{6pt}
+
+\section{Абсолютная и условная сходимость}
+
+Пусть теперь члены ряда $\displaystyle\sum_{k=1}^\infty a_k$ могут иметь любой знак.
+
+\begin{definition}
+Ряд $\sum a_k$ \emph{сходится абсолютно}, если сходится ряд из модулей $\sum\abs{a_k}$.
+\end{definition}
+
+\begin{theorem}[о связи сходимостей]
+Абсолютно сходящийся ряд сходится.
+\end{theorem}
+
+\begin{proof}
+Пусть $\sum\abs{a_k}$ сходится. По критерию Коши $\forall\eps>0\ \exists N\ \forall n>N\ \forall
+p$: $\abs{a_{n+1}}+\dots+\abs{a_{n+p}}<\eps$. Тогда по неравенству треугольника
+$\abs{a_{n+1}+\dots+a_{n+p}}\le\abs{a_{n+1}}+\dots+\abs{a_{n+p}}<\eps$, т.е. условие Коши
+выполнено и для $\sum a_k$.
+\end{proof}
+
+\begin{definition}
+Ряд \emph{сходится условно}, если он сходится, но не абсолютно.
+\end{definition}
+
+\section{Знакочередующиеся ряды. Признак Лейбница}
+
+\begin{definition}
+Ряд вида $\displaystyle\sum_{k=1}^\infty(-1)^{k+1}a_k=a_1-a_2+a_3-a_4+\dots$ с $a_k>0$ называют
+\emph{знакочередующимся}.
+\end{definition}
+
+\begin{theorem}[Лейбниц]
+Если $a_k>0$ монотонно убывают и $a_k\to0$, то знакочередующийся ряд
+$\sum(-1)^{k+1}a_k$ сходится. При этом его сумма $0<S<a_1$, а остаток
+$\displaystyle R_n=\sum_{k=n+1}^\infty(-1)^{k+1}a_k$ оценивается как $\abs{R_n}\le a_{n+1}$.
+\end{theorem}
+
+\begin{proof}
+Чётные частичные суммы $S_{2n}=(a_1-a_2)+(a_3-a_4)+\dots+(a_{2n-1}-a_{2n})$ не убывают (каждая
+скобка $\ge0$). С другой стороны, $S_{2n}=a_1-(a_2-a_3)-\dots-(a_{2n-2}-a_{2n-1})-a_{2n}<a_1$,
+т.е. $\{S_{2n}\}$ ограничена сверху; по теореме Вейерштрасса $S_{2n}\to S$. Наконец
+$S_{2n+1}=S_{2n}+a_{2n+1}\to S+0=S$, поэтому и $S_n\to S$. Оценка остатка следует из того, что
+$R_n$ — снова лейбницевский ряд с первым членом $a_{n+1}$.
+\end{proof}
+
+\begin{example}
+$\displaystyle\sum_{k=1}^\infty\frac{(-1)^{k+1}}{k}=1-\frac12+\frac13-\frac14+\dots=\ln2$ сходится
+по признаку Лейбница, но \emph{условно} (ряд из модулей — гармонический, расходится).
+\end{example}
+
+\section{Перестановки членов}
+
+\begin{theorem}[Риман]
+Если ряд сходится условно, то для любого $\ell\in\R$ (в том числе $\ell=\pm\infty$) можно так
+переставить его члены, что новый ряд будет сходиться к $\ell$.
+\end{theorem}
+
+\begin{theorem}[Дирихле]
+Если ряд сходится абсолютно, то любая его перестановка сходится к той же сумме.
+\end{theorem}
+
+\begin{remark}
+Иллюстрация теоремы Римана: переставив члены ряда
+$\sum\frac{(-1)^{k+1}}{k}=S$ как
+$\bigl(1-\tfrac12-\tfrac14\bigr)+\bigl(\tfrac13-\tfrac16-\tfrac18\bigr)+\dots$, получим ряд с
+суммой $\tfrac12 S$ — перестановка изменила сумму, что невозможно для абсолютно сходящихся рядов.
+\end{remark}
+
+\end{document}

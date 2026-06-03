@@ -1,0 +1,313 @@
+% !TEX program = xelatex
+% Самодостаточный конспект. Компилировать XeLaTeX/LuaLaTeX (tectonic 06-chislovye-ryady.tex).
+\documentclass[11pt,a4paper]{article}
+\newcommand{\coursename}{Математический анализ}
+\newcommand{\rightheader}{§6. Числовые ряды}
+\newcommand{\doctitle}{Числовые ряды}
+% ==== Общая преамбула конспектов (собирается в каждый .tex как самодостаточная) ====
+% Перед этим файлом должны быть определены: \documentclass и макросы
+%   \coursename  — название курса (левый колонтитул, подзаголовок),
+%   \rightheader — правый колонтитул (напр. «§2. Рациональные дроби»),
+%   \doctitle    — заголовок раздела на титуле.
+\usepackage{fontspec}
+\setmainfont{cmunrm.otf}[
+  BoldFont       = cmunbx.otf,
+  ItalicFont     = cmunti.otf,
+  BoldItalicFont = cmunbi.otf]
+\usepackage{polyglossia}
+\setdefaultlanguage{russian}
+\setotherlanguage{english}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{xcolor}
+\definecolor{accent}{HTML}{1F6FEB}
+\definecolor{rulecol}{HTML}{D0D7DE}
+\usepackage[colorlinks=true,linkcolor=accent,urlcolor=accent,citecolor=accent]{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+
+% ----- Колонтитулы -----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape \coursename}
+\fancyhead[R]{\small\itshape \rightheader}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{rulecol}\leaders\hrule height \headrulewidth\hfill}}
+
+% ----- Заголовки -----
+\titleformat{\section}{\large\bfseries\color{accent}}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\bfseries}{\thesubsection.}{0.5em}{}
+
+% ----- Теоремные окружения (стиль конспекта) -----
+\theoremstyle{definition}
+\newtheorem{definition}{Определение}[section]
+\newtheorem{example}[definition]{Пример}
+\newtheorem{remark}[definition]{Замечание}
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Теорема}
+\newtheorem{lemma}[definition]{Лемма}
+\newtheorem{corollary}[definition]{Следствие}
+\newtheorem{property}[definition]{Свойство}
+\newtheorem{criterion}[definition]{Критерий}
+\renewcommand{\proofname}{Доказательство}
+
+% ----- Операторы и сокращения -----
+\DeclareMathOperator{\tg}{tg}
+\DeclareMathOperator{\ctg}{ctg}
+\DeclareMathOperator{\arctg}{arctg}
+\DeclareMathOperator{\arcctg}{arcctg}
+\DeclareMathOperator{\sh}{sh}
+\DeclareMathOperator{\ch}{ch}
+\DeclareMathOperator{\Th}{th}
+\DeclareMathOperator{\cth}{cth}
+\DeclareMathOperator{\Const}{const}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\rang}{rang}
+\DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\Img}{Im}
+\DeclareMathOperator{\tr}{tr}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\dx}{\,dx}
+\newcommand{\dt}{\,dt}
+\newcommand{\du}{\,du}
+\newcommand{\eps}{\varepsilon}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\renewcommand{\le}{\leqslant}
+\renewcommand{\ge}{\geqslant}
+\newcommand{\scal}[2]{\left( #1,\,#2\right)}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+
+\begin{document}
+\begin{center}
+  {\LARGE\bfseries \doctitle}\\[4pt]
+  {\large\itshape \coursename}
+\end{center}
+\vspace{6pt}
+
+\section{Числовой ряд и его сумма}
+
+\begin{definition}
+Пусть $\{a_n\}_{n=1}^\infty$ — числовая последовательность. Выражение
+$\displaystyle\sum_{n=1}^{\infty}a_n=a_1+a_2+\dots+a_n+\dots$ называют \emph{числовым рядом}, $a_n$
+— его \emph{общим членом}. Число $\displaystyle S_n=\sum_{k=1}^{n}a_k$ называют $n$-й
+\emph{частичной суммой}.
+\end{definition}
+
+\begin{definition}
+Ряд \emph{сходится}, если существует конечный предел $\displaystyle S=\lim_{n\to\infty}S_n$,
+называемый \emph{суммой ряда}. Если предела нет (или он бесконечен), ряд \emph{расходится}.
+\end{definition}
+
+\begin{example}
+Ряд $\displaystyle\sum_{k=0}^{\infty}(-1)^k$ расходится: $S_0=1,\ S_1=0,\ S_2=1,\dots$ — предела
+нет. (Формальные манипуляции вида «$S=1-S\Rightarrow S=\tfrac12$» здесь незаконны: ряд не
+сходится.)
+\end{example}
+
+\section{Необходимое условие сходимости}
+
+\begin{theorem}
+Если ряд $\displaystyle\sum_{k=1}^{\infty}a_k$ сходится, то $\displaystyle\lim_{k\to\infty}a_k=0$.
+\end{theorem}
+
+\begin{proof}
+Пусть $S_n\to S$; тогда и $S_{n+1}\to S$. Значит $a_{n+1}=S_{n+1}-S_n\to S-S=0$.
+\end{proof}
+
+\begin{corollary}[достаточный признак расходимости]
+Если $\displaystyle\lim_{k\to\infty}a_k\ne0$ (или предела нет), то ряд расходится.
+\end{corollary}
+
+\section{Эталонные ряды}
+
+\subsection{Геометрический ряд}
+
+\begin{theorem}
+Ряд $\displaystyle\sum_{k=0}^{\infty}a\,q^k$ сходится при $\abs q<1$ (с суммой
+$\dfrac{a}{1-q}$) и расходится при $\abs q\ge1$.
+\end{theorem}
+
+\begin{proof}
+При $q\ne1$ имеем $S_n=a\dfrac{1-q^{n+1}}{1-q}$. Если $\abs q<1$, то $q^{n+1}\to0$ и
+$S_n\to\dfrac{a}{1-q}$; если $\abs q>1$, то $q^{n+1}\to\infty$. При $q=1$ ряд равен $a+a+\dots$, при
+$q=-1$ суммы колеблются — в обоих случаях расходимость.
+\end{proof}
+
+\subsection{Гармонический ряд}
+
+\begin{theorem}
+Гармонический ряд $\displaystyle\sum_{k=1}^{\infty}\frac1k$ расходится.
+\end{theorem}
+
+\begin{proof}
+Группируем члены:
+\[
+  1+\frac12+\Bigl(\frac13+\frac14\Bigr)+\Bigl(\frac15+\dots+\frac18\Bigr)+\dots
+   \ge 1+\frac12+\frac12+\frac12+\dots=+\infty,
+\]
+так как в группе из $2^{m}$ слагаемых каждое $\ge\dfrac1{2^{m+1}}$, и сумма группы $\ge\tfrac12$.
+\end{proof}
+
+\begin{remark}[скорость расходимости]
+$\displaystyle H_n=\sum_{k=1}^n\frac1k=\ln n+\gamma+\eps_n$, где $\eps_n=O(1/n)$, а
+$\gamma=\displaystyle\lim_{n\to\infty}(H_n-\ln n)\approx0{,}5772$ — \emph{постоянная
+Эйлера–Маскерони}. Существование предела доказывается монотонностью и ограниченностью
+$\gamma_n=H_n-\ln n$ (сравнение суммы с интегралом $\int_1^n\frac{dx}{x}=\ln n$).
+\end{remark}
+
+\subsection{Телескопический ряд}
+
+\begin{example}
+$\displaystyle\sum_{k=1}^\infty\frac{1}{k(k+1)}$: поскольку $\dfrac{1}{k(k+1)}=\dfrac1k-\dfrac1{k+1}$,
+\[
+  S_n=\Bigl(1-\tfrac12\Bigr)+\Bigl(\tfrac12-\tfrac13\Bigr)+\dots+\Bigl(\tfrac1n-\tfrac1{n+1}\Bigr)
+   =1-\frac1{n+1}\to1 .
+\]
+\end{example}
+
+\begin{remark}[знаменитый ряд Эйлера]
+$\displaystyle\sum_{k=1}^\infty\frac1{k^2}=\frac{\pi^2}{6}$ (получается из разложения
+$\dfrac{\sin x}{x}=\prod_{k\ge1}\bigl(1-\tfrac{x^2}{\pi^2k^2}\bigr)$ сравнением коэффициентов при
+$x^2$).
+\end{remark}
+
+\section{Критерий Коши}
+
+\begin{criterion}[Коши]
+Ряд $\displaystyle\sum_{k=1}^\infty a_k$ сходится тогда и только тогда, когда
+\[
+  \forall\eps>0\ \exists N\ \forall n>N\ \forall p\in\N:\quad
+  \abs{S_{n+p}-S_n}=\abs[\Big]{\sum_{k=n+1}^{n+p}a_k}<\eps .
+\]
+\end{criterion}
+
+\begin{proof}
+Это критерий Коши сходимости последовательности $\{S_n\}$: $\{S_n\}$ сходится $\iff$ фундаментальна,
+а $S_{n+p}-S_n=a_{n+1}+\dots+a_{n+p}$.
+\end{proof}
+
+\begin{example}
+Расходимость $\sum1/k$ повторно: при $p=n$
+$\displaystyle\abs{S_{2n}-S_n}=\frac1{n+1}+\dots+\frac1{2n}\ge\frac1{2n}\cdot n=\frac12$, так что
+условие Коши не выполнено.
+\end{example}
+
+\section{Свойства сходящихся рядов}
+
+\begin{property}[линейность]
+Если $\sum a_k=A$ и $\sum b_k=B$ сходятся, то сходятся $\sum(a_k+b_k)=A+B$ и
+$\sum\lambda a_k=\lambda A$ ($\lambda\in\R$).
+\end{property}
+
+\begin{property}
+Отбрасывание или добавление конечного числа членов не влияет на сходимость (меняет лишь сумму).
+\end{property}
+
+\begin{proof}
+Если отбросить первые $K$ членов, новая частичная сумма $\sigma_n$ связана со старой соотношением
+$S_n=\sigma_n+C$, где $C$ — сумма отброшенных членов. Постоянное слагаемое не влияет на наличие
+предела.
+\end{proof}
+
+\section{Ряды с неотрицательными членами}
+
+Для $a_k\ge0$ частичные суммы монотонно не убывают, поэтому ряд сходится тогда и только тогда,
+когда $\{S_n\}$ ограничена сверху.
+
+\begin{theorem}[признак сравнения]
+Пусть $0\le a_k\le b_k$ при $k\ge K_0$. Тогда:
+\begin{itemize}[leftmargin=*]
+  \item из сходимости $\sum b_k$ следует сходимость $\sum a_k$;
+  \item из расходимости $\sum a_k$ следует расходимость $\sum b_k$.
+\end{itemize}
+\end{theorem}
+
+\begin{proof}
+Частичные суммы $A_n\le B_n+C$, где $C$ учитывает первые $K_0$ членов. Если $\sum b_k$ сходится,
+$B_n$ ограничена, значит и $A_n$ ограничена — ряд сходится. Второе утверждение — контрапозиция.
+\end{proof}
+
+\begin{theorem}[предельный признак сравнения]
+Если $a_k,b_k>0$ и $\displaystyle\lim_{k\to\infty}\frac{a_k}{b_k}=K\in(0,+\infty)$, то ряды
+$\sum a_k$ и $\sum b_k$ сходятся или расходятся одновременно.
+\end{theorem}
+
+\begin{proof}
+По $\eps$ найдём $N$: при $k>N$ верно $b_k(K-\eps)<a_k<b_k(K+\eps)$. Применяя признак сравнения к
+обоим неравенствам, получаем эквивалентность поведения рядов.
+\end{proof}
+
+\begin{theorem}[признак Даламбера]
+Пусть $a_k>0$ и $\displaystyle\lim_{k\to\infty}\frac{a_{k+1}}{a_k}=q$. Тогда при $q<1$ ряд
+сходится, при $q>1$ расходится; при $q=1$ признак ответа не даёт.
+\end{theorem}
+
+\begin{proof}
+$q<1$: возьмём $s$ с $q<s<1$; найдётся $N$, что при $k>N$ $\dfrac{a_{k+1}}{a_k}<s$, тогда
+$a_{N+m}<s^m a_N$, и $\sum a_k$ мажорируется сходящейся геометрической прогрессией. $q>1$: при
+$k>N$ члены возрастают, $a_k\not\to0$, нарушено необходимое условие.
+\end{proof}
+
+\begin{example}
+$\displaystyle\sum\frac{2^k}{k!}$: $\dfrac{a_{k+1}}{a_k}=\dfrac{2}{k+1}\to0<1$ — сходится.
+$\displaystyle\sum\frac{k^k}{k!}$: $\dfrac{a_{k+1}}{a_k}=\bigl(1+\tfrac1k\bigr)^k\to e>1$ —
+расходится. Для $\sum\frac1{k^2}$ отношение $\to1$ — признак бессилен.
+\end{example}
+
+\begin{theorem}[радикальный признак Коши]
+Пусть $a_k\ge0$ и $\displaystyle\lim_{k\to\infty}\sqrt[k]{a_k}=q$. Тогда при $q<1$ ряд сходится,
+при $q>1$ расходится; при $q=1$ ответа нет.
+\end{theorem}
+
+\begin{proof}
+$q<1$: при $q<s<1$ найдётся $N$, что $\sqrt[k]{a_k}<s$, т.е. $a_k<s^k$ — мажорирование
+геометрической прогрессией. $q>1$: $a_k>1$ бесконечно часто, $a_k\not\to0$.
+\end{proof}
+
+\begin{example}
+$\displaystyle\sum\Bigl(\frac{k}{2k+1}\Bigr)^k$: $\sqrt[k]{a_k}=\dfrac{k}{2k+1}\to\dfrac12<1$ —
+сходится. (Радикальный признак сильнее Даламбера: работает и для рядов с колеблющимся
+отношением, например $\sum\bigl(\tfrac{1+(-1)^k}{3}\bigr)^k$.)
+\end{example}
+
+\begin{theorem}[интегральный признак Коши]
+Пусть $f(x)$ положительна, непрерывна и монотонно убывает при $x\ge1$, и $a_k=f(k)$. Тогда ряд
+$\displaystyle\sum_{k=1}^\infty f(k)$ и интеграл $\displaystyle\int_1^{+\infty}f(x)\dx$ сходятся
+или расходятся одновременно.
+\end{theorem}
+
+\begin{proof}
+В силу монотонности на $[k,k+1]$: $f(k+1)\le\int_k^{k+1}f\le f(k)$. Суммируя,
+\[
+  S_{n+1}-f(1)\le\int_1^{n+1}f(x)\dx\le S_n ,
+\]
+откуда $f(n+1)+\int_1^{n+1}f\le S_{n+1}\le f(1)+\int_1^{n+1}f$. Частичные суммы и интеграл
+ограничены или неограничены одновременно.
+\end{proof}
+
+\subsection{Обобщённый гармонический ряд (ряд Дирихле)}
+
+\begin{theorem}
+Ряд $\displaystyle\sum_{k=1}^\infty\frac1{k^p}$ сходится тогда и только тогда, когда $p>1$.
+\end{theorem}
+
+\begin{proof}
+Применим интегральный признак к $f(x)=x^{-p}$: ряд ведёт себя как
+$\int_1^{+\infty}\dfrac{dx}{x^p}$, который сходится при $p>1$ и расходится при $p\le1$ (эталонный
+интеграл первого рода).
+\end{proof}
+
+\end{document}

@@ -1,0 +1,216 @@
+% !TEX program = xelatex
+% Самодостаточный конспект. Компилировать XeLaTeX/LuaLaTeX (tectonic 12-analiticheskie-funkcii.tex).
+\documentclass[11pt,a4paper]{article}
+\newcommand{\coursename}{Математический анализ}
+\newcommand{\rightheader}{§12. Аналитические функции}
+\newcommand{\doctitle}{Аналитические функции}
+% ==== Общая преамбула конспектов (собирается в каждый .tex как самодостаточная) ====
+% Перед этим файлом должны быть определены: \documentclass и макросы
+%   \coursename  — название курса (левый колонтитул, подзаголовок),
+%   \rightheader — правый колонтитул (напр. «§2. Рациональные дроби»),
+%   \doctitle    — заголовок раздела на титуле.
+\usepackage{fontspec}
+\setmainfont{cmunrm.otf}[
+  BoldFont       = cmunbx.otf,
+  ItalicFont     = cmunti.otf,
+  BoldItalicFont = cmunbi.otf]
+\usepackage{polyglossia}
+\setdefaultlanguage{russian}
+\setotherlanguage{english}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{xcolor}
+\definecolor{accent}{HTML}{1F6FEB}
+\definecolor{rulecol}{HTML}{D0D7DE}
+\usepackage[colorlinks=true,linkcolor=accent,urlcolor=accent,citecolor=accent]{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+
+% ----- Колонтитулы -----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape \coursename}
+\fancyhead[R]{\small\itshape \rightheader}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{rulecol}\leaders\hrule height \headrulewidth\hfill}}
+
+% ----- Заголовки -----
+\titleformat{\section}{\large\bfseries\color{accent}}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\bfseries}{\thesubsection.}{0.5em}{}
+
+% ----- Теоремные окружения (стиль конспекта) -----
+\theoremstyle{definition}
+\newtheorem{definition}{Определение}[section]
+\newtheorem{example}[definition]{Пример}
+\newtheorem{remark}[definition]{Замечание}
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Теорема}
+\newtheorem{lemma}[definition]{Лемма}
+\newtheorem{corollary}[definition]{Следствие}
+\newtheorem{property}[definition]{Свойство}
+\newtheorem{criterion}[definition]{Критерий}
+\renewcommand{\proofname}{Доказательство}
+
+% ----- Операторы и сокращения -----
+\DeclareMathOperator{\tg}{tg}
+\DeclareMathOperator{\ctg}{ctg}
+\DeclareMathOperator{\arctg}{arctg}
+\DeclareMathOperator{\arcctg}{arcctg}
+\DeclareMathOperator{\sh}{sh}
+\DeclareMathOperator{\ch}{ch}
+\DeclareMathOperator{\Th}{th}
+\DeclareMathOperator{\cth}{cth}
+\DeclareMathOperator{\Const}{const}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\rang}{rang}
+\DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\Img}{Im}
+\DeclareMathOperator{\tr}{tr}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\dx}{\,dx}
+\newcommand{\dt}{\,dt}
+\newcommand{\du}{\,du}
+\newcommand{\eps}{\varepsilon}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\renewcommand{\le}{\leqslant}
+\renewcommand{\ge}{\geqslant}
+\newcommand{\scal}[2]{\left( #1,\,#2\right)}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+
+\begin{document}
+\begin{center}
+  {\LARGE\bfseries \doctitle}\\[4pt]
+  {\large\itshape \coursename}
+\end{center}
+\vspace{6pt}
+
+\section{Вещественные аналитические функции}
+
+\begin{definition}
+Функция $f\colon I\to\R$ ($I$ — интервал) называется \emph{вещественно аналитической} в точке
+$x_0\in I$, если существует окрестность $(x_0-R,x_0+R)$, на которой $f$ представляется сходящимся
+степенным рядом
+\[
+  f(x)=\sum_{n=0}^\infty a_n(x-x_0)^n .
+\]
+$f$ аналитична на $I$, если она аналитична в каждой его точке. Класс таких функций обозначают
+$C^{\omega}$.
+\end{definition}
+
+\begin{example}
+Многочлен $P_n(x)=\sum_{k=0}^n a_k(x-x_0)^k$; функция $\dfrac1{1-x}=\sum_{n\ge0}x^n$ аналитична в
+нуле ($\abs x<1$); $e^x,\ \sin x,\ \cos x$ аналитичны при всех $x_0\in\R$.
+\end{example}
+
+\section{Дифференцирование. Коэффициенты Тейлора}
+
+\begin{theorem}
+Если $f$ аналитична в $x_0$ и $f(x)=\sum a_n(x-x_0)^n$ с радиусом сходимости $R$, то на
+$(x_0-R,x_0+R)$:
+\begin{enumerate}[label=\arabic*),leftmargin=*]
+  \item $f$ бесконечно дифференцируема ($f\in C^\infty$);
+  \item $\displaystyle f^{(k)}(x)=\sum_{n=k}^\infty a_n\,n(n-1)\cdots(n-k+1)(x-x_0)^{n-k}$;
+  \item ряд для $f^{(k)}$ имеет тот же радиус сходимости.
+\end{enumerate}
+\end{theorem}
+
+\begin{theorem}[коэффициенты Тейлора]
+Коэффициенты аналитической функции однозначно определяются её производными:
+\[
+  a_k=\frac{f^{(k)}(x_0)}{k!},\qquad\text{поэтому}\qquad
+  f(x)=\sum_{k=0}^\infty\frac{f^{(k)}(x_0)}{k!}(x-x_0)^k .
+\]
+\end{theorem}
+
+\begin{proof}
+Подставим $x=x_0$ в формулу для $f^{(k)}$ из предыдущей теоремы: все слагаемые с $n>k$ содержат
+$(x-x_0)^{n-k}$ и обращаются в нуль, остаётся член с $n=k$:
+$f^{(k)}(x_0)=a_k\cdot k!$, откуда $a_k=f^{(k)}(x_0)/k!$.
+\end{proof}
+
+\begin{definition}
+Для $f\in C^\infty$ ряд $\displaystyle\sum_{k=0}^\infty\frac{f^{(k)}(x_0)}{k!}(x-x_0)^k$ называют
+\emph{рядом Тейлора} функции $f$ с центром $x_0$ (независимо от того, сходится ли он к $f$).
+\end{definition}
+
+\section{Критерий аналитичности}
+
+Запишем формулу Тейлора с остатком $R_n(x)=f(x)-\sum_{k=0}^n\frac{f^{(k)}(x_0)}{k!}(x-x_0)^k$.
+Функция аналитична в $x_0$ тогда и только тогда, когда $R_n(x)\to0$ в окрестности $x_0$.
+
+\begin{theorem}[достаточное условие]
+Пусть $f\in C^\infty(x_0-\rho,x_0+\rho)$ и существуют $C>0$, $R>0$ такие, что для всех $n$ и всех
+$x$ из окрестности
+\[
+  \abs{f^{(n)}(x)}\le C\,\frac{n!}{R^n}.
+\]
+Тогда $f$ аналитична на $(x_0-R,x_0+R)$.
+\end{theorem}
+
+\begin{proof}
+Остаток в форме Лагранжа: при некотором $\xi$ между $x_0$ и $x$
+\[
+  \abs{R_n(x)}=\abs[\Big]{\frac{f^{(n+1)}(\xi)}{(n+1)!}(x-x_0)^{n+1}}
+   \le C\frac{(n+1)!}{R^{n+1}}\cdot\frac{\abs{x-x_0}^{n+1}}{(n+1)!}
+   =C\abs[\Big]{\frac{x-x_0}{R}}^{n+1}.
+\]
+Если $\abs{x-x_0}<R$, то $\abs{(x-x_0)/R}<1$ и $R_n(x)\to0$, т.е. ряд Тейлора сходится к $f$.
+\end{proof}
+
+\begin{remark}
+Достаточно и более простой оценки $\abs{f^{(n)}(x)}\le C\,M^{n}$: тогда
+$\abs{R_n}\le C\,M^{n+1}\abs{x-x_0}^{n+1}/(n+1)!\to0$ при любом $x$ (факториал перебивает
+степень). Так доказывается аналитичность $e^x$, $\sin x$, $\cos x$ на всей оси.
+\end{remark}
+
+\section{Гладкость без аналитичности: функция Коши}
+
+\begin{example}
+\[
+  f(x)=\begin{cases}e^{-1/x^2},& x\ne0,\\ 0,& x=0,\end{cases}
+\]
+принадлежит $C^\infty(\R)$, но \emph{не} аналитична в нуле. Все производные в нуле равны нулю:
+$f^{(k)}(0)=0$ (каждая производная имеет вид $P(1/x)e^{-1/x^2}$, а $e^{-1/x^2}\to0$ быстрее любой
+степени). Поэтому ряд Тейлора в нуле тождественно равен $0$ и не совпадает с $f$ ни в одной
+проколотой окрестности. Это показывает, что $C^\omega\subsetneq C^\infty$.
+\end{example}
+
+\section{Теорема единственности}
+
+\begin{theorem}[принцип изолированных нулей / единственности]
+Пусть $f,g$ аналитичны на интервале $I$ и множество $E=\{x\in I: f(x)=g(x)\}$ имеет хотя бы одну
+предельную точку в $I$. Тогда $f\equiv g$ на всём $I$.
+\end{theorem}
+
+\begin{proof}
+Положим $h=f-g$ (аналитична); покажем $h\equiv0$. Пусть $x_0\in I$ — предельная точка $E$, т.е.
+$h(x_0)=0$ и $x_0$ — предел нулей $h$. Если $h\not\equiv0$ около $x_0$, то
+$h(x)=\sum_{n\ge k}a_n(x-x_0)^n=(x-x_0)^k\varphi(x)$, где $a_k\ne0$ — первый ненулевой
+коэффициент и $\varphi(x_0)=a_k\ne0$. По непрерывности $\varphi\ne0$ в некоторой окрестности
+$x_0$, значит $h(x)\ne0$ при $0<\abs{x-x_0}<\delta$ — у $x_0$ нет других нулей, противоречие с
+тем, что $x_0$ предельная для $E$. Следовательно, все $a_n=0$, $h\equiv0$ в окрестности $x_0$.
+Множество точек, где $h\equiv0$ вместе с окрестностью, одновременно открыто и замкнуто в $I$,
+поэтому совпадает со всем $I$.
+\end{proof}
+
+\begin{remark}[аналитическое продолжение]
+Из теоремы единственности следует: аналитическая функция полностью определяется своими значениями
+на любом множестве с предельной точкой. Это даёт идею \emph{аналитического продолжения} — функцию,
+заданную рядом в одной области, можно однозначно «продолжить» в большую область, и результат не
+зависит от пути продолжения.
+\end{remark}
+
+\end{document}

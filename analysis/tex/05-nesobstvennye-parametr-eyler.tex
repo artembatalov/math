@@ -1,0 +1,370 @@
+% !TEX program = xelatex
+% Самодостаточный конспект. Компилировать XeLaTeX/LuaLaTeX (tectonic 05-nesobstvennye-parametr-eyler.tex).
+\documentclass[11pt,a4paper]{article}
+\newcommand{\coursename}{Математический анализ}
+\newcommand{\rightheader}{§5. Несобственные интегралы. Эйлеровы интегралы}
+\newcommand{\doctitle}{Несобственные интегралы. Интегралы с параметром. Эйлеровы интегралы}
+% ==== Общая преамбула конспектов (собирается в каждый .tex как самодостаточная) ====
+% Перед этим файлом должны быть определены: \documentclass и макросы
+%   \coursename  — название курса (левый колонтитул, подзаголовок),
+%   \rightheader — правый колонтитул (напр. «§2. Рациональные дроби»),
+%   \doctitle    — заголовок раздела на титуле.
+\usepackage{fontspec}
+\setmainfont{cmunrm.otf}[
+  BoldFont       = cmunbx.otf,
+  ItalicFont     = cmunti.otf,
+  BoldItalicFont = cmunbi.otf]
+\usepackage{polyglossia}
+\setdefaultlanguage{russian}
+\setotherlanguage{english}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{xcolor}
+\definecolor{accent}{HTML}{1F6FEB}
+\definecolor{rulecol}{HTML}{D0D7DE}
+\usepackage[colorlinks=true,linkcolor=accent,urlcolor=accent,citecolor=accent]{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+
+% ----- Колонтитулы -----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape \coursename}
+\fancyhead[R]{\small\itshape \rightheader}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{rulecol}\leaders\hrule height \headrulewidth\hfill}}
+
+% ----- Заголовки -----
+\titleformat{\section}{\large\bfseries\color{accent}}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\bfseries}{\thesubsection.}{0.5em}{}
+
+% ----- Теоремные окружения (стиль конспекта) -----
+\theoremstyle{definition}
+\newtheorem{definition}{Определение}[section]
+\newtheorem{example}[definition]{Пример}
+\newtheorem{remark}[definition]{Замечание}
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Теорема}
+\newtheorem{lemma}[definition]{Лемма}
+\newtheorem{corollary}[definition]{Следствие}
+\newtheorem{property}[definition]{Свойство}
+\newtheorem{criterion}[definition]{Критерий}
+\renewcommand{\proofname}{Доказательство}
+
+% ----- Операторы и сокращения -----
+\DeclareMathOperator{\tg}{tg}
+\DeclareMathOperator{\ctg}{ctg}
+\DeclareMathOperator{\arctg}{arctg}
+\DeclareMathOperator{\arcctg}{arcctg}
+\DeclareMathOperator{\sh}{sh}
+\DeclareMathOperator{\ch}{ch}
+\DeclareMathOperator{\Th}{th}
+\DeclareMathOperator{\cth}{cth}
+\DeclareMathOperator{\Const}{const}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\rang}{rang}
+\DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\Img}{Im}
+\DeclareMathOperator{\tr}{tr}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\dx}{\,dx}
+\newcommand{\dt}{\,dt}
+\newcommand{\du}{\,du}
+\newcommand{\eps}{\varepsilon}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\renewcommand{\le}{\leqslant}
+\renewcommand{\ge}{\geqslant}
+\newcommand{\scal}[2]{\left( #1,\,#2\right)}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+
+\begin{document}
+\begin{center}
+  {\LARGE\bfseries \doctitle}\\[4pt]
+  {\large\itshape \coursename}
+\end{center}
+\vspace{6pt}
+
+\section{Несобственные интегралы первого рода}
+
+Определённый интеграл Римана предполагает конечный промежуток и ограниченную функцию. Снятие
+первого ограничения приводит к интегралам по бесконечному промежутку.
+
+\begin{definition}[несобственный интеграл I рода]
+Пусть $f$ непрерывна на $[a,+\infty)$ и интегрируема на каждом $[a,\xi]$. \emph{Несобственным
+интегралом} от $f$ по $[a,+\infty)$ называют предел
+\[
+  \int_a^{+\infty}f(x)\dx=\lim_{\xi\to+\infty}\int_a^{\xi}f(x)\dx .
+\]
+Интеграл \emph{сходится}, если этот предел конечен; иначе (предел бесконечен или не существует) —
+\emph{расходится}. Если интеграл сходится, $f$ называют интегрируемой в несобственном смысле.
+\end{definition}
+
+Аналогично определяют $\displaystyle\int_{-\infty}^{a}f=\lim_{\xi\to-\infty}\int_\xi^a f$, а
+интеграл по всей оси полагают сходящимся, когда сходятся оба слагаемых:
+\[
+  \int_{-\infty}^{+\infty}f=\int_{-\infty}^{a}f+\int_a^{+\infty}f .
+\]
+
+\begin{example}[эталонный интеграл]
+\[
+  \int_1^{+\infty}\frac{dx}{x^\alpha}=\lim_{\xi\to+\infty}\frac{\xi^{1-\alpha}-1}{1-\alpha}
+   \ (\alpha\ne1),\qquad
+  \int_1^{+\infty}\frac{dx}{x}=\lim_{\xi\to+\infty}\ln\xi=+\infty .
+\]
+Отсюда $\displaystyle\int_1^{+\infty}\frac{dx}{x^\alpha}$ \textbf{сходится при $\alpha>1$ и
+расходится при $\alpha\le1$}.
+\end{example}
+
+\section{Несобственные интегралы второго рода}
+
+Снятие второго ограничения (ограниченности) даёт интегралы от неограниченных функций.
+
+\begin{definition}[несобственный интеграл II рода]
+Пусть $f$ непрерывна на $[a,b)$ и неограниченна в окрестности $b$ (особая точка). Полагают
+\[
+  \int_a^{b}f(x)\dx=\lim_{\eps\to0+}\int_a^{b-\eps}f(x)\dx .
+\]
+При особенности в точке $a$ — симметрично; при внутренней особой точке $c$ интеграл разбивают на
+$\int_a^c+\int_c^b$ и требуют сходимости обоих.
+\end{definition}
+
+\begin{example}[эталонный интеграл]
+\[
+  \int_0^{1}\frac{dx}{x^\alpha}=\lim_{\eps\to0+}\frac{1-\eps^{1-\alpha}}{1-\alpha}\ (\alpha\ne1),
+  \qquad \int_0^{1}\frac{dx}{x}=\lim_{\eps\to0+}(-\ln\eps)=+\infty .
+\]
+Значит, $\displaystyle\int_0^{1}\frac{dx}{x^\alpha}$ \textbf{сходится при $\alpha<1$ и расходится
+при $\alpha\ge1$} — условие, противоположное случаю I рода.
+\end{example}
+
+\section{Свойства несобственных интегралов}
+
+Везде далее $f$ определена на $[a,b)$, $b$ конечно или $b=+\infty$, и $f\in\mathcal R[a,\xi]$ при
+любом $\xi<b$.
+
+\begin{property}[линейность]
+Если сходятся $\int_a^b f$ и $\int_a^b g$, то при любых $\lambda,\mu\in\R$ сходится и
+$\displaystyle\int_a^b(\lambda f+\mu g)=\lambda\!\int_a^b f+\mu\!\int_a^b g$.
+\end{property}
+
+\begin{property}[Ньютон–Лейбниц]
+Если $f$ непрерывна на $[a,b)$ и $F$ — её первообразная, то
+$\displaystyle\int_a^b f=F(b-0)-F(a)$, где $F(b-0)=\lim_{\xi\to b}F(\xi)$ (когда предел конечен).
+\end{property}
+
+\begin{property}[интегрирование по частям]
+Если $u,v$ имеют непрерывные производные на $[a,b)$ и существует конечный предел
+$\lim_{\xi\to b}u(\xi)v(\xi)=u(b-0)v(b-0)$, то из сходимости одного из интегралов
+$\int_a^b u\,dv$, $\int_a^b v\,du$ следует сходимость другого и
+\[
+  \int_a^b u\,dv=uv\Big|_a^{b-0}-\int_a^b v\,du .
+\]
+\end{property}
+
+\begin{property}[замена переменной]
+Если $f$ непрерывна на $[a,b)$, а $x=\varphi(t)$ строго возрастает, непрерывно дифференцируема и
+$\varphi(\alpha)=a$, $\varphi(\beta-0)=b$, то
+$\displaystyle\int_a^b f(x)\dx=\int_\alpha^\beta f(\varphi(t))\varphi'(t)\dt$ (при условии, что
+хотя бы один из интегралов сходится).
+\end{property}
+
+\section{Признаки сходимости неотрицательных функций}
+
+\begin{theorem}[критерий ограниченности]
+Пусть $f\ge0$ на $[a,b)$. Несобственный интеграл $\int_a^b f$ сходится тогда и только тогда, когда
+функция $\Phi(\xi)=\int_a^\xi f$ ограничена сверху:
+$\exists C\ \forall\xi\in[a,b):\ \int_a^\xi f\le C$.
+\end{theorem}
+
+\begin{proof}
+При $f\ge0$ функция $\Phi(\xi)$ не убывает. Монотонная функция имеет конечный предел при
+$\xi\to b$ тогда и только тогда, когда она ограничена сверху (теорема о пределе монотонной
+функции); этот предел и есть значение интеграла.
+\end{proof}
+
+\begin{theorem}[признак сравнения]
+Пусть $f,g$ непрерывны на $[a,b)$ и $0\le f(x)\le g(x)$. Тогда:
+\begin{itemize}[leftmargin=*]
+  \item из сходимости $\int_a^b g$ следует сходимость $\int_a^b f$;
+  \item из расходимости $\int_a^b f$ следует расходимость $\int_a^b g$.
+\end{itemize}
+\end{theorem}
+
+\begin{proof}
+Из $f\le g$ интегрированием: $\int_a^\xi f\le\int_a^\xi g$. Если $\int_a^b g$ сходится, то правая
+часть ограничена сверху своим пределом, значит и $\int_a^\xi f$ ограничена — по критерию
+ограниченности $\int_a^b f$ сходится. Вторая часть — контрапозиция первой.
+\end{proof}
+
+\begin{corollary}[предельный признак]
+Если $f,g>0$ и $\displaystyle\lim_{x\to b}\frac{f(x)}{g(x)}=K$, $0<K<+\infty$, то интегралы
+$\int_a^b f$ и $\int_a^b g$ сходятся или расходятся одновременно. Сравнение обычно ведут с
+эталоном $1/x^\alpha$.
+\end{corollary}
+
+\begin{remark}[абсолютная сходимость]
+Интеграл называют \emph{абсолютно сходящимся}, если сходится $\int_a^b\abs f$; абсолютная
+сходимость влечёт сходимость. Сходимость, не являющаяся абсолютной, называется \emph{условной}
+(пример — $\int_1^{+\infty}\frac{\sin x}{x}\dx$).
+\end{remark}
+
+\section{Интегралы, зависящие от параметра}
+
+\begin{definition}
+Пусть $f(x,y)$ определена на $[a,b]\times[c,d]$. Функцию
+$\displaystyle I(y)=\int_a^b f(x,y)\dx$ называют интегралом, зависящим от параметра $y$.
+\end{definition}
+
+\begin{theorem}[непрерывность]
+Если $f$ непрерывна на $[a,b]\times[c,d]$, то $I(y)$ непрерывна на $[c,d]$; в частности
+\[
+  \lim_{y\to y_0}\int_a^b f(x,y)\dx=\int_a^b\lim_{y\to y_0}f(x,y)\dx .
+\]
+\end{theorem}
+
+\begin{theorem}[правило Лейбница]
+Если $f$ и $f'_y$ непрерывны на $[a,b]\times[c,d]$, то $I(y)$ дифференцируема и
+\[
+  I'(y)=\frac{d}{dy}\int_a^b f(x,y)\dx=\int_a^b f'_y(x,y)\dx .
+\]
+\end{theorem}
+
+\begin{theorem}[интегрирование по параметру, Фубини]
+Если $f$ непрерывна на $[a,b]\times[c,d]$, то
+\[
+  \int_c^d\!\Bigl(\int_a^b f(x,y)\dx\Bigr)dy=\int_a^b\!\Bigl(\int_c^d f(x,y)\,dy\Bigr)\dx .
+\]
+\end{theorem}
+
+\begin{example}[интеграл Дирихле]
+Покажем $\displaystyle\int_0^{+\infty}\frac{\sin x}{x}\dx=\frac\pi2$. Введём
+$\displaystyle I(y)=\int_0^{+\infty}e^{-xy}\frac{\sin x}{x}\dx$, $y\ge0$. Дифференцируя по
+параметру (и дважды интегрируя по частям),
+\[
+  I'(y)=-\int_0^{+\infty}e^{-xy}\sin x\dx=-\frac{1}{1+y^2}.
+\]
+Значит $I(y)=-\arctg y+C$. Так как $I(y)\to0$ при $y\to+\infty$ (множитель $e^{-xy}\to0$), имеем
+$0=-\frac\pi2+C$, $C=\frac\pi2$, и
+\[
+  \int_0^{+\infty}\frac{\sin x}{x}\dx=I(0)=\frac\pi2 .
+\]
+\end{example}
+
+\begin{example}[дифференцирование по параметру]
+$\displaystyle I(a)=\int_0^{\pi/2}\ln\bigl(a^2\cos^2x+b^2\sin^2x\bigr)\dx$, $a,b>0$. Тогда
+\[
+  I'(a)=\int_0^{\pi/2}\frac{2a\cos^2x}{a^2\cos^2x+b^2\sin^2x}\dx
+   \overset{u=\tg x}{=\!=\!=}2\int_0^{\infty}\frac{a\,du}{(a^2+b^2u^2)(1+u^2)}=\frac{\pi}{a+b}.
+\]
+Интегрируя, $I(a)=\pi\ln(a+b)+C$. В случае $a=b$ имеем
+$I(a)=\int_0^{\pi/2}\ln(a^2)\dx=\pi\ln a$, откуда $\pi\ln(2a)+C=\pi\ln a$ и $C=-\pi\ln2$. Итог:
+\[
+  I(a)=\pi\ln(a+b)-\pi\ln2=\pi\ln\frac{a+b}{2}.
+\]
+\end{example}
+
+\begin{example}[применение теоремы Фубини]
+$\displaystyle\int_0^1\frac{x^b-x^a}{\ln x}\dx$ ($b>a>0$). Так как
+$\dfrac{x^b-x^a}{\ln x}=\int_a^b x^y\,dy$, по теореме Фубини
+\[
+  \int_0^1\frac{x^b-x^a}{\ln x}\dx=\int_a^b\!\Bigl(\int_0^1 x^y\dx\Bigr)dy
+   =\int_a^b\frac{dy}{y+1}=\ln\frac{b+1}{a+1}.
+\]
+\end{example}
+
+\subsection{Правило Лейбница для переменных пределов}
+
+\begin{theorem}
+Если $I(y)=\displaystyle\int_{\alpha(y)}^{\beta(y)}f(x,y)\dx$, причём $f,f'_y$ непрерывны, а
+$\alpha,\beta$ дифференцируемы, то
+\[
+  I'(y)=f\bigl(\beta(y),y\bigr)\beta'(y)-f\bigl(\alpha(y),y\bigr)\alpha'(y)
+   +\int_{\alpha(y)}^{\beta(y)}f'_y(x,y)\dx .
+\]
+\end{theorem}
+
+\begin{example}
+$\displaystyle I(y)=\int_{y^2}^{y^3}\frac{e^{xy}}{x}\dx$, тогда
+$\displaystyle I'(y)=\frac{e^{y^4}}{y^3}\cdot3y^2-\frac{e^{y^3}}{y^2}\cdot2y
++\int_{y^2}^{y^3}e^{xy}\dx=2\frac{e^{y^4}}{y}-3\frac{e^{y^3}}{y}$.
+\end{example}
+
+\section{Интеграл Пуассона}
+
+\begin{theorem}
+$\displaystyle\int_0^{+\infty}e^{-x^2}\dx=\frac{\sqrt\pi}{2}$ (и потому
+$\int_{-\infty}^{+\infty}e^{-x^2}\dx=\sqrt\pi$).
+\end{theorem}
+
+\begin{proof}[Через параметр]
+Положим $\displaystyle F(y)=\Bigl(\int_0^y e^{-x^2}\dx\Bigr)^2$. Тогда
+\[
+  F'(y)=2e^{-y^2}\!\int_0^y e^{-x^2}\dx\overset{x=ty}{=}2\int_0^1 e^{-y^2(t^2+1)}y\,dt .
+\]
+Введём $G(y)=\int_0^1\dfrac{e^{-y^2(t^2+1)}}{-(t^2+1)}\,dt$; прямой подсчёт даёт $G'(y)=F'(y)$,
+значит $F(y)=G(y)+\Const$. При $y=0$: $F(0)=0$, $G(0)=-\int_0^1\frac{dt}{t^2+1}=-\frac\pi4$,
+поэтому $\Const=\frac\pi4$. При $y\to+\infty$ имеем $G(y)\to0$, и
+\[
+  \Bigl(\int_0^{+\infty}e^{-x^2}\dx\Bigr)^2=\lim_{y\to+\infty}F(y)=\frac\pi4
+  \ \Rightarrow\ \int_0^{+\infty}e^{-x^2}\dx=\frac{\sqrt\pi}{2}.
+\]
+\end{proof}
+
+\section{Эйлеровы интегралы}
+
+\subsection{Гамма-функция}
+
+\begin{definition}
+При $s>0$ полагают $\displaystyle\Gamma(s)=\int_0^{+\infty}x^{s-1}e^{-x}\dx$.
+\end{definition}
+
+Интеграл сходится: на $+\infty$ — за счёт множителя $e^{-x}$, в нуле — поскольку $x^{s-1}$
+интегрируема при $s>0$.
+
+\begin{property}\leavevmode
+\begin{enumerate}[label=\arabic*),leftmargin=*]
+  \item $\Gamma(s+1)=s\,\Gamma(s)$;
+  \item $\Gamma(1)=1$, откуда $\Gamma(n+1)=n!$ для $n\in\N_0$;
+  \item $\Gamma\!\left(\tfrac12\right)=\sqrt\pi$ (сведением к интегралу Пуассона);
+  \item формула дополнения Эйлера: $\Gamma(s)\Gamma(1-s)=\dfrac{\pi}{\sin(\pi s)}$, $0<s<1$.
+\end{enumerate}
+\end{property}
+
+\begin{proof}[Свойство 1]
+Интегрированием по частям ($u=x^s$, $dv=e^{-x}\dx$):
+\[
+  \Gamma(s+1)=\int_0^{+\infty}x^s e^{-x}\dx
+   =\underbrace{-x^s e^{-x}\Big|_0^{+\infty}}_{=0}+s\int_0^{+\infty}x^{s-1}e^{-x}\dx=s\,\Gamma(s).
+\]
+А $\Gamma(1)=\int_0^{+\infty}e^{-x}\dx=1$, поэтому $\Gamma(n+1)=n\,\Gamma(n)=\dots=n!$.
+\end{proof}
+
+\subsection{Бета-функция}
+
+\begin{definition}
+При $p,q>0$ полагают $\displaystyle B(p,q)=\int_0^1 x^{p-1}(1-x)^{q-1}\dx$.
+\end{definition}
+
+\begin{property}\leavevmode
+\begin{enumerate}[label=\arabic*),leftmargin=*]
+  \item симметрия: $B(p,q)=B(q,p)$;
+  \item тригонометрическая форма (подстановка $x=\sin^2\varphi$):
+        $\displaystyle B(p,q)=2\int_0^{\pi/2}\sin^{2p-1}\varphi\,\cos^{2q-1}\varphi\,d\varphi$;
+  \item связь с гамма-функцией: $\displaystyle B(p,q)=\frac{\Gamma(p)\,\Gamma(q)}{\Gamma(p+q)}$.
+\end{enumerate}
+\end{property}
+
+\end{document}

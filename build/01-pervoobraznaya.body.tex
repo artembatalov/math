@@ -1,0 +1,280 @@
+\section{Первообразная}
+
+\begin{definition}[первообразная]
+Функция $F(x)$ называется \emph{первообразной} для функции $f(x)$ на интервале $(a,b)$, если
+\[
+  \forall x\in(a,b):\qquad F'(x)=f(x).
+\]
+\end{definition}
+
+\begin{example}
+Для $f(x)=\cos x$ первообразными служат $F_1(x)=\sin x$, $\;F_2(x)=\sin x+42$ и т.д.
+\end{example}
+
+\begin{remark}\leavevmode
+\begin{enumerate}[label=\arabic*),leftmargin=*]
+  \item Первообразная $F(x)$ дифференцируема, а значит \emph{непрерывна} на $(a,b)$.
+  \item Первообразная задаётся именно на \emph{промежутке}: вне связного промежутка добавляемая
+        константа на разных кусках может быть разной.
+\end{enumerate}
+\end{remark}
+
+\begin{theorem}[об общем виде первообразных]
+Если $F(x)$ --- какая-либо первообразная для $f(x)$ на $(a,b)$, то множество всех первообразных
+для $f$ на этом интервале есть
+\[
+  \bigl\{\,F(x)+C \;:\; C\in\R\,\bigr\}.
+\]
+\end{theorem}
+
+\begin{proof}\leavevmode
+\begin{enumerate}[label=\arabic*),leftmargin=*]
+  \item Любая функция вида $F(x)+C$ — первообразная: $\bigl(F(x)+C\bigr)'=F'(x)=f(x)$.
+  \item Пусть $\Phi(x)$ — произвольная другая первообразная. Рассмотрим
+        $\psi(x)=\Phi(x)-F(x)$. Тогда
+        \[
+          \psi'(x)=\Phi'(x)-F'(x)=f(x)-f(x)\equiv 0 \quad\text{на }(a,b).
+        \]
+        По следствию из теоремы Лагранжа функция с нулевой производной на промежутке постоянна,
+        поэтому $\psi(x)\equiv C$, то есть $\Phi(x)=F(x)+C$. \qedhere
+\end{enumerate}
+\end{proof}
+
+\paragraph{Геометрическая интерпретация.}
+График любой первообразной получается из графика $F$ вертикальным сдвигом на константу $C$ ---
+получается \emph{однопараметрическое семейство} «параллельных» кривых, целиком заполняющее полосу
+$\{(x,y):x\in(a,b)\}$. Через каждую точку этой полосы проходит ровно одна кривая семейства;
+касательные ко всем кривым в точках с одной и той же абсциссой $x$ имеют одинаковый угловой
+коэффициент $f(x)$.
+
+\section{Неопределённый интеграл}
+
+\begin{definition}[неопределённый интеграл]
+\emph{Неопределённым интегралом} функции $f(x)$ на $(a,b)$ называется совокупность всех её
+первообразных. Обозначение:
+\[
+  \int f(x)\dx = F(x)+C,
+\]
+где $F$ — какая-либо первообразная, а $C$ пробегает $\R$.
+\end{definition}
+
+\subsection{Таблица основных интегралов}
+\begin{align*}
+&\textbf{Степенные и логарифм:} &
+   \int x^{n}\dx &=\frac{x^{n+1}}{n+1}+C\ (n\neq-1), &
+   \int\frac{dx}{x}&=\ln\abs{x}+C.\\[2pt]
+&\textbf{Показательные:} &
+   \int a^{x}\dx&=\frac{a^{x}}{\ln a}+C\ (a>0,\,a\neq1), &
+   \int e^{x}\dx&=e^{x}+C.\\[2pt]
+&\textbf{Тригонометрические:} &
+   \int\sin x\dx&=-\cos x+C, & \int\cos x\dx&=\sin x+C,\\
+&& \int\frac{dx}{\cos^2 x}&=\tg x+C, & \int\frac{dx}{\sin^2 x}&=-\ctg x+C.\\[2pt]
+&\textbf{Гиперболические:} &
+   \int\sh x\dx&=\ch x+C, & \int\ch x\dx&=\sh x+C.\\[2pt]
+&\textbf{«Обратные»:} &
+   \int\frac{dx}{a^2+x^2}&=\tfrac1a\arctg\tfrac xa+C, &
+   \int\frac{dx}{\sqrt{a^2-x^2}}&=\arcsin\tfrac xa+C.
+\end{align*}
+\begin{align*}
+  \int\frac{dx}{x^2-a^2}&=\frac1{2a}\ln\abs[\Big]{\frac{x-a}{x+a}}+C
+     &&\text{(«высокий» логарифм)},\\[4pt]
+  \int\frac{dx}{\sqrt{x^2\pm k}}&=\ln\abs[\big]{x+\sqrt{x^2\pm k}}+C
+     &&\text{(«длинный» логарифм)}.
+\end{align*}
+
+\subsection{Линейность неопределённого интеграла}
+\begin{property}[линейность]
+Пусть $f,g$ имеют первообразные на $(a,b)$ и $\alpha,\beta\in\R$. Тогда
+\[
+  \int\bigl(\alpha f(x)+\beta g(x)\bigr)\dx
+   =\alpha\int f(x)\dx+\beta\int g(x)\dx .
+\]
+\end{property}
+
+\begin{proof}
+Обозначим разность двух частей через
+\[
+  H(x)=\int\bigl(\alpha f+\beta g\bigr)\dx-\Bigl(\alpha\int f\dx+\beta\int g\dx\Bigr).
+\]
+Дифференцируя и пользуясь равенством $\bigl(\int\varphi\dx\bigr)'=\varphi$, получаем
+\[
+  H'(x)=\bigl(\alpha f+\beta g\bigr)-\bigl(\alpha f+\beta g\bigr)=0
+  \quad\text{на }(a,b).
+\]
+Значит $H(x)\equiv\Const$, то есть левая и правая части отличаются лишь на константу — а с
+точностью до константы неопределённый интеграл и определён. Следовательно, как семейства
+первообразных они совпадают.
+\end{proof}
+
+\section{Взаимосвязь дифференцирования и интегрирования}
+
+Операции дифференцирования и интегрирования взаимно обратны (с точностью до константы):
+\begin{align*}
+  \frac{d}{dx}\!\left(\int f(x)\dx\right) &= f(x), &
+  d\!\left(\int f(x)\dx\right) &= f(x)\dx, &
+  \int dF(x) &= F(x)+C.
+\end{align*}
+Первое равенство выражает, что интеграл «снимается» производной; третье — что интегрирование
+дифференциала восстанавливает функцию с точностью до константы.
+
+\section{Замена переменной}
+
+В основе метода лежит формула производной сложной функции:
+$\bigl[F(g(x))\bigr]'=F'(g(x))\,g'(x)$.
+
+\begin{theorem}[о замене переменной]
+Пусть $x=\varphi(t)$ определена и дифференцируема на интервале $T$, а её множество значений
+$\varphi(T)$ лежит в области, где функция $f$ имеет первообразную $F$. Тогда
+\[
+  \int f(x)\dx\,\Big|_{x=\varphi(t)} \;=\; \int f\bigl(\varphi(t)\bigr)\varphi'(t)\dt,
+  \qquad\text{то есть}\qquad
+  F\bigl(\varphi(t)\bigr)+C=\int f\bigl(\varphi(t)\bigr)\varphi'(t)\dt .
+\]
+\end{theorem}
+
+\begin{proof}
+Достаточно проверить, что $F(\varphi(t))$ — первообразная для подынтегральной функции правой
+части. Дифференцируя по $t$ по правилу дифференцирования сложной функции, получаем
+\[
+  \frac{d}{dt}\,F\bigl(\varphi(t)\bigr)=F'\bigl(\varphi(t)\bigr)\varphi'(t)
+   =f\bigl(\varphi(t)\bigr)\varphi'(t).
+\]
+Итак, $F(\varphi(t))$ — первообразная для $f(\varphi(t))\varphi'(t)$, откуда и следует доказываемая
+формула.
+\end{proof}
+
+\begin{example}
+$\displaystyle\int\cos(5x+4)\dx$. Полагаем $t=5x+4$, тогда $dt=5\dx$, $\dx=\tfrac15\dt$:
+\[
+  \int\cos(5x+4)\dx=\int\cos t\cdot\tfrac15\dt=\tfrac15\sin t+C=\tfrac15\sin(5x+4)+C.
+\]
+\end{example}
+
+\begin{example}
+$\displaystyle\int\frac{x\dx}{1+x^2}$. Заметим $x\dx=\tfrac12\,d(x^2+1)$:
+\[
+  \int\frac{x\dx}{1+x^2}=\frac12\int\frac{d(x^2+1)}{x^2+1}=\frac12\ln(x^2+1)+C.
+\]
+\end{example}
+
+\section{Интегрирование по частям}
+
+Исходим из формулы дифференциала произведения $d(uv)=u\,dv+v\,du$.
+
+\begin{theorem}[интегрирование по частям]
+Если $u(x)$ и $v(x)$ дифференцируемы на интервале, то
+\[
+  \int u\,dv = uv-\int v\,du,
+  \qquad\text{или}\qquad
+  \int u(x)v'(x)\dx=u(x)v(x)-\int u'(x)v(x)\dx.
+\]
+\end{theorem}
+
+\begin{proof}
+Проинтегрируем тождество $d(uv)=u\,dv+v\,du$:
+$\int d(uv)=\int u\,dv+\int v\,du$, то есть $uv=\int u\,dv+\int v\,du$, откуда $\int u\,dv=uv-\int v\,du$.
+\end{proof}
+
+\paragraph{Основные типы интегралов, берущихся по частям.}
+\begin{enumerate}[label=\textbf{(\alph*)},leftmargin=*]
+  \item $\displaystyle\int P(x)e^{ax}\dx,\ \int P(x)\sin bx\dx,\ \int P(x)\cos bx\dx$ — берём $u=P(x)$
+        (понижаем степень многочлена);
+  \item $\displaystyle\int P(x)\ln x\dx,\ \int P(x)\arctg x\dx,\ \int P(x)\arcsin x\dx$ — берём $u$
+        равным $\ln x$, $\arctg x$ и т.п. (избавляемся от «неудобной» функции);
+  \item $\displaystyle\int e^{ax}\sin bx\dx,\ \int e^{ax}\cos bx\dx$ — \emph{возвратные}: после двух
+        интегрирований по частям возникает исходный интеграл.
+\end{enumerate}
+
+\begin{example}
+$\displaystyle\int x\,e^{x}\dx$: берём $u=x$, $dv=e^x\dx$, тогда $du=\dx$, $v=e^x$:
+\[
+  \int x e^{x}\dx=xe^{x}-\int e^{x}\dx=xe^{x}-e^{x}+C.
+\]
+\end{example}
+
+\begin{example}
+$\displaystyle\int\ln x\dx$: $u=\ln x$, $dv=\dx$, $du=\tfrac{dx}{x}$, $v=x$:
+\[
+  \int\ln x\dx=x\ln x-\int x\cdot\tfrac1x\dx=x\ln x-x+C.
+\]
+\end{example}
+
+\begin{example}[возвратный интеграл]
+$\displaystyle I=\int e^{x}\cos x\dx$. Дважды интегрируем по частям:
+\[
+  I=e^{x}\sin x-\int e^{x}\sin x\dx
+   =e^{x}\sin x-\Bigl(-e^{x}\cos x+\int e^{x}\cos x\dx\Bigr)
+   =e^{x}(\sin x+\cos x)-I.
+\]
+Отсюда $2I=e^{x}(\sin x+\cos x)$, то есть $I=\tfrac12 e^{x}(\sin x+\cos x)+C$.
+\end{example}
+
+\section{Комплексный метод в вещественном анализе}
+
+Тот же интеграл удобно считать через комплексную экспоненту, опираясь на формулу Эйлера
+$e^{i\varphi}=\cos\varphi+i\sin\varphi$. Тогда
+\[
+  e^{ax}\cos bx=\Re\,e^{(a+ib)x},\qquad e^{ax}\sin bx=\Im\,e^{(a+ib)x}.
+\]
+Интеграл от комплексной экспоненты берётся элементарно:
+\[
+  \int e^{(a+ib)x}\dx=\frac{1}{a+ib}\,e^{(a+ib)x}+C
+   =\frac{a-ib}{a^2+b^2}\,e^{ax}\bigl(\cos bx+i\sin bx\bigr)+C.
+\]
+Выделяя вещественную и мнимую части, получаем сразу обе формулы:
+\begin{align*}
+  \int e^{ax}\cos bx\dx &= \Re\!\int e^{(a+ib)x}\dx
+     =\frac{e^{ax}\bigl(a\cos bx+b\sin bx\bigr)}{a^2+b^2}+C,\\[4pt]
+  \int e^{ax}\sin bx\dx &= \Im\!\int e^{(a+ib)x}\dx
+     =\frac{e^{ax}\bigl(a\sin bx-b\cos bx\bigr)}{a^2+b^2}+C.
+\end{align*}
+При $a=b=1$ отсюда снова $\int e^{x}\cos x\dx=\tfrac12 e^{x}(\cos x+\sin x)+C$ — согласуется с
+«возвратным» вычислением выше.
+
+\section{Дифференцирование интеграла по параметру}
+
+\begin{theorem}[правило Лейбница]
+Если $f(x,\alpha)$ и $f'_{\alpha}(x,\alpha)$ непрерывны на прямоугольнике
+$[a,b]\times[\alpha_1,\alpha_2]$, то функция $\Phi(\alpha)=\displaystyle\int_a^b f(x,\alpha)\dx$
+дифференцируема по $\alpha$ и
+\[
+  \Phi'(\alpha)=\frac{d}{d\alpha}\int_a^b f(x,\alpha)\dx=\int_a^b f'_{\alpha}(x,\alpha)\dx .
+\]
+\end{theorem}
+
+\noindent Для неопределённого интеграла это даёт удобный приём: продифференцировав известную формулу
+по параметру, получаем новую.
+
+\begin{example}[простейшее применение]
+Из $\displaystyle\int e^{\alpha x}\dx=\tfrac1\alpha e^{\alpha x}+C$ дифференцированием по $\alpha$:
+\[
+  \frac{d}{d\alpha}\!\int e^{\alpha x}\dx=\int x\,e^{\alpha x}\dx,
+  \qquad
+  \frac{d}{d\alpha}\Bigl(\tfrac1\alpha e^{\alpha x}\Bigr)=-\tfrac1{\alpha^2}e^{\alpha x}+\tfrac{x}{\alpha}e^{\alpha x},
+\]
+откуда $\displaystyle\int x\,e^{\alpha x}\dx=-\tfrac1{\alpha^2}e^{\alpha x}+\tfrac{x}{\alpha}e^{\alpha x}+C$.
+\end{example}
+
+\subsection{Интегралы вида $\displaystyle\int\frac{dx}{(x^2+a^2)^n}$}
+Отправная формула —
+\[
+  I_1(a)=\int\frac{dx}{x^2+a^2}=\frac1a\arctg\frac xa+C .
+\]
+Дифференцируем её по параметру $a$. Слева, поскольку
+$\dfrac{\partial}{\partial a}\dfrac{1}{x^2+a^2}=-\dfrac{2a}{(x^2+a^2)^2}$, получаем
+\[
+  \frac{d}{da}\,I_1(a)=-2a\int\frac{dx}{(x^2+a^2)^2}.
+\]
+Справа
+\[
+  \frac{d}{da}\!\left(\frac1a\arctg\frac xa\right)
+   =-\frac1{a^2}\arctg\frac xa+\frac1a\cdot\frac{1}{1+(x/a)^2}\cdot\Bigl(-\frac{x}{a^2}\Bigr)
+   =-\frac1{a^2}\arctg\frac xa-\frac{x}{a\,(x^2+a^2)} .
+\]
+Приравнивая и выражая искомый интеграл, получаем рекуррентный результат:
+\[
+  \boxed{\;\int\frac{dx}{(x^2+a^2)^2}
+   =\frac{1}{2a^3}\arctg\frac xa+\frac{x}{2a^2\,(x^2+a^2)}+C\;}
+\]
+Повторное дифференцирование по $a$ позволяет последовательно понижать степень и получать
+$\displaystyle\int\frac{dx}{(x^2+a^2)^n}$ при любом $n$.

@@ -1,0 +1,438 @@
+\section{Интегральные суммы и определение интеграла Римана}
+
+Пусть $f$ определена на $[a,b]$. \emph{Разбиением} $T$ отрезка называют набор точек
+\[
+  a=x_0<x_1<\dots<x_n=b,\qquad \Delta x_i=x_i-x_{i-1},
+\]
+а его \emph{мелкостью} — число $\lambda(T)=\max_{1\le i\le n}\Delta x_i$. Выбрав на каждом
+$[x_{i-1},x_i]$ точку $\xi_i$, составляют \emph{интегральную сумму Римана}
+\[
+  \sigma(f,T,\xi)=\sum_{i=1}^{n} f(\xi_i)\,\Delta x_i .
+\]
+
+\begin{definition}
+Число $I$ называется \emph{определённым интегралом Римана} функции $f$ по $[a,b]$, если
+\[
+  \forall\eps>0\ \exists\delta>0\ \forall T\ \bigl(\lambda(T)<\delta\bigr)\ \forall\xi:\quad
+  \abs{\sigma(f,T,\xi)-I}<\eps .
+\]
+Обозначение $\displaystyle I=\int_a^b f(x)\dx$. Функцию, для которой такой предел существует,
+называют \emph{интегрируемой по Риману}; пишут $f\in\mathcal R[a,b]$.
+\end{definition}
+
+\begin{theorem}[необходимое условие интегрируемости]
+Если $f\in\mathcal R[a,b]$, то $f$ ограничена на $[a,b]$.
+\end{theorem}
+
+\begin{proof}
+От противного: пусть $f$ не ограничена. Тогда при любом разбиении $T$ она не ограничена хотя бы
+на одном отрезке $[x_{k-1},x_k]$. Фиксируем точки $\xi_i$ при $i\ne k$, а $\xi_k$ выбираем так,
+чтобы $\abs{f(\xi_k)}\Delta x_k$ было сколь угодно большим. Тогда сумму $\sigma(f,T,\xi)$ можно
+сделать по модулю больше любого числа, не меняя $\lambda(T)$, что противоречит существованию
+конечного предела. Значит, $f$ ограничена.
+\end{proof}
+
+\begin{example}
+Постоянная $f\equiv c$ интегрируема: $\sigma=\sum c\,\Delta x_i=c(b-a)$ при любом $T$, так что
+$\int_a^b c\dx=c(b-a)$. Функция Дирихле $D(x)$ \emph{не} интегрируема: при рациональных $\xi_i$
+сумма равна $b-a$, при иррациональных — $0$, предела нет.
+\end{example}
+
+\section{Суммы Дарбу и критерий интегрируемости}
+
+Для ограниченной $f$ и разбиения $T$ положим
+\[
+  m_i=\inf_{[x_{i-1},x_i]}f,\qquad M_i=\sup_{[x_{i-1},x_i]}f,
+\]
+и образуем \emph{нижнюю} и \emph{верхнюю суммы Дарбу}
+\[
+  \underline s(T)=\sum_{i=1}^n m_i\,\Delta x_i,\qquad
+  \overline s(T)=\sum_{i=1}^n M_i\,\Delta x_i .
+\]
+
+\begin{property}\leavevmode
+\begin{enumerate}[label=\arabic*),leftmargin=*]
+  \item При любом выборе $\xi$: $\ \underline s(T)\le\sigma(f,T,\xi)\le\overline s(T)$; более того,
+        $\underline s(T)=\inf_\xi\sigma$, $\overline s(T)=\sup_\xi\sigma$.
+  \item При измельчении разбиения (добавлении точек) $\underline s$ не убывает, $\overline s$ не
+        возрастает.
+  \item Любая нижняя сумма не превосходит любой верхней: $\underline s(T_1)\le\overline s(T_2)$
+        для произвольных $T_1,T_2$.
+\end{enumerate}
+\end{property}
+
+\begin{proof}
+1) Из $m_i\le f(\xi_i)\le M_i$ домножением на $\Delta x_i$ и суммированием. Точность граней
+следует из определения $\inf,\sup$ по отрезку. 2) При добавлении точки внутри $[x_{i-1},x_i]$ грань
+$\inf$ на каждой части не меньше $m_i$, поэтому $\underline s$ не убывает; для $\overline s$
+аналогично. 3) Возьмём общее измельчение $T=T_1\cup T_2$. Тогда
+$\underline s(T_1)\le\underline s(T)\le\overline s(T)\le\overline s(T_2)$.
+\end{proof}
+
+Множество нижних сумм ограничено сверху, верхних — снизу; определены \emph{нижний} и
+\emph{верхний интегралы Дарбу}
+\[
+  \underline I=\sup_T \underline s(T),\qquad \overline I=\inf_T \overline s(T),
+  \qquad \underline I\le\overline I .
+\]
+
+\begin{criterion}[Дарбу]
+Ограниченная $f$ интегрируема на $[a,b]$ тогда и только тогда, когда
+\[
+  \lim_{\lambda(T)\to0}\bigl(\overline s(T)-\underline s(T)\bigr)=0,
+\]
+то есть $\forall\eps>0\ \exists\delta>0:\ \lambda(T)<\delta\Rightarrow\overline s-\underline s<\eps$.
+При этом $\underline I=\overline I=\int_a^b f$.
+\end{criterion}
+
+\begin{proof}
+$(\Leftarrow)$ Так как $\underline s\le\underline I\le\overline I\le\overline s$ и
+$\underline s\le\sigma\le\overline s$, из $\overline s-\underline s\to0$ следует
+$\underline I=\overline I=:I$ и $\abs{\sigma-I}\le\overline s-\underline s\to0$, т.е. $f$
+интегрируема. $(\Rightarrow)$ Пусть $f\in\mathcal R$ с интегралом $I$. По $\eps$ найдём $\delta$:
+при $\lambda(T)<\delta$ все суммы $\sigma$ лежат в $(I-\eps,I+\eps)$. Так как
+$\overline s=\sup_\xi\sigma$ и $\underline s=\inf_\xi\sigma$, имеем
+$\overline s-\underline s\le 2\eps$. В силу произвольности $\eps$ разность стремится к нулю.
+\end{proof}
+
+\subsection{Критерий в терминах колебаний}
+
+\emph{Колебанием} $f$ на $[x_{i-1},x_i]$ называют $\omega_i=M_i-m_i=\sup\abs{f(x')-f(x'')}$. Тогда
+$\overline s-\underline s=\sum_i\omega_i\,\Delta x_i$, и критерий Дарбу принимает вид
+\[
+  f\in\mathcal R[a,b]\iff \lim_{\lambda(T)\to0}\sum_{i=1}^n \omega_i\,\Delta x_i=0 .
+\]
+Это наиболее рабочая форма критерия: интегрируемость означает, что суммарный «вклад
+неравномерности» можно сделать сколь угодно малым.
+
+\section{Классы интегрируемых функций}
+
+\begin{theorem}[Кантор]
+Непрерывная на отрезке $[a,b]$ функция равномерно непрерывна на нём.
+\end{theorem}
+
+\begin{proof}
+От противного: пусть $\exists\eps_0>0$ такое, что для всякого $\delta=1/k$ найдутся
+$x_k,y_k$ с $\abs{x_k-y_k}<1/k$, но $\abs{f(x_k)-f(y_k)}\ge\eps_0$. По теореме
+Больцано–Вейерштрасса из $\{x_k\}$ выделим сходящуюся подпоследовательность $x_{k_j}\to c\in[a,b]$;
+тогда и $y_{k_j}\to c$. По непрерывности $f(x_{k_j})\to f(c)$ и $f(y_{k_j})\to f(c)$, откуда
+$\abs{f(x_{k_j})-f(y_{k_j})}\to0$ — противоречие с $\ge\eps_0$.
+\end{proof}
+
+\begin{theorem}
+Непрерывная на $[a,b]$ функция интегрируема.
+\end{theorem}
+
+\begin{proof}
+По теореме Кантора $f$ равномерно непрерывна: $\forall\eps>0\ \exists\delta>0$ такое, что
+$\abs{x'-x''}<\delta\Rightarrow\abs{f(x')-f(x'')}<\dfrac{\eps}{b-a}$. Если $\lambda(T)<\delta$, то
+на каждом отрезке колебание $\omega_i\le\dfrac{\eps}{b-a}$, и
+\[
+  \sum_i\omega_i\,\Delta x_i\le\frac{\eps}{b-a}\sum_i\Delta x_i=\eps .
+\]
+По критерию в терминах колебаний $f\in\mathcal R[a,b]$.
+\end{proof}
+
+\begin{theorem}
+Монотонная на $[a,b]$ функция интегрируема.
+\end{theorem}
+
+\begin{proof}
+Пусть $f$ не убывает (случай невозрастания симметричен). Тогда $m_i=f(x_{i-1})$, $M_i=f(x_i)$,
+$\omega_i=f(x_i)-f(x_{i-1})\ge0$, и при $\lambda(T)<\delta$
+\[
+  \sum_i\omega_i\,\Delta x_i\le\lambda(T)\sum_i\bigl(f(x_i)-f(x_{i-1})\bigr)
+   =\lambda(T)\,\bigl(f(b)-f(a)\bigr)<\delta\,\bigl(f(b)-f(a)\bigr).
+\]
+Выбрав $\delta=\eps/\bigl(f(b)-f(a)+1\bigr)$, получаем $\sum\omega_i\Delta x_i<\eps$; значит,
+$f\in\mathcal R[a,b]$.
+\end{proof}
+
+\begin{theorem}
+Ограниченная функция с конечным числом точек разрыва интегрируема.
+\end{theorem}
+
+\begin{proof}
+Пусть $\abs f\le K$ и точек разрыва конечное число. Каждую разрывную точку накроем интервалом
+суммарной длины $<\dfrac{\eps}{4K}$; на этих кусках $\omega_i\le2K$, и их вклад в
+$\sum\omega_i\Delta x_i$ меньше $\dfrac\eps2$. На оставшемся (замкнутом) множестве $f$ непрерывна,
+а значит равномерно непрерывна, и при достаточно мелком разбиении вклад остальных отрезков тоже
+$<\dfrac\eps2$. В сумме $\sum\omega_i\Delta x_i<\eps$.
+\end{proof}
+
+\section{Свойства определённого интеграла}
+
+Полагают по соглашению
+\[
+  \int_a^a f=0,\qquad \int_b^a f=-\int_a^b f .
+\]
+
+\begin{property}[линейность]
+Если $f,g\in\mathcal R[a,b]$ и $\alpha,\beta\in\R$, то $\alpha f+\beta g\in\mathcal R[a,b]$ и
+\[
+  \int_a^b(\alpha f+\beta g)=\alpha\!\int_a^b f+\beta\!\int_a^b g .
+\]
+\end{property}
+
+\begin{proof}
+Интегральные суммы аддитивны и однородны: $\sigma(\alpha f+\beta g,T,\xi)=\alpha\sigma(f,T,\xi)
++\beta\sigma(g,T,\xi)$. Переходя к пределу при $\lambda(T)\to0$, получаем требуемое.
+\end{proof}
+
+\begin{property}[аддитивность по отрезку]
+Для $c\in(a,b)$: $f\in\mathcal R[a,b]\iff f\in\mathcal R[a,c]$ и $f\in\mathcal R[c,b]$, причём
+\[
+  \int_a^b f=\int_a^c f+\int_c^b f .
+\]
+\end{property}
+
+\begin{proof}
+Рассматривая лишь разбиения, содержащие точку $c$ (это не меняет ни интегрируемости, ни значения
+интеграла), сумма Дарбу распадается на части по $[a,c]$ и $[c,b]$:
+$\overline s_{[a,b]}-\underline s_{[a,b]}=(\overline s-\underline s)_{[a,c]}
++(\overline s-\underline s)_{[c,b]}$. Левая часть стремится к нулю тогда и только тогда, когда
+обе неотрицательные части стремятся к нулю; в пределе суммы складываются.
+\end{proof}
+
+\begin{property}[монотонность]
+Если $f,g\in\mathcal R[a,b]$ и $f\le g$ на $[a,b]$, то $\displaystyle\int_a^b f\le\int_a^b g$.
+В частности, если $f\ge0$, то и интеграл неотрицателен.
+\end{property}
+
+\begin{proof}
+Для любого разбиения $\sigma(f,T,\xi)\le\sigma(g,T,\xi)$; предельный переход сохраняет нестрогое
+неравенство.
+\end{proof}
+
+\begin{property}
+Если $f\in\mathcal R[a,b]$, то $\abs f\in\mathcal R[a,b]$ и
+$\displaystyle\abs[\Big]{\int_a^b f}\le\int_a^b\abs f$.
+\end{property}
+
+\begin{proof}
+Интегрируемость $\abs f$ следует из $\bigl|\abs{f(x')}-\abs{f(x'')}\bigr|\le\abs{f(x')-f(x'')}$,
+т.е. колебания $\abs f$ не больше колебаний $f$. Далее $-\abs f\le f\le\abs f$, и по
+монотонности $-\int\abs f\le\int f\le\int\abs f$, что равносильно оценке модуля.
+\end{proof}
+
+\section{Теоремы о среднем}
+
+\begin{theorem}[первая теорема о среднем]
+Пусть $f\in\mathcal R[a,b]$, $m\le f\le M$. Тогда $\exists\mu\in[m,M]$ такое, что
+$\displaystyle\int_a^b f=\mu(b-a)$. Если вдобавок $f$ непрерывна, то $\mu=f(c)$ для некоторого
+$c\in[a,b]$.
+\end{theorem}
+
+\begin{proof}
+По монотонности $m(b-a)\le\int_a^b f\le M(b-a)$, поэтому
+$\mu=\dfrac{1}{b-a}\int_a^b f\in[m,M]$. Для непрерывной $f$ значение $\mu$ лежит между $\min f$ и
+$\max f$, и по теореме о промежуточном значении достигается: $\mu=f(c)$.
+\end{proof}
+
+Число $\displaystyle f_{\text{ср}}=\frac{1}{b-a}\int_a^b f$ называют \emph{средним значением}
+функции на отрезке.
+
+\begin{theorem}[обобщённая теорема о среднем]
+Пусть $f\in\mathcal R[a,b]$, $m\le f\le M$, а $g\in\mathcal R[a,b]$ знакопостоянна ($g\ge0$).
+Тогда $\exists\mu\in[m,M]$:
+\[
+  \int_a^b f\,g=\mu\!\int_a^b g .
+\]
+Для непрерывной $f$ имеем $\mu=f(c)$, $c\in[a,b]$.
+\end{theorem}
+
+\begin{proof}
+Из $mg\le fg\le Mg$ (используем $g\ge0$) интегрированием получаем
+$m\int g\le\int fg\le M\int g$. Если $\int g=0$, то и $\int fg=0$, утверждение тривиально; иначе
+$\mu=\dfrac{\int fg}{\int g}\in[m,M]$, а для непрерывной $f$ значение достигается.
+\end{proof}
+
+\begin{remark}[вторая теорема о среднем, формула Бонне]
+Если $g$ монотонна, а $f\in\mathcal R[a,b]$, то $\exists c\in[a,b]$:
+\[
+  \int_a^b f\,g=g(a)\!\int_a^c f+g(b)\!\int_c^b f .
+\]
+При $g\ge0$ убывающей это даёт $\int_a^b fg=g(a)\int_a^c f$. Формула удобна для оценки
+осциллирующих интегралов, например $\displaystyle\int_a^b\frac{\sin x}{x}\dx$.
+\end{remark}
+
+\section{Интеграл с переменным верхним пределом. Формула Ньютона–Лейбница}
+
+Пусть $f\in\mathcal R[a,b]$. Функция
+\[
+  \Phi(x)=\int_a^x f(t)\dt,\qquad x\in[a,b],
+\]
+называется интегралом с переменным верхним пределом.
+
+\begin{theorem}
+$\Phi$ непрерывна на $[a,b]$.
+\end{theorem}
+
+\begin{proof}
+Пусть $\abs f\le K$. Тогда
+$\abs{\Phi(x+h)-\Phi(x)}=\abs[\big]{\int_x^{x+h}f}\le K\abs h\to0$ при $h\to0$, т.е. $\Phi$
+(равномерно) непрерывна.
+\end{proof}
+
+\begin{theorem}[Барроу]
+Если $f$ непрерывна в точке $x_0$, то $\Phi$ дифференцируема в $x_0$ и $\Phi'(x_0)=f(x_0)$.
+В частности, для непрерывной $f$ функция $\Phi$ — её первообразная.
+\end{theorem}
+
+\begin{proof}
+\[
+  \frac{\Phi(x_0+h)-\Phi(x_0)}{h}=\frac1h\int_{x_0}^{x_0+h}f(t)\dt
+   =\frac1h\int_{x_0}^{x_0+h}\bigl(f(t)-f(x_0)\bigr)\dt+f(x_0).
+\]
+По непрерывности $\abs{f(t)-f(x_0)}<\eps$ при $\abs{t-x_0}<\delta$, поэтому первый член по модулю
+$\le\eps$ при $\abs h<\delta$. Значит, разностное отношение стремится к $f(x_0)$.
+\end{proof}
+
+\begin{theorem}[Ньютон–Лейбниц]
+Если $f$ непрерывна на $[a,b]$ и $F$ — какая-либо её первообразная, то
+\[
+  \int_a^b f(x)\dx=F(b)-F(a)=:F(x)\Big|_a^b .
+\]
+\end{theorem}
+
+\begin{proof}
+По теореме Барроу $\Phi(x)=\int_a^x f$ — первообразная $f$, поэтому $F=\Phi+C$. Тогда
+$F(b)-F(a)=\Phi(b)-\Phi(a)=\int_a^b f-0=\int_a^b f$.
+\end{proof}
+
+\begin{theorem}[замена переменной]
+Пусть $f$ непрерывна, $\varphi$ непрерывно дифференцируема на $[\alpha,\beta]$,
+$\varphi(\alpha)=a$, $\varphi(\beta)=b$. Тогда
+\[
+  \int_a^b f(x)\dx=\int_\alpha^\beta f\bigl(\varphi(t)\bigr)\varphi'(t)\dt .
+\]
+\end{theorem}
+
+\begin{proof}
+Пусть $F$ — первообразная $f$. По правилу цепочки $\dfrac{d}{dt}F(\varphi(t))
+=f(\varphi(t))\varphi'(t)$, т.е. $F\circ\varphi$ — первообразная подынтегральной функции справа.
+По Ньютону–Лейбницу обе части равны $F(\varphi(\beta))-F(\varphi(\alpha))=F(b)-F(a)$.
+\end{proof}
+
+\begin{theorem}[интегрирование по частям]
+Если $u,v$ непрерывно дифференцируемы на $[a,b]$, то
+\[
+  \int_a^b u\,v'\dx=u v\Big|_a^b-\int_a^b u'\,v\dx .
+\]
+\end{theorem}
+
+\begin{proof}
+$(uv)'=u'v+uv'$ интегрируема, по Ньютону–Лейбницу $\int_a^b(uv)'=uv\big|_a^b$; перенос слагаемого
+даёт формулу.
+\end{proof}
+
+\section{Геометрические приложения}
+
+\subsection{Площадь плоской фигуры}
+
+Площадь криволинейной трапеции под графиком $y=f(x)\ge0$, $x\in[a,b]$:
+\[
+  S=\int_a^b f(x)\dx .
+\]
+Для кривой, заданной параметрически $x=\varphi(t)$, $y=\psi(t)$, $t\in[\alpha,\beta]$:
+\[
+  S=\int_\alpha^\beta \psi(t)\,\varphi'(t)\dt .
+\]
+В полярных координатах площадь криволинейного сектора $r=\rho(\varphi)$,
+$\varphi\in[\alpha,\beta]$, получается из площадей элементарных секторов
+$\tfrac12\rho^2\,\Delta\varphi$:
+\[
+  S=\frac12\int_\alpha^\beta \rho^2(\varphi)\,d\varphi .
+\]
+
+\begin{example}
+Площадь, ограниченная кардиоидой $\rho=a(1+\cos\varphi)$:
+\[
+  S=\frac12\int_0^{2\pi}a^2(1+\cos\varphi)^2\,d\varphi=\frac{a^2}{2}\int_0^{2\pi}
+   \Bigl(1+2\cos\varphi+\tfrac{1+\cos2\varphi}{2}\Bigr)d\varphi=\frac{3\pi a^2}{2}.
+\]
+Площадь, ограниченная астроидой $x=a\cos^3t$, $y=a\sin^3t$, равна $\dfrac{3\pi a^2}{8}$.
+\end{example}
+
+\subsection{Длина дуги}
+
+Длину кривой определяют как точную верхнюю грань длин вписанных ломаных; кривая
+\emph{спрямляема}, если эта грань конечна. Для гладкой кривой $y=f(x)$, $x\in[a,b]$:
+\[
+  L=\int_a^b\sqrt{1+\bigl(f'(x)\bigr)^2}\dx,
+\]
+с дифференциалом дуги $ds=\sqrt{1+f'^2}\dx$. В параметрической форме
+\[
+  L=\int_\alpha^\beta\sqrt{\bigl(\varphi'(t)\bigr)^2+\bigl(\psi'(t)\bigr)^2}\dt,
+\]
+а в полярных координатах $r=\rho(\varphi)$:
+\[
+  L=\int_\alpha^\beta\sqrt{\bigl(\rho'(\varphi)\bigr)^2+\rho^2(\varphi)}\,d\varphi .
+\]
+
+\begin{proof}[Вывод формулы $L=\int\sqrt{1+f'^2}\,dx$]
+Длина звена ломаной над $[x_{i-1},x_i]$ равна
+$\sqrt{\Delta x_i^2+\Delta y_i^2}=\sqrt{1+\bigl(\tfrac{\Delta y_i}{\Delta x_i}\bigr)^2}\,\Delta x_i$.
+По теореме Лагранжа $\tfrac{\Delta y_i}{\Delta x_i}=f'(\xi_i)$, поэтому суммарная длина есть
+интегральная сумма для $\sqrt{1+f'^2}$; при $\lambda(T)\to0$ она стремится к интегралу.
+\end{proof}
+
+\begin{example}
+Длина дуги цепной линии $y=a\ch\frac xa$ от $0$ до $x_0$:
+$\sqrt{1+\sh^2}=\ch$, значит $L=\int_0^{x_0}\ch\frac xa\dx=a\sh\frac{x_0}a$. Длина одной арки
+циклоиды $x=a(t-\sin t)$, $y=a(1-\cos t)$ равна $8a$. Длина кардиоиды $\rho=a(1+\cos\varphi)$
+равна $8a$.
+\end{example}
+
+\subsection{Объёмы тел}
+
+\textbf{Тело вращения вокруг $Ox$} (вращается криволинейная трапеция $y=f(x)$):
+\[
+  V_{Ox}=\pi\int_a^b f^2(x)\dx .
+\]
+
+\begin{proof}
+Разбив $[a,b]$, элементарный слой над $[x_{i-1},x_i]$ заключён между дисками; его объём близок к
+$\pi f^2(\xi_i)\,\Delta x_i$. Сумма $\sum\pi f^2(\xi_i)\Delta x_i$ — интегральная сумма для
+$\pi f^2$, в пределе дающая $\pi\int_a^b f^2\dx$.
+\end{proof}
+
+\textbf{Вращение вокруг $Oy$} (метод цилиндрических оболочек):
+\[
+  V_{Oy}=2\pi\int_a^b x\,f(x)\dx
+\]
+(элемент — тонкая оболочка радиуса $x$, высоты $f(x)$, площади боковой поверхности
+$2\pi x\,f(x)$).
+
+\textbf{Объём по площадям поперечных сечений.} Если тело кубируемо и площадь сечения плоскостью
+$x=\Const$ есть $S(x)\in\mathcal R[a,b]$, то
+\[
+  V=\int_a^b S(x)\dx .
+\]
+
+\begin{example}\leavevmode
+\begin{itemize}[leftmargin=*]
+  \item \emph{Шар} радиуса $R$: $y=\sqrt{R^2-x^2}$, $\displaystyle V=\pi\int_{-R}^{R}(R^2-x^2)\dx
+        =\frac43\pi R^3$.
+  \item \emph{Тор} (окружность радиуса $r$ с центром на высоте $R$ вращается вокруг $Ox$):
+        $V=\pi\int_{-r}^{r}\bigl(f_2^2-f_1^2\bigr)\dx$, где $f_{2,1}=R\pm\sqrt{r^2-x^2}$; так как
+        $f_2^2-f_1^2=4R\sqrt{r^2-x^2}$, получаем $V=4\pi R\int_{-r}^{r}\sqrt{r^2-x^2}\dx
+        =4\pi R\cdot\frac{\pi r^2}{2}=2\pi^2 R r^2$.
+  \item \emph{Эллипсоид} $\frac{x^2}{a^2}+\frac{y^2}{b^2}+\frac{z^2}{c^2}=1$: сечение плоскостью
+        $x=\Const$ — эллипс площади $S(x)=\dfrac{\pi bc}{a^2}(a^2-x^2)$, откуда
+        $\displaystyle V=\int_{-a}^{a}S(x)\dx=\frac43\pi abc$.
+\end{itemize}
+\end{example}
+
+\subsection{Площадь поверхности вращения}
+
+При вращении графика $y=f(x)\ge0$ вокруг $Ox$:
+\[
+  S_{\text{пов}}=2\pi\int_a^b f(x)\,ds=2\pi\int_a^b f(x)\sqrt{1+\bigl(f'(x)\bigr)^2}\dx .
+\]
+
+\begin{proof}[Идея]
+Площадь боковой поверхности усечённого конуса над $[x_{i-1},x_i]$ равна $2\pi f(\xi_i)\,\Delta s_i$,
+где $\Delta s_i$ — длина звена ломаной. Сумма $\sum 2\pi f(\xi_i)\,\Delta s_i$ при $\lambda(T)\to0$
+переходит в $2\pi\int_a^b f\,ds$.
+\end{proof}
