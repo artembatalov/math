@@ -12,6 +12,20 @@ TeX-конспекты, структурированные **по раздела
 
 ## 🧮 Математический анализ
 
+### 🎯 Подготовка к экзамену
+
+Три файла под три типа экзаменационных заданий. Поля уже, оставлено место для пометок от руки.
+
+| Файл | Что внутри | Скачать |
+|:--|:--|:--|
+| **Theory** | краткие ответы на теорию (161 вопрос): ч. I — теормин `!!!`, ч. II — дополнительные | [![tex](https://img.shields.io/badge/TeX-1F6FEB?logo=latex&logoColor=white)](analysis/exam/tex/theory.tex) [![pdf](https://img.shields.io/badge/PDF-C1121F?logo=adobeacrobatreader&logoColor=white)](analysis/exam/pdf/theory.pdf) |
+| **Proofs** | подробные доказательства (60 теорем) с разобранными шагами | [![tex](https://img.shields.io/badge/TeX-1F6FEB?logo=latex&logoColor=white)](analysis/exam/tex/proofs.tex) [![pdf](https://img.shields.io/badge/PDF-C1121F?logo=adobeacrobatreader&logoColor=white)](analysis/exam/pdf/proofs.pdf) |
+| **Tasks** | 63 практические задачи с краткими решениями | [![tex](https://img.shields.io/badge/TeX-1F6FEB?logo=latex&logoColor=white)](analysis/exam/tex/tasks.tex) [![pdf](https://img.shields.io/badge/PDF-C1121F?logo=adobeacrobatreader&logoColor=white)](analysis/exam/pdf/tasks.pdf) |
+
+Источники: [`exam/theory.pdf`](analysis/exam/theory.pdf) · [`exam/proofs.pdf`](analysis/exam/proofs.pdf) · [`exam/task.pdf`](analysis/exam/task.pdf).
+
+### 📚 Конспекты по разделам
+
 Списки вопросов: [`ВОПРОСЫ_МАТАН.pdf`](analysis/ВОПРОСЫ_МАТАН.pdf) · 97 вопросов, 13 разделов.
 
 | № | Раздел (вопросы) | Скачать |

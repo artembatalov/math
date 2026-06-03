@@ -1,0 +1,405 @@
+\section{Базовая техника и элементарные методы}
+
+\task{1}{Вычислить $\displaystyle\int\frac{\sqrt{x}\dx}{1+\sqrt[3]{x}}$.}
+\sol Подстановка $x=t^6$ ($dx=6t^5\dt$, $\sqrt x=t^3$, $\sqrt[3]{x}=t^2$):
+\[
+  \int\frac{t^3}{1+t^2}\,6t^5\dt=6\int\Bigl(t^6-t^4+t^2-1+\frac1{1+t^2}\Bigr)\dt
+  =6\Bigl(\frac{t^7}{7}-\frac{t^5}{5}+\frac{t^3}{3}-t+\arctg t\Bigr)+C,\quad t=\sqrt[6]{x}.
+\]
+
+\task{2}{Вычислить $\displaystyle\int\sin(\ln x)\dx$ двумя способами.}
+\sol \textbf{Способ 1 (по частям дважды).} $I=\int\sin(\ln x)\dx$. Берём $u=\sin(\ln x)$, $dv=dx$:
+$I=x\sin(\ln x)-\int\cos(\ln x)\dx$. В $\int\cos(\ln x)\dx$ снова по частям:
+$\int\cos(\ln x)\dx=x\cos(\ln x)+\int\sin(\ln x)\dx=x\cos(\ln x)+I$. Значит
+$I=x\sin(\ln x)-x\cos(\ln x)-I$, откуда $2I=x(\sin(\ln x)-\cos(\ln x))$ и
+\[
+  I=\frac x2\bigl(\sin(\ln x)-\cos(\ln x)\bigr)+C.
+\]
+\textbf{Способ 2 (замена $x=e^t$ + Эйлер).} $\int e^t\sin t\dt=\Im\int e^{(1+i)t}\dt
+=\Im\frac{e^{(1+i)t}}{1+i}=\frac{e^t(\sin t-\cos t)}{2}$; возврат $t=\ln x$ даёт тот же ответ.
+
+\task{3}{Вычислить $\displaystyle I_n=\int\frac{dx}{(x^2+a^2)^n}$, $n>1$ (рекуррентно).}
+\sol Интегрированием по частям выводится
+\[
+  I_n=\frac{x}{2a^2(n-1)(x^2+a^2)^{n-1}}+\frac{2n-3}{2a^2(n-1)}\,I_{n-1},
+  \qquad I_1=\frac1a\arctg\frac xa+C.
+\]
+Например $I_2=\dfrac{x}{2a^2(x^2+a^2)}+\dfrac1{2a^3}\arctg\dfrac xa+C$.
+
+\task{4}{Найти $\displaystyle\int\frac{dx}{\sin^2x\,\cos^4x}$.}
+\sol Домножаем числитель на $1=\sin^2x+\cos^2x$:
+$\dfrac{1}{\sin^2x\cos^4x}=\dfrac1{\cos^4x}+\dfrac1{\cos^2x}+\dfrac1{\sin^2x}$, и так как
+$\int\sec^4x\dx=\tg x+\tfrac13\tg^3x$:
+\[
+  \int\frac{dx}{\sin^2x\cos^4x}=2\tg x+\frac{\tg^3x}{3}-\ctg x+C.
+\]
+
+\task{5}{Вычислить $\displaystyle\int e^{3x}\cos^2x\dx$.}
+\sol $\cos^2x=\tfrac12(1+\cos2x)$, и по формуле $\int e^{ax}\cos bx\dx=\tfrac{e^{ax}(a\cos bx+b\sin bx)}{a^2+b^2}$:
+\[
+  \int e^{3x}\cos^2x\dx=\frac{e^{3x}}{6}+\frac{e^{3x}(3\cos2x+2\sin2x)}{26}+C.
+\]
+
+\task{6}{Вычислить $\displaystyle I=\int e^{2x}\sin^2x\,\cos3x\dx$.}
+\sol $\sin^2x=\tfrac12(1-\cos2x)$, $\cos2x\cos3x=\tfrac12(\cos5x+\cos x)$:
+\[
+  I=\frac{e^{2x}(2\cos3x+3\sin3x)}{26}-\frac{e^{2x}(2\cos5x+5\sin5x)}{116}
+   -\frac{e^{2x}(2\cos x+\sin x)}{20}+C.
+\]
+
+\task{7}{Зная $\int\cos(ax)\dx=\tfrac1a\sin(ax)+C$, найти $\displaystyle\int x^2\cos(ax)\dx$ дифференцированием по $a$.}
+\sol $\dfrac{\partial^2}{\partial a^2}\cos(ax)=-x^2\cos(ax)$, поэтому
+$\int x^2\cos(ax)\dx=-\dfrac{\partial^2}{\partial a^2}\dfrac{\sin(ax)}{a}$. Дважды дифференцируя
+$\tfrac{\sin ax}{a}$:
+\[
+  \int x^2\cos(ax)\dx=\frac{x^2\sin ax}{a}+\frac{2x\cos ax}{a^2}-\frac{2\sin ax}{a^3}+C.
+\]
+
+\task{8}{Вычислить $\displaystyle I=\int\frac{\cos(\alpha\ln x)}{x\ln x}\dx$ ($x>0,\alpha>0$).}
+\sol Замена $u=\ln x$ даёт $I=\int\dfrac{\cos(\alpha u)}{u}\,du=\operatorname{Ci}(\alpha\ln x)+C$ —
+\emph{интегральный косинус}, в элементарных функциях не выражается. Дифференцирование по параметру
+подтверждает это: $\dfrac{\partial I}{\partial\alpha}=-\int\dfrac{\sin(\alpha\ln x)}{x}\dx
+=\dfrac{\cos(\alpha\ln x)}{\alpha}$ (элементарно), но обратное интегрирование по $\alpha$ снова
+возвращает $\operatorname{Ci}$. Это пример «неберущегося» интеграла.
+
+\task{9}{Найти первообразную $f(x)=\abs x$ на $(-1,1)$; доказать непрерывность в $x=0$.}
+\sol $F(x)=\dfrac{x\abs x}{2}+C$ (при $x\ge0$ это $\tfrac{x^2}2$, при $x<0$ — $-\tfrac{x^2}2$;
+в обоих случаях $F'=\abs x$). Непрерывность: $\lim_{x\to0}\tfrac{x\abs x}{2}=0=F(0)$; более того
+$F\in C^1$, $F'(0)=0=\abs0$.
+
+\section{Рациональные функции и тригонометрия}
+
+\task{10}{Метод Хевисайда: $\displaystyle\int\frac{x^2+1}{(x-1)(x-2)(x-3)}\dx$.}
+\sol $A_i=\dfrac{P(a_i)}{Q'(a_i)}$: $A_1=\dfrac{2}{(-1)(-2)}=1$, $A_2=\dfrac{5}{(1)(-1)}=-5$,
+$A_3=\dfrac{10}{(2)(1)}=5$. Значит
+\[
+  \int=\ln\abs{x-1}-5\ln\abs{x-2}+5\ln\abs{x-3}+C.
+\]
+
+\task{11}{$\displaystyle\int\frac{x^2+2x-5}{(x-1)(x+2)(x-3)(x+4)}\dx$ (Хевисайд).}
+\sol $A_1=\dfrac{-2}{(3)(-2)(5)}=\dfrac1{15}$, $A_{-2}=\dfrac{-5}{(-3)(-5)(2)}=-\dfrac16$,
+$A_3=\dfrac{10}{(2)(5)(7)}=\dfrac17$, $A_{-4}=\dfrac{3}{(-5)(-2)(-7)}=-\dfrac3{70}$. Тогда
+\[
+  \int=\frac1{15}\ln\abs{x-1}-\frac16\ln\abs{x+2}+\frac17\ln\abs{x-3}-\frac3{70}\ln\abs{x+4}+C.
+\]
+
+\task{12}{$\displaystyle\int\frac{dx}{(x^2+1)^2}$ (Остроградский и сравнение с $x=\tg t$).}
+\sol По рекуррентной формуле ($a=1$): $\displaystyle\int\frac{dx}{(x^2+1)^2}=\frac{x}{2(x^2+1)}
++\frac12\arctg x+C$. Подстановка $x=\tg t$: $\int\cos^2t\dt=\tfrac12(t+\sin t\cos t)
+=\tfrac12\arctg x+\tfrac{x}{2(1+x^2)}$ — тот же результат.
+
+\task{13}{$\displaystyle\int\frac{dx}{(x^3-x^2)^2}$ (Остроградский).}
+\sol $Q=x^4(x-1)^2$. Разложение даёт рациональную и логарифмическую части:
+\[
+  \int\frac{dx}{x^4(x-1)^2}=-\frac{1}{3x^3}-\frac1{x^2}-\frac3x-\frac1{x-1}
+   +4\ln\abs[\Big]{\frac{x}{x-1}}+C
+\]
+(рациональная часть $-\tfrac1{3x^3}-\tfrac1{x^2}-\tfrac3x-\tfrac1{x-1}$ со знаменателем
+$Q_1=x^3(x-1)$, под логарифмом — простые корни).
+
+\task{14}{Найти $\displaystyle\int\frac{x+5}{x^2+2x+10}\dx$.}
+\sol $x^2+2x+10=(x+1)^2+9$, $x+5=(x+1)+4$:
+\[
+  \int=\frac12\ln(x^2+2x+10)+\frac43\arctg\frac{x+1}{3}+C.
+\]
+
+\task{15}{Первообразная $f(x)=\dfrac1{1+x^4}$ через $M(0,0)$.}
+\sol $1+x^4=(x^2+\sqrt2x+1)(x^2-\sqrt2x+1)$; разложение и интегрирование дают
+\[
+  F(x)=\frac1{4\sqrt2}\ln\frac{x^2+\sqrt2x+1}{x^2-\sqrt2x+1}
+   +\frac1{2\sqrt2}\bigl(\arctg(\sqrt2x+1)+\arctg(\sqrt2x-1)\bigr).
+\]
+В точке $x=0$ оба слагаемых равны нулю, поэтому условие $F(0)=0$ выполнено при $C=0$.
+
+\task{16}{$\displaystyle\int\frac{3x-1}{(x^2+4x+13)^2}\dx$.}
+\sol $u=x+2$, $x^2+4x+13=u^2+9$, $3x-1=3u-7$:
+\[
+  \int\frac{3u-7}{(u^2+9)^2}du=-\frac{3}{2(u^2+9)}-\frac{7u}{18(u^2+9)}-\frac7{54}\arctg\frac u3
+  =-\frac{7x+41}{18(x^2+4x+13)}-\frac{7}{54}\arctg\frac{x+2}{3}+C.
+\]
+
+\task{17}{$\displaystyle\int\frac{dx}{1+\sin x+\cos x}$ двумя способами.}
+\sol \textbf{Способ 1 ($t=\tg\tfrac x2$).} $1+\sin x+\cos x=\dfrac{2(1+t)}{1+t^2}$, $dx=\dfrac{2\,dt}{1+t^2}$:
+\[
+  \int\frac{2\,dt/(1+t^2)}{2(1+t)/(1+t^2)}=\int\frac{dt}{1+t}=\ln\abs{1+\tg\tfrac x2}+C.
+\]
+\textbf{Способ 2.} Знаменатель $=1+\sqrt2\sin(x+\tfrac\pi4)$; его собственной половинной заменой
+интеграл $\int\dfrac{d\theta}{1+\sqrt2\sin\theta}$ ($\theta=x+\tfrac\pi4$) приводится к тому же
+$\ln\abs{1+\tg\tfrac x2}+C$.
+
+\task{18}{$\displaystyle\int\frac{dx}{1+3\cos^2x}$ (подстановка $t=\tg x$).}
+\sol Подынтегральная функция чётна и рациональна по $\cos^2x$ — годится $t=\tg x$. Делим на
+$\cos^2x$: $\dfrac{\sec^2x}{\sec^2x+3}=\dfrac{\sec^2x}{t^2+4}$, а $\sec^2x\dx=dt$:
+\[
+  \int\frac{dt}{t^2+4}=\frac12\arctg\frac{\tg x}{2}+C.
+\]
+
+\task{19}{Вывести рекуррентную формулу для $I_n=\int\cos^nx\dx$ и найти $\int\cos^4x\dx$.}
+\sol По частям: $I_n=\dfrac{\cos^{n-1}x\sin x}{n}+\dfrac{n-1}{n}I_{n-2}$. Тогда $I_2=\tfrac x2+\tfrac{\sin x\cos x}{2}$ и
+\[
+  \int\cos^4x\dx=\frac{\cos^3x\sin x}{4}+\frac34\Bigl(\frac x2+\frac{\sin x\cos x}{2}\Bigr)+C
+  =\frac{\cos^3x\sin x}{4}+\frac{3x}{8}+\frac{3\sin x\cos x}{8}+C.
+\]
+
+\section{Иррациональности}
+
+\task{20}{$\displaystyle\int\frac{dx}{x+\sqrt{x^2+x+1}}$ (первая подстановка Эйлера).}
+\sol $\sqrt{x^2+x+1}=t-x$ даёт $x=\dfrac{t^2-1}{2t+1}$, $x+\sqrt{\dots}=t$,
+$dx=\dfrac{2(t^2+t+1)}{(2t+1)^2}dt$. Интеграл
+\[
+  \int\frac{2(t^2+t+1)}{t(2t+1)^2}\,dt=\int\Bigl(\frac2t-\frac3{2t+1}-\frac3{(2t+1)^2}\Bigr)dt
+  =2\ln\abs t-\frac32\ln\abs{2t+1}+\frac{3}{2(2t+1)}+C,
+\]
+где $t=x+\sqrt{x^2+x+1}$.
+
+\task{21}{$\displaystyle\int\frac{dx}{(1+x^2)\sqrt{1-x^2}}$ (третья подстановка Эйлера).}
+\sol $\sqrt{1-x^2}=t(1-x)$ даёт $x=\dfrac{t^2-1}{t^2+1}$, и подстановка приводит интеграл к
+$\displaystyle\int\frac{t^2+1}{t^4+1}\,dt$. Делением на $t^2$ и заменой $w=t-\tfrac1t$:
+\[
+  \int\frac{t^2+1}{t^4+1}\,dt=\frac1{\sqrt2}\arctg\frac{t^2-1}{t\sqrt2}+C,\qquad
+  t=\frac{\sqrt{1-x^2}}{1-x}.
+\]
+
+\task{22}{Дифференциальный бином: (а) $\int\sqrt[3]{x}\,(1+\sqrt[3]{x^2})\dx$; (б) $\int\dfrac{\sqrt{1+\sqrt[3]{x}}}{\sqrt[3]{x^2}}\dx$.}
+\sol (а) $p=1\in\Z$ (случай 1) — раскрываем скобки:
+$\int(x^{1/3}+x)\dx=\tfrac34 x^{4/3}+\tfrac{x^2}{2}+C$.\;
+(б) $m=-\tfrac23,n=\tfrac13,p=\tfrac12$; $\tfrac{m+1}{n}=1\in\Z$ — \emph{случай 2}. Подстановка
+$1+x^{1/3}=t^2$ даёт $x=(t^2-1)^3$, и интеграл сводится к $\int6t^2\,dt=2t^3$:
+\[
+  \int\frac{\sqrt{1+\sqrt[3]{x}}}{\sqrt[3]{x^2}}\dx=2\bigl(1+\sqrt[3]{x}\bigr)^{3/2}+C.
+\]
+
+\task{23}{$\displaystyle\int\frac{dx}{x^4\sqrt{1+x^2}}$ (дифференциальный бином, случай 3).}
+\sol $m=-4,n=2,p=-\tfrac12$; $\tfrac{m+1}{n}+p=-2\in\Z$ — случай 3. Подстановка $1+x^{-2}=t^2$ даёт
+$x^{-3}\dx=-t\,dt$, и интеграл превращается в $\int-(t^2-1)\,dt$:
+\[
+  \int\frac{dx}{x^4\sqrt{1+x^2}}=t-\frac{t^3}{3}+C,\qquad t=\frac{\sqrt{1+x^2}}{x}\ (x>0).
+\]
+
+\task{24}{Используя $\int\dfrac{dx}{x^2+a^2}=\tfrac1a\arctg\tfrac xa$, найти $\displaystyle\int\frac{dx}{(x^2+a^2)^3}$.}
+\sol Двукратное дифференцирование по $a$ (через $I_{k+1}=-\tfrac1{2ak}\,dI_k/da$) даёт
+\[
+  \int\frac{dx}{(x^2+a^2)^3}=\frac{x}{4a^2(x^2+a^2)^2}+\frac{3x}{8a^4(x^2+a^2)}
+   +\frac{3}{8a^5}\arctg\frac xa+C.
+\]
+
+\section{Определённый интеграл Римана}
+
+\task{25}{Суммы Дарбу для $f(x)=[x]$ на $[0,2]$, $n$ равных частей; пределы.}
+\sol $f$ монотонна, единственный скачок в $x=1$. При $\Delta x=\tfrac2n$ разность
+$S^*-S_*$ равна вкладу отрезка, содержащего скачок: $1\cdot\Delta x=\tfrac2n\to0$. Обе суммы
+стремятся к $\int_0^2[x]\dx=\int_0^1 0+\int_1^2 1=1$. Итак $S_*\to1$, $S^*\to1$.
+
+\task{26}{Доказать интегрируемость $f=\sign(\sin\tfrac\pi x)$ на $[0.1,1]$; что на $[0,1]$?}
+\sol На $[0.1,1]$ нули $\sin\tfrac\pi x$ только в $x=\tfrac1k$, $k=1,\dots,10$ — конечное число точек
+разрыва, функция ограничена $\Rightarrow$ интегрируема.
+
+На $[0,1]$ при $x\to0$ возникает бесконечно
+много колебаний, разрывы накапливаются к нулю; но их \emph{счётное} множество (мера нуль), а $f$
+ограничена $\Rightarrow$ по критерию Лебега $f$ всё равно интегрируема по Риману.
+
+\task{27}{$g(x)=x\cdot\mathcal D(x)$ на $[0,1]$ ($\mathcal D$ — функция Дирихле): интегрируема ли?}
+\sol На любом частичном отрезке $\inf g=0$ (иррациональные точки дают $0$), а $\sup g=x_i$
+(рациональные плотны). Значит $\omega_i=x_i$ и $\sum\omega_i\Delta x_i\to\int_0^1 x\dx=\tfrac12\ne0$.
+По критерию через колебания $g$ \emph{не} интегрируема (нижний интеграл $0$, верхний $\tfrac12$).
+
+\task{28}{«Бесконечная лестница» $f(x)=\sum_{n:\,r_n<x}2^{-n}$ ($\{r_n\}$ — все рациональные $[0,1]$).}
+\sol (а) При $x<y$: $f(y)-f(x)=\sum_{x\le r_n<y}2^{-n}>0$ (между ними есть рациональное) — строго
+возрастает.
+
+(б) В рациональной $r_m$ при переходе через неё добавляется $2^{-m}$ — скачок, значит
+разрыв в каждой рациональной точке.
+
+(в) $f$ монотонна и ограничена ($f(1)-f(0)\le\sum2^{-n}=1$),
+поэтому по теореме об интегрируемости монотонных функций интегрируема на $[0,1]$.
+
+\task{29}{$f=\sin\tfrac1x$ на $(0,\pi]$, $\cos x$ на $(\pi,2\pi]$, $f=5$ при $x=0,\pi$.}
+\sol (а) В $x=0$: $\sin\tfrac1x$ не имеет предела — разрыв \emph{второго} рода. В $x=\pi$: пределы
+$\sin\tfrac1\pi$ (слева) и $\cos\pi=-1$ (справа) конечны и различны — разрыв \emph{первого} рода.
+
+(б) $f$ ограничена, разрывов конечное число (точки $0,\pi$; колебание в $0$ — в одной точке),
+$\Rightarrow$ интегрируема.
+
+(в) Если в $x=0$ задать неограниченную $1/x^2$, $f$ станет неограниченной
+$\Rightarrow$ интегрируемость теряется.
+
+\task{30}{Не вычисляя, доказать неравенства.}
+\sol (а) $e^{-x^3}\le1$ на $[0,1]\Rightarrow\int_0^1 e^{-x^3}\le1$; по неравенству Йенсена (выпуклость
+$e^{-t}$) $\int_0^1 e^{-x^3}\dx\ge e^{-\int_0^1 x^3\dx}=e^{-1/4}\ge e^{-1/3}=\tfrac1{\sqrt[3]e}$.
+
+(б) на $[0,0.5]$ $x^n\ge0\Rightarrow\tfrac1{\sqrt{1-x^n}}\ge1\Rightarrow\int\ge0.5$; при $n\ge2$
+$x^n\le x^2\Rightarrow\tfrac1{\sqrt{1-x^n}}\le\tfrac1{\sqrt{1-x^2}}$, $\int_0^{0.5}\tfrac{dx}{\sqrt{1-x^2}}=\arcsin\tfrac12=\tfrac\pi6$.
+
+(в) $\tfrac{\sin x}{x}<1$ на $(0,\pi]\Rightarrow\int_0^\pi\tfrac{\sin x}x\dx<\int_0^\pi1\dx=\pi$.
+
+\task{31}{Сравнить $I_1=\int_0^1 e^{-x}\dx$ и $I_2=\int_0^1 e^{-x^2}\dx$.}
+\sol На $(0,1)$ $x^2<x\Rightarrow-x^2>-x\Rightarrow e^{-x^2}>e^{-x}$, значит $I_2>I_1$.
+
+\task{32}{$\displaystyle I=\int_0^\pi\frac{\sin x}{1+x^2}\dx$.}
+\sol (а) $0\le\tfrac{\sin x}{1+x^2}\Rightarrow 0\le I\le\pi$ — слишком грубо.
+
+(б) $g=\sin x\ge0$ на
+$[0,\pi]$ знакопостоянна; по обобщённой теореме $I=f(\xi)\int_0^\pi\sin x\dx=\tfrac{2}{1+\xi^2}$.
+
+(в) $f=\tfrac1{1+x^2}$ убывает: $\tfrac1{1+\pi^2}<\tfrac1{1+\xi^2}<1$, поэтому
+$\tfrac{2}{1+\pi^2}<I<2$.
+
+\task{33}{$F(x)=\int_{x^2}^{x^3}\sqrt{1+t^4}\dt$; найти $F'(x)$.}
+\sol $F'(x)=\sqrt{1+x^{12}}\cdot3x^2-\sqrt{1+x^8}\cdot2x$.
+
+\section{Несобственные интегралы, параметры и функции Эйлера}
+
+\task{34}{$\displaystyle I=\int_1^{+\infty}\frac{\sin(x+\frac1x)}{x^p}\dx$, $p>0$: исследовать.}
+\sol При $x\to\infty$ $\sin(x+\tfrac1x)=\sin x\cos\tfrac1x+\cos x\sin\tfrac1x$; второе слагаемое
+$\sim\tfrac{\cos x}{x^{p+1}}$ сходится абсолютно. Первое — по признаку Дирихле ($\cos\tfrac1x$
+монотонно ограничено, частичные суммы $\sin x$ ограничены) сходится при $p>0$.
+
+Итак: сходится при
+всех $p>0$; абсолютно при $p>1$ (тогда $\tfrac{\abs{\sin}}{x^p}$ мажорируется), условно при
+$0<p\le1$.
+
+\task{35}{$\displaystyle I(\alpha)=\int_0^{+\infty}\frac{1-\cos\alpha x}{x e^x}\dx$ (дифференцирование по параметру).}
+\sol $I(0)=0$, $I'(\alpha)=\int_0^\infty\dfrac{x\sin\alpha x}{x e^x}\dx=\int_0^\infty e^{-x}\sin\alpha x\dx
+=\dfrac{\alpha}{1+\alpha^2}$. Интегрируя: $I(\alpha)=\int_0^\alpha\dfrac{t}{1+t^2}dt
+=\tfrac12\ln(1+\alpha^2)$.
+
+\task{36}{$\displaystyle\int_{-\infty}^{+\infty}e^{-(x^2+2x+1)}\dx$.}
+\sol $x^2+2x+1=(x+1)^2$, сдвиг $u=x+1$: $\int_{-\infty}^\infty e^{-u^2}\du=\sqrt\pi$.
+
+\task{37}{$\displaystyle J=\int_0^1\frac{dx}{\sqrt[n]{1-x^n}}$, $n>1$ (через Бета-функцию).}
+\sol $u=x^n$: $J=\tfrac1n\int_0^1 u^{1/n-1}(1-u)^{-1/n}\du=\tfrac1n B(\tfrac1n,1-\tfrac1n)
+=\tfrac1n\Gamma(\tfrac1n)\Gamma(1-\tfrac1n)=\dfrac{\pi}{n\sin(\pi/n)}$ (формула дополнения).
+
+\task{38}{$\displaystyle K=\int_0^{\pi/2}\sqrt{\tg x}\dx$.}
+\sol $K=\int_0^{\pi/2}\sin^{1/2}x\cos^{-1/2}x\dx=\tfrac12 B(\tfrac34,\tfrac14)
+=\tfrac12\Gamma(\tfrac34)\Gamma(\tfrac14)=\tfrac12\cdot\dfrac{\pi}{\sin(\pi/4)}=\dfrac{\pi}{\sqrt2}$.
+
+\task{39}{$\displaystyle\lim_{n\to\infty}\frac{(2n)!}{2^{2n}(n!)^2\sqrt n}$ (формула Стирлинга).}
+\sol По Стирлингу $\dfrac{(2n)!}{2^{2n}(n!)^2}=\dfrac{C_{2n}^n}{4^n}\sim\dfrac1{\sqrt{\pi n}}$.
+Поэтому выражение, как записано (с $\sqrt n$ в знаменателе), $\sim\dfrac1{\sqrt\pi\,n}\to0$. (Если же
+$\sqrt n$ стоит в числителе, $\dfrac{C_{2n}^n\sqrt n}{4^n}\to\dfrac1{\sqrt\pi}$ — классический
+результат.)
+
+\task{40}{$\displaystyle\Phi(y)=\int_0^y\frac{\ln(1+xy)}{x}\dx$; найти $\Phi'(y)$.}
+\sol Правило Лейбница с переменной границей:
+\[
+  \Phi'(y)=\frac{\ln(1+y^2)}{y}+\int_0^y\frac{x/(1+xy)}{x}\dx
+  =\frac{\ln(1+y^2)}{y}+\frac{\ln(1+y^2)}{y}=\frac{2\ln(1+y^2)}{y}.
+\]
+
+\section{Числовые ряды}
+
+\task{41}{Исследовать $\displaystyle\sum_{n=1}^\infty\frac{n^n+1}{(n+1)^n}$.}
+\sol $a_n=\dfrac{n^n+1}{(n+1)^n}\to\Bigl(\dfrac{n}{n+1}\Bigr)^n=\dfrac1{(1+1/n)^n}\to\dfrac1e\ne0$.
+Необходимый признак нарушен — ряд расходится.
+
+\task{42}{Доказать расходимость $\displaystyle\sum_{n=1}^\infty\frac1{\sqrt{n(n+1)}}$ (критерий Коши).}
+\sol $a_k=\dfrac1{\sqrt{k(k+1)}}>\dfrac1{k+1}$, поэтому
+$\sum_{k=n+1}^{2n}a_k>\sum_{k=n+1}^{2n}\dfrac1{k+1}\ge\dfrac{n}{2n+1}\ge\dfrac13$. Условие Коши не
+выполнено — ряд расходится.
+
+\task{43}{Исследовать $\displaystyle\sum_{n=1}^\infty\frac{\ln n}{n^2+\sin n}$.}
+\sol $a_n\sim\dfrac{\ln n}{n^2}$, а при больших $n$ $\ln n\le\sqrt n$, значит
+$a_n\le\dfrac1{n^{3/2}}$. Ряд $\sum n^{-3/2}$ сходится — исходный сходится.
+
+\task{44}{Исследовать $\displaystyle\sum_{n=1}^\infty\frac{(2n)!!}{n^n}$.}
+\sol $(2n)!!=2^n n!$. По Д'Аламберу
+$\dfrac{a_{n+1}}{a_n}=2(n+1)\dfrac{n^n}{(n+1)^{n+1}}=\dfrac{2}{(1+1/n)^n}\to\dfrac2e<1$ — сходится.
+
+\task{45}{Исследовать $\displaystyle\sum_{n=1}^\infty\Bigl(\frac{n-1}{n+1}\Bigr)^{n(n+1)}$.}
+\sol По Коши $\sqrt[n]{a_n}=\Bigl(\dfrac{n-1}{n+1}\Bigr)^{n+1}$, и
+$\ln\sqrt[n]{a_n}=(n+1)\ln\dfrac{1-1/n}{1+1/n}\to-2$, значит $\sqrt[n]{a_n}\to e^{-2}<1$ — сходится.
+
+\task{46}{$\displaystyle\sum_{n=2}^\infty\frac1{n\ln^p n}$ (интегральный признак).}
+\sol $\int_2^\infty\dfrac{dx}{x\ln^p x}$, $u=\ln x$: $\int\dfrac{du}{u^p}$ сходится $\iff p>1$.
+Значит ряд сходится при $p>1$ и расходится при $p\le1$.
+
+\section{Знакопеременные ряды}
+
+\task{47}{$\displaystyle\sum_{n=1}^\infty(-1)^n\frac{n+1}{n^2+n+1}$.}
+\sol $\abs{a_n}=\dfrac{n+1}{n^2+n+1}\sim\dfrac1n$ — абсолютной сходимости нет. Но $\abs{a_n}\downarrow0$
+$\Rightarrow$ по Лейбницу ряд сходится: \emph{условно}.
+
+\task{48}{$\displaystyle\sum_{n=1}^\infty\frac{(-1)^n\,2^n}{n!}$.}
+\sol $\sum\dfrac{2^n}{n!}=e^2<\infty$ — ряд сходится \emph{абсолютно}.
+
+\task{49}{$\displaystyle\sum_{n=2}^\infty\frac{(-1)^n}{n\ln n}$.}
+\sol $\sum\dfrac1{n\ln n}$ расходится (интегральный признак, $p=1$) — не абсолютно. $\dfrac1{n\ln n}\downarrow0$
+$\Rightarrow$ по Лейбницу сходится \emph{условно}.
+
+\task{50}{$\displaystyle\sum_{n=1}^\infty\frac{\sin n}{n^2}$.}
+\sol $\abs[\big]{\dfrac{\sin n}{n^2}}\le\dfrac1{n^2}$, ряд $\sum n^{-2}$ сходится $\Rightarrow$
+сходится \emph{абсолютно}.
+
+\task{51}{$\displaystyle\sum_{n=1}^\infty\frac{(-1)^n}{n^p}$, $p>0$.}
+\sol При $p>1$ — \emph{абсолютная} сходимость ($\sum n^{-p}$). При $0<p\le1$ ряд из модулей
+расходится, но $\tfrac1{n^p}\downarrow0$ $\Rightarrow$ по Лейбницу — \emph{условная} сходимость.
+
+\task{52}{Сколько членов $\displaystyle\sum_{n=1}^\infty\frac{(-1)^{n-1}}{n^2}$ нужно для точности $\eps=0.01$?}
+\sol По оценке Лейбница $\abs{R_N}\le a_{N+1}=\dfrac1{(N+1)^2}<0.01\iff(N+1)^2>100\iff N+1>10$.
+Значит достаточно $N=10$ членов.
+
+\section{Степенные ряды}
+
+\task{53}{Область сходимости $\displaystyle\sum_{n=1}^\infty\frac{x^{2n}}{2n\cdot4^n}$.}
+\sol Замена $t=x^2$: $\sum\dfrac{t^n}{2n\,4^n}$, $\tfrac1{R_t}=\lim\sqrt[n]{\tfrac1{2n4^n}}=\tfrac14$,
+$R_t=4$, т.е. $x^2<4$, $\abs x<2$. На границе $x^2=4$: $\sum\tfrac1{2n}$ расходится. Область
+сходимости $(-2,2)$.
+
+\task{54}{Сумма $\displaystyle\sum_{n=0}^\infty(n+1)x^n$.}
+\sol $(n+1)x^n=\bigl(x^{n+1}\bigr)'$, поэтому
+$\sum_{n\ge0}(n+1)x^n=\Bigl(\sum_{n\ge0}x^{n+1}\Bigr)'=\Bigl(\dfrac{x}{1-x}\Bigr)'=\dfrac1{(1-x)^2}$,
+$\abs x<1$.
+
+\task{55}{Сумма $\displaystyle\sum_{n=1}^\infty\frac{x^n}{n}$ (почленным интегрированием).}
+\sol Интегрируя $\sum_{n\ge0}x^n=\dfrac1{1-x}$: $\sum_{n\ge1}\dfrac{x^n}{n}=-\ln(1-x)$, $\abs x<1$
+(в $x=-1$ даёт $\ln2$). Область $[-1,1)$.
+
+\task{56}{Поведение на границах $\displaystyle\sum_{n=2}^\infty\frac{x^n}{n\ln^2 n}$.}
+\sol $R=1$. В $x=1$: $\sum\dfrac1{n\ln^2n}$ сходится (интегральный признак, $p=2$). В $x=-1$:
+$\sum\dfrac{(-1)^n}{n\ln^2n}$ сходится абсолютно. Значит ряд сходится на всём $[-1,1]$.
+
+\section{Аналитичность и единственность}
+
+\task{57}{Существует ли аналитическая $g$ на $\R$, совпадающая с $f=e^{-1/x^2}$ на $E=\{1/n\}$?}
+\sol Нет. У $E$ предельная точка $0$. По непрерывности $g(0)=\lim g(1/n)=\lim e^{-n^2}=0$. Если бы
+$g$ была аналитична в нуле, то $g(1/n)=e^{-n^2}$ убывает быстрее любой степени, что вынуждает все
+коэффициенты Тейлора $g$ в нуле обратиться в нуль, т.е. $g\equiv0$ — противоречие с $g(1/n)\ne0$.
+
+\task{58}{Аналитическая $f$ на $(-R,R)$, $f(1/n)=\tfrac1{n+1}$, $R=2$. Найти $f(1/2)$.}
+\sol Перепишем: $f(x_n)=\dfrac{x_n}{1+x_n}$ при $x_n=\tfrac1n$. Функция $h(x)=\dfrac{x}{1+x}$
+аналитична при $\abs x<1$, и $f=h$ на множестве с предельной точкой $0$. По теореме единственности
+$f\equiv h$, значит $f(\tfrac12)=\dfrac{1/2}{3/2}=\dfrac13$.
+
+\task{59}{Может ли аналитическая в окрестности нуля $f$ принимать в $x_n=1/n$ значения: (а) $0,1,0,1,\dots$; (б) $\sin n$?}
+\sol Нет в обоих случаях. По непрерывности $f(1/n)\to f(0)$, т.е. последовательность значений должна
+сходиться. Но $0,1,0,1,\dots$ и $\sin n$ предела не имеют — это несовместимо даже с непрерывностью,
+тем более с аналитичностью.
+
+\task{60}{Доказать: аналитическая на $\R$ $f$, совпадающая с $\sin x$ на $[0,0.0001]$, равна $\sin x$ всюду.}
+\sol Отрезок $[0,0.0001]$ содержит предельные точки. Разность $f(x)-\sin x$ аналитична и обращается
+в нуль на множестве с предельной точкой, значит по теореме единственности $f-\sin x\equiv0$ на всём
+$\R$.
+
+\section{Ряды Фурье}
+
+\task{61}{Разложив $f(x)=x^2$ на $[-\pi,\pi]$, доказать $\displaystyle\sum_{n=1}^\infty\frac1{n^4}=\frac{\pi^4}{90}$.}
+\sol Чётная функция: $a_0=\tfrac{2\pi^2}{3}$, $a_n=\dfrac{4(-1)^n}{n^2}$, $b_n=0$. По равенству
+Парсеваля $\tfrac1\pi\int_{-\pi}^\pi x^4\dx=\tfrac{a_0^2}{2}+\sum a_n^2$:
+\[
+  \frac{2\pi^4}{5}=\frac{2\pi^4}{9}+16\sum_{n\ge1}\frac1{n^4}
+  \ \Rightarrow\ \sum\frac1{n^4}=\frac1{16}\Bigl(\frac{2\pi^4}{5}-\frac{2\pi^4}{9}\Bigr)=\frac{\pi^4}{90}.
+\]
+
+\task{62}{Скорость убывания коэффициентов Фурье $f(x)=\abs{\sin x}^3$ при $n\to\infty$.}
+\sol Вблизи нуля $\abs{\sin x}^3\sim\abs x^3$: функция принадлежит $C^2$, а третья производная имеет
+скачки (как $6\sign x$). По правилу «гладкость $C^k$ + скачок $f^{(k+1)}$ $\Rightarrow$ коэффициенты
+$\sim n^{-(k+2)}$» при $k=2$ получаем убывание порядка $\dfrac1{n^4}$.
+
+\task{63}{Комплексные коэффициенты $c_n^{*}$ сдвига $g(x)=f(x-x_0)$.}
+\sol $c_n^{*}=\dfrac1{2\pi}\int_{-\pi}^\pi f(x-x_0)e^{-inx}\dx$; замена $y=x-x_0$:
+\[
+  c_n^{*}=\frac1{2\pi}\int f(y)e^{-in(y+x_0)}\,dy=e^{-inx_0}\cdot\frac1{2\pi}\int f(y)e^{-iny}\,dy
+  =e^{-inx_0}c_n.
+\]
+Сдвиг аргумента умножает $n$-й коэффициент на фазовый множитель $e^{-inx_0}$.

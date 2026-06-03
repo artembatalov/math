@@ -1,0 +1,119 @@
+% ==== Преамбула экзаменационных материалов (Theory / Proofs / Tasks) ====
+% Поля уже, чем в конспектах; после каждого пункта оставлен небольшой
+% вертикальный зазор для рукописных пометок.
+% Перед этим файлом определяются: \documentclass и макросы
+%   \coursename, \rightheader, \doctitle.
+\usepackage{fontspec}
+\setmainfont{cmunrm.otf}[
+  BoldFont       = cmunbx.otf,
+  ItalicFont     = cmunti.otf,
+  BoldItalicFont = cmunbi.otf]
+\usepackage{polyglossia}
+\setdefaultlanguage{russian}
+\setotherlanguage{english}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[a4paper,top=1.8cm,bottom=1.9cm,left=1.7cm,right=1.7cm]{geometry}
+\usepackage{enumitem}
+% ----- Менее сжатый текст и видимые отступы между абзацами -----
+\linespread{1.28}
+\setlength{\parskip}{0.55\baselineskip plus 2pt}
+\setlist{itemsep=2pt,topsep=3pt,parsep=0pt}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{xcolor}
+\definecolor{accent}{HTML}{1F6FEB}
+\definecolor{teormin}{HTML}{C1121F}
+\definecolor{rulecol}{HTML}{D0D7DE}
+\usepackage[colorlinks=true,linkcolor=accent,urlcolor=accent,citecolor=accent]{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+
+% ----- Колонтитулы -----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape \coursename}
+\fancyhead[R]{\small\itshape \rightheader}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{rulecol}\leaders\hrule height \headrulewidth\hfill}}
+
+% ----- Заголовки разделов -----
+\titleformat{\section}{\large\bfseries\color{accent}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{1.2ex}{0.6ex}
+\titleformat{\subsection}{\bfseries}{}{0pt}{}
+\titlespacing*{\subsection}{0pt}{1.0ex}{0.4ex}
+
+% ----- Операторы и сокращения -----
+\DeclareMathOperator{\tg}{tg}
+\DeclareMathOperator{\ctg}{ctg}
+\DeclareMathOperator{\arctg}{arctg}
+\DeclareMathOperator{\arcctg}{arcctg}
+\DeclareMathOperator{\sh}{sh}
+\DeclareMathOperator{\ch}{ch}
+\DeclareMathOperator{\Th}{th}
+\DeclareMathOperator{\cth}{cth}
+\DeclareMathOperator{\Const}{const}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\Span}{span}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\dx}{\,dx}
+\newcommand{\dt}{\,dt}
+\newcommand{\du}{\,du}
+\newcommand{\eps}{\varepsilon}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\renewcommand{\le}{\leqslant}
+\renewcommand{\ge}{\geqslant}
+\newcommand{\scal}[2]{\left( #1,\,#2\right)}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+
+% ----- Окружения для доказательств (Proofs) -----
+\theoremstyle{definition}
+\newtheorem{definition}{Определение}
+\newtheorem{example}{Пример}
+\newtheorem{remark}{Замечание}
+\theoremstyle{plain}
+\newtheorem{theorem}{Теорема}
+\newtheorem{lemma}{Лемма}
+\renewcommand{\proofname}{Доказательство}
+
+% ===== Хелперы для пунктов =====
+% Регулируемый зазор для рукописных пометок (пустая строка после пункта):
+\newcommand{\writespace}{\vspace{7.5mm}}
+
+% Theory: \faq{номер}{вопрос}{ответ}
+% номер теормина помечается красным значком !!! через \tm
+\newcommand{\tm}{\textcolor{teormin}{\,!!!}}
+\newcommand{\faq}[3]{%
+  \par\smallskip\noindent
+  \textbf{#1.}\enspace\textit{#2}\par
+  \nobreak\vspace{0.3ex}\noindent #3\par
+  \writespace}
+
+% Proofs: \prf{номер}{заголовок} ... затем \stmt / \dok блоки
+\newcommand{\prf}[2]{%
+  \par\writespace\noindent
+  {\large\bfseries\color{accent}#1.\enspace #2}\par\smallskip}
+\newcommand{\stmt}{\par\noindent\textbf{Формулировка.}\enspace}
+\newcommand{\dok}{\par\noindent\textbf{Доказательство.}\enspace}
+
+% Tasks: \task{номер}{условие} ... затем \sol для решения
+\newcommand{\task}[2]{%
+  \par\writespace\noindent
+  \textbf{\textcolor{accent}{Задача #1.}}\enspace #2\par\smallskip}
+\newcommand{\sol}{\par\noindent\textbf{Решение.}\enspace}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\begin{center}
+  {\LARGE\bfseries \doctitle}\\[3pt]
+  {\large\itshape \coursename}
+\end{center}
+\vspace{4pt}
