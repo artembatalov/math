@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>№27. Объёмы тел вращения — диски и оболочки</title>
+<style>
+  :root{ --accent:#1F6FEB; --red:#C1121F; --ink:#1b1f24; --muted:#5b6573; --line:#d8dee6; }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#fff}
+  header{padding:14px 20px;border-bottom:1px solid var(--line)}
+  header h1{margin:0 0 4px;font-size:18px}
+  header h1 .n{color:var(--accent)}
+  header .formula{font-size:15px;color:#000;background:#f3f6fb;border:1px solid var(--line);border-radius:8px;padding:6px 10px;display:inline-block;margin-top:6px}
+  header p{margin:8px 0 0;color:var(--muted);font-size:13px;max-width:900px;line-height:1.5}
+  #wrap{display:flex;flex-wrap:wrap;gap:0}
+  #view{flex:1 1 540px;min-height:62vh;background:#f7f8fa}
+  aside{flex:0 0 320px;border-left:1px solid var(--line);padding:16px 18px}
+  .grp{margin-bottom:18px}
+  .grp h3{margin:0 0 8px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  label{display:block;font-size:13px;margin:8px 0 4px}
+  select,input[type=range]{width:100%}
+  select{padding:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;background:#fff}
+  .seg{display:flex;gap:6px;margin-top:4px}
+  .seg button{flex:1;padding:8px 6px;border:1px solid var(--line);background:#fff;border-radius:6px;cursor:pointer;font-size:13px}
+  .seg button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .chk{display:flex;align-items:center;gap:8px;font-size:13px;margin:6px 0}
+  .nval{display:flex;justify-content:space-between;font-variant-numeric:tabular-nums;font-size:14px;padding:5px 0;border-bottom:1px dashed var(--line)}
+  .nval b{font-weight:600}
+  .nval .v{font-family:ui-monospace,Menlo,Consolas,monospace}
+  .swatch{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px;vertical-align:middle}
+  .hint{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.45}
+  .nbig{font-size:15px}
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="n">№27.</span> Объёмы тел вращения: метод дисков и оболочек</h1>
+  <div class="formula" id="curFormula">V = π·∫ f(x)² dx&nbsp;&nbsp;(вокруг Ox)</div>
+  <p>Криволинейная трапеция под графиком <i>y = f(x)</i> вращается вокруг оси. Метод
+  <b>дисков</b> (вокруг Ox): тело режется на цилиндрические диски πf²Δx. Метод
+  <b>оболочек</b> (вокруг Oy): тело собирается из вложенных цилиндрических оболочек 2πx·f·Δx.
+  Прозрачное тело — точное; цветные элементы — приближение римановой суммой. Вращайте мышью,
+  колесо — зум.</p>
+</header>
+<div id="wrap">
+  <div id="view"></div>
+  <aside>
+    <div class="grp">
+      <h3>Ось вращения / метод</h3>
+      <div class="seg" id="modeSeg">
+        <button data-mode="ox" class="on">вокруг Ox · диски</button>
+        <button data-mode="oy">вокруг Oy · оболочки</button>
+      </div>
+    </div>
+    <div class="grp">
+      <h3>Функция f(x)</h3>
+      <select id="fnSel"></select>
+    </div>
+    <div class="grp">
+      <h3>Число разбиений n = <span id="nLabel">12</span></h3>
+      <input type="range" id="nRange" min="2" max="48" value="12" step="1">
+      <div class="chk"><input type="checkbox" id="showExact" checked><label for="showExact" style="margin:0">показывать точное тело (прозрачное)</label></div>
+      <div class="chk"><input type="checkbox" id="showApprox" checked><label for="showApprox" style="margin:0">показывать приближение</label></div>
+    </div>
+    <div class="grp">
+      <h3>Значения</h3>
+      <div class="nval"><b><span class="swatch" style="background:#1F6FEB"></span>Приближение Vₙ</b><span class="v" id="vApprox">—</span></div>
+      <div class="nval"><b>Точный объём V</b><span class="v" id="vExact">—</span></div>
+      <div class="nval nbig"><b>|V − Vₙ|</b><span class="v" id="vDiff" style="color:var(--red)">—</span></div>
+      <div class="hint" id="riemHint"></div>
+    </div>
+  </aside>
+</div>
+
+<script src="three.min.js"></script>
+<script src="OrbitControls.js"></script>
+<script>
+"use strict";
+// ---------- математика: пресеты функций ----------
+const PRESETS = [
+  { name:"f(x) = 1 + sin x,  [0, π]",      f:x=>1+Math.sin(x),        a:0, b:Math.PI },
+  { name:"f(x) = √x,  [0, 4]",             f:x=>Math.sqrt(x),         a:0, b:4 },
+  { name:"f(x) = x²/4,  [0, 3]",           f:x=>x*x/4,                a:0, b:3 },
+  { name:"f(x) = 1 + 0.6·sin 2x,  [0, π]", f:x=>1+0.6*Math.sin(2*x),  a:0, b:Math.PI },
+];
+let preset = PRESETS[0];
+let mode = "ox";          // "ox" | "oy"
+let n = 12;
+
+function simpson(g,a,b,N){ // N чётное
+  const h=(b-a)/N; let s=g(a)+g(b);
+  for(let i=1;i<N;i++) s += (i%2?4:2)*g(a+i*h);
+  return s*h/3;
+}
+function exactVolume(){
+  const {f,a,b}=preset;
+  return mode==="ox" ? Math.PI*simpson(x=>f(x)*f(x),a,b,2000)
+                     : 2*Math.PI*simpson(x=>x*f(x),a,b,2000);
+}
+function approxVolume(){
+  const {f,a,b}=preset, h=(b-a)/n; let v=0;
+  for(let i=0;i<n;i++){ const xm=a+(i+0.5)*h;
+    v += mode==="ox" ? Math.PI*f(xm)*f(xm)*h : 2*Math.PI*xm*f(xm)*h; }
+  return v;
+}
+
+// ---------- сцена ----------
+let scene,camera,renderer,controls,world;
+let exactMesh=null, approxGroup=null, profileLine=null, axesG=null;
+
+function init(){
+  const holder=document.getElementById('view');
+  scene=new THREE.Scene(); scene.background=new THREE.Color(0xf7f8fa);
+  camera=new THREE.PerspectiveCamera(48, holder.clientWidth/holder.clientHeight, 0.01, 2000);
+  camera.position.set(5,3.4,6.5);
+  renderer=new THREE.WebGLRenderer({antialias:true});
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(holder.clientWidth, holder.clientHeight);
+  holder.appendChild(renderer.domElement);
+  controls=new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping=true; controls.dampingFactor=0.08;
+  scene.add(new THREE.AmbientLight(0xffffff,0.75));
+  const d1=new THREE.DirectionalLight(0xffffff,0.55); d1.position.set(6,10,7); scene.add(d1);
+  const d2=new THREE.DirectionalLight(0xffffff,0.30); d2.position.set(-6,-4,-5); scene.add(d2);
+  world=new THREE.Group(); scene.add(world);
+  approxGroup=new THREE.Group(); world.add(approxGroup);
+  window.addEventListener('resize',onResize);
+  rebuildAll(true);
+  animate();
+}
+function onResize(){
+  const holder=document.getElementById('view');
+  camera.aspect=holder.clientWidth/holder.clientHeight; camera.updateProjectionMatrix();
+  renderer.setSize(holder.clientWidth, holder.clientHeight);
+}
+function animate(){ requestAnimationFrame(animate); controls.update(); renderer.render(scene,camera); }
+
+function disposeObj(o){
+  if(!o) return;
+  o.traverse(c=>{ if(c.geometry)c.geometry.dispose(); if(c.material){
+    (Array.isArray(c.material)?c.material:[c.material]).forEach(m=>m.dispose()); }});
+}
+function clearGroup(g){ for(let i=g.children.length-1;i>=0;i--){ const c=g.children[i]; disposeObj(c); g.remove(c);} }
+
+// ---------- построение точного тела (Lathe) ----------
+function buildExact(){
+  if(exactMesh){ world.remove(exactMesh); disposeObj(exactMesh); exactMesh=null; }
+  if(profileLine){ world.remove(profileLine); disposeObj(profileLine); profileLine=null; }
+  const {f,a,b}=preset, M=120, pts=[];
+  if(mode==="ox"){
+    // профиль (radius=f, height=x) вокруг Y, потом повернём ось на X
+    pts.push(new THREE.Vector2(0,a));
+    for(let i=0;i<=M;i++){ const x=a+(b-a)*i/M; pts.push(new THREE.Vector2(Math.max(f(x),1e-4),x)); }
+    pts.push(new THREE.Vector2(0,b));
+  } else {
+    // вокруг Oy: профиль (radius=x, height=f)
+    pts.push(new THREE.Vector2(Math.max(a,1e-4),0));
+    for(let i=0;i<=M;i++){ const x=a+(b-a)*i/M; pts.push(new THREE.Vector2(Math.max(x,1e-4),f(x))); }
+    pts.push(new THREE.Vector2(Math.max(b,1e-4),0));
+  }
+  const geo=new THREE.LatheGeometry(pts,80);
+  const mat=new THREE.MeshStandardMaterial({color:0x9bbcf0,transparent:true,opacity:0.28,
+              side:THREE.DoubleSide,roughness:0.85,metalness:0.0,depthWrite:false});
+  exactMesh=new THREE.Mesh(geo,mat);
+  if(mode==="ox") exactMesh.rotation.z=-Math.PI/2; // ось Y -> X
+  world.add(exactMesh);
+
+  // линия профиля (исходный график f) для наглядности
+  const lpts=[];
+  for(let i=0;i<=M;i++){ const x=a+(b-a)*i/M;
+    lpts.push(mode==="ox"? new THREE.Vector3(x,f(x),0) : new THREE.Vector3(x,f(x),0)); }
+  const lgeo=new THREE.BufferGeometry().setFromPoints(lpts);
+  profileLine=new THREE.Line(lgeo,new THREE.LineBasicMaterial({color:0x0b3d91}));
+  world.add(profileLine);
+}
+
+// ---------- приближение ----------
+function buildApprox(){
+  clearGroup(approxGroup);
+  const {f,a,b}=preset, h=(b-a)/n;
+  const matDisk=new THREE.MeshStandardMaterial({color:0x1F6FEB,roughness:0.6,metalness:0.05,
+                  transparent:true,opacity:0.55,side:THREE.DoubleSide});
+  const edgeMat=new THREE.LineBasicMaterial({color:0x0b3d91,transparent:true,opacity:0.5});
+  for(let i=0;i<n;i++){
+    const xm=a+(i+0.5)*h;
+    if(mode==="ox"){
+      const r=Math.max(f(xm),1e-4);
+      const g=new THREE.CylinderGeometry(r,r,h,40,1,false);
+      const m=new THREE.Mesh(g,matDisk);
+      m.rotation.z=-Math.PI/2;          // ось диска вдоль X
+      m.position.x=a+(i+0.5)*h;
+      approxGroup.add(m);
+    } else {
+      const r=Math.max(xm,1e-4), hh=Math.max(f(xm),1e-4);
+      const g=new THREE.CylinderGeometry(r,r,hh,48,1,true); // открытая оболочка
+      const m=new THREE.Mesh(g,matDisk);
+      m.position.y=hh/2;                // стоит на плоскости y=0
+      approxGroup.add(m);
+      const eg=new THREE.EdgesGeometry(g);
+      approxGroup.add(new THREE.LineSegments(eg,edgeMat));
+    }
+  }
+  approxGroup.visible=document.getElementById('showApprox').checked;
+}
+
+// ---------- центрирование/масштаб (зависит только от пресета и режима) ----------
+function frameWorld(){
+  const {f,a,b}=preset;
+  let fmax=0; for(let i=0;i<=200;i++){const x=a+(b-a)*i/200; fmax=Math.max(fmax,f(x));}
+  let cx=0,cy=0,cz=0,ext=1;
+  if(mode==="ox"){ cx=(a+b)/2; cy=0; cz=0; ext=Math.max(b-a, 2*fmax); }
+  else           { cx=0; cy=fmax/2; cz=0; ext=Math.max(2*b, fmax); }
+  const s=4.2/ext;
+  world.scale.setScalar(s);
+  world.position.set(-cx*s,-cy*s,-cz*s);
+}
+
+function rebuildAll(reframe){
+  buildExact();
+  buildApprox();
+  if(reframe) frameWorld();
+  if(exactMesh) exactMesh.visible=document.getElementById('showExact').checked;
+  updateNumbers();
+  updateFormula();
+}
+function updateNumbers(){
+  const ve=exactVolume(), va=approxVolume();
+  document.getElementById('vApprox').textContent=va.toFixed(4);
+  document.getElementById('vExact').textContent =ve.toFixed(4);
+  document.getElementById('vDiff').textContent  =Math.abs(ve-va).toFixed(4);
+  const {a,b}=preset, h=((b-a)/n).toFixed(3);
+  document.getElementById('riemHint').textContent = mode==="ox"
+    ? `Vₙ = Σ π·f(xᵢ*)²·Δx,  Δx=${h}  (xᵢ* — середина отрезка)`
+    : `Vₙ = Σ 2π·xᵢ*·f(xᵢ*)·Δx,  Δx=${h}`;
+}
+function updateFormula(){
+  document.getElementById('curFormula').innerHTML = mode==="ox"
+    ? "V = π·∫ f(x)² dx&nbsp;&nbsp;(вокруг Ox, диски)"
+    : "V = 2π·∫ x·f(x) dx&nbsp;&nbsp;(вокруг Oy, оболочки)";
+}
+
+// ---------- UI ----------
+function buildUI(){
+  const sel=document.getElementById('fnSel');
+  PRESETS.forEach((p,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=p.name; sel.appendChild(o); });
+  sel.addEventListener('change',()=>{ preset=PRESETS[+sel.value]; rebuildAll(true); });
+  document.querySelectorAll('#modeSeg button').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('#modeSeg button').forEach(b=>b.classList.remove('on'));
+      btn.classList.add('on'); mode=btn.dataset.mode; rebuildAll(true);
+    });
+  });
+  const nr=document.getElementById('nRange');
+  nr.addEventListener('input',()=>{ n=+nr.value; document.getElementById('nLabel').textContent=n; buildApprox(); updateNumbers(); });
+  document.getElementById('showExact').addEventListener('change',e=>{ if(exactMesh)exactMesh.visible=e.target.checked; });
+  document.getElementById('showApprox').addEventListener('change',e=>{ approxGroup.visible=e.target.checked; });
+}
+
+buildUI();
+init();
+</script>
+</body>
+</html>
