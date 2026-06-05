@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>№25. Площадь криволинейного сектора в полярных координатах</title>
+<style>
+  :root{ --accent:#1F6FEB; --red:#C1121F; --ink:#1b1f24; --muted:#5b6573; --line:#d8dee6; }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#fff}
+  header{padding:14px 20px;border-bottom:1px solid var(--line)}
+  header h1{margin:0 0 4px;font-size:18px}
+  header h1 .n{color:var(--accent)}
+  header .formula{font-size:15px;background:#f3f6fb;border:1px solid var(--line);border-radius:8px;padding:6px 10px;display:inline-block;margin-top:6px}
+  header p{margin:8px 0 0;color:var(--muted);font-size:13px;max-width:900px;line-height:1.5}
+  #wrap{display:flex;flex-wrap:wrap}
+  #view{flex:1 1 540px;min-height:62vh;background:#f7f8fa}
+  aside{flex:0 0 320px;border-left:1px solid var(--line);padding:16px 18px}
+  .grp{margin-bottom:18px}
+  .grp h3{margin:0 0 8px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  select{width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;background:#fff}
+  input[type=range]{width:100%}
+  .nval{display:flex;justify-content:space-between;font-variant-numeric:tabular-nums;font-size:14px;padding:5px 0;border-bottom:1px dashed var(--line)}
+  .nval .v{font-family:ui-monospace,Menlo,Consolas,monospace}
+  .swatch{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px;vertical-align:middle}
+  .hint{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.45}
+  .nbig{font-size:15px}
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="n">№25.</span> Площадь криволинейного сектора в полярных координатах</h1>
+  <div class="formula">S = ½ · ∫<sub>α</sub><sup>β</sup> ρ²(φ) dφ</div>
+  <p>Сектор, ограниченный кривой ρ = ρ(φ), приближаем круговыми секторами. На каждом
+  кусочке [φ<sub>i−1</sub>, φ<sub>i</sub>] берём радиус m<sub>i</sub> = min ρ (нижняя оценка, синие
+  секторы) и M<sub>i</sub> = max ρ (верхняя, красная «надстройка»). Площади этих ступенчатых фигур —
+  нижняя и верхняя суммы Дарбу для ½ρ²; при n→∞ они сходятся к интегралу. Зажатый между ними
+  истинный сектор — это сама область. Можно вращать сцену мышью.</p>
+</header>
+<div id="wrap">
+  <div id="view"></div>
+  <aside>
+    <div class="grp">
+      <h3>Кривая ρ(φ)</h3>
+      <select id="fnSel"></select>
+    </div>
+    <div class="grp">
+      <h3>Число секторов n = <span id="nLabel">8</span></h3>
+      <input type="range" id="nRange" min="1" max="60" value="8" step="1">
+    </div>
+    <div class="grp">
+      <h3>Суммы Дарбу</h3>
+      <div class="nval"><b><span class="swatch" style="background:#C1121F"></span>Верхняя S*</b><span class="v" id="sUp">—</span></div>
+      <div class="nval"><b><span class="swatch" style="background:#1F6FEB"></span>Нижняя S∗</b><span class="v" id="sLo">—</span></div>
+      <div class="nval"><b>Точная S = ½∫ρ²dφ</b><span class="v" id="sEx">—</span></div>
+      <div class="nval nbig"><b>Зазор S*−S∗</b><span class="v" id="sGap" style="color:var(--red)">—</span></div>
+      <div class="hint">Нижняя ≤ S ≤ Верхняя. Зазор = Σ ½(M<sub>i</sub>²−m<sub>i</sub>²)Δφ → 0.</div>
+    </div>
+  </aside>
+</div>
+
+<script src="three.min.js"></script>
+<script src="OrbitControls.js"></script>
+<script>
+"use strict";
+const PRESETS=[
+  { name:"ρ = 1  (дуга круга), [0, 3π/2]",  r:()=>1,                       a:0, b:3*Math.PI/2 },
+  { name:"ρ = 0.2φ  (спираль), [0, 3π]",    r:φ=>0.2*φ,                    a:0, b:3*Math.PI },
+  { name:"ρ = 1+cos φ  (кардиоида), [0, π]", r:φ=>1+Math.cos(φ),           a:0, b:Math.PI },
+  { name:"ρ = 1+0.5·sin 3φ, [0, 2π]",        r:φ=>1+0.5*Math.sin(3*φ),     a:0, b:2*Math.PI },
+];
+let preset=PRESETS[0], n=8;
+
+function simpson(g,a,b,N){ const h=(b-a)/N; let s=g(a)+g(b);
+  for(let i=1;i<N;i++) s+=(i%2?4:2)*g(a+i*h); return s*h/3; }
+function exactArea(){ const {r,a,b}=preset; return 0.5*simpson(φ=>r(φ)*r(φ),a,b,2000); }
+function minMaxOn(a,b){ const {r}=preset; let lo=Infinity,hi=-Infinity;
+  for(let k=0;k<=24;k++){ const φ=a+(b-a)*k/24, v=r(φ); if(v<lo)lo=v; if(v>hi)hi=v; } return [lo,hi]; }
+function sums(){ const {a,b}=preset, h=(b-a)/n; let lo=0,hi=0;
+  for(let i=0;i<n;i++){ const [m,M]=minMaxOn(a+i*h,a+(i+1)*h); lo+=0.5*m*m*h; hi+=0.5*M*M*h; }
+  return [lo,hi]; }
+
+let scene,camera,renderer,controls,world,curveObj=null,sectorsG=null;
+
+function init(){
+  const holder=document.getElementById('view');
+  scene=new THREE.Scene(); scene.background=new THREE.Color(0xf7f8fa);
+  camera=new THREE.PerspectiveCamera(45, holder.clientWidth/holder.clientHeight,0.01,1000);
+  renderer=new THREE.WebGLRenderer({antialias:true});
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(holder.clientWidth,holder.clientHeight);
+  holder.appendChild(renderer.domElement);
+  controls=new THREE.OrbitControls(camera,renderer.domElement);
+  controls.enableDamping=true; controls.dampingFactor=0.08;
+  scene.add(new THREE.AmbientLight(0xffffff,0.9));
+  const d=new THREE.DirectionalLight(0xffffff,0.4); d.position.set(2,3,6); scene.add(d);
+  world=new THREE.Group(); scene.add(world);
+  sectorsG=new THREE.Group(); world.add(sectorsG);
+  window.addEventListener('resize',onResize);
+  rebuildAll(true); animate();
+}
+function onResize(){ const h=document.getElementById('view');
+  camera.aspect=h.clientWidth/h.clientHeight; camera.updateProjectionMatrix();
+  renderer.setSize(h.clientWidth,h.clientHeight); }
+function animate(){ requestAnimationFrame(animate); controls.update(); renderer.render(scene,camera); }
+function disposeObj(o){ if(!o)return; o.traverse(c=>{ if(c.geometry)c.geometry.dispose();
+  if(c.material){(Array.isArray(c.material)?c.material:[c.material]).forEach(m=>m.dispose());} }); }
+function clearGroup(g){ for(let i=g.children.length-1;i>=0;i--){const c=g.children[i];disposeObj(c);g.remove(c);} }
+
+function fanMesh(rad,a0,a1,color,opacity,z){
+  const {r}=preset; const steps=Math.max(2,Math.ceil((a1-a0)/0.08));
+  const pos=[];
+  for(let k=0;k<steps;k++){
+    const φ0=a0+(a1-a0)*k/steps, φ1=a0+(a1-a0)*(k+1)/steps;
+    pos.push(0,0,z,  rad*Math.cos(φ0),rad*Math.sin(φ0),z,  rad*Math.cos(φ1),rad*Math.sin(φ1),z);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+  g.computeVertexNormals();
+  const m=new THREE.MeshBasicMaterial({color,transparent:true,opacity,side:THREE.DoubleSide,depthWrite:false});
+  return new THREE.Mesh(g,m);
+}
+function buildSectors(){
+  clearGroup(sectorsG);
+  const {a,b}=preset, h=(b-a)/n;
+  for(let i=0;i<n;i++){
+    const a0=a+i*h, a1=a+(i+1)*h, [m,M]=minMaxOn(a0,a1);
+    sectorsG.add(fanMesh(M,a0,a1,0xC1121F,0.30,0.000)); // верхний (красный)
+    sectorsG.add(fanMesh(m,a0,a1,0x1F6FEB,0.55,0.002)); // нижний (синий) поверх
+  }
+}
+function buildCurve(){
+  if(curveObj){ world.remove(curveObj); disposeObj(curveObj); }
+  const {r,a,b}=preset, pts=[], M=400;
+  for(let i=0;i<=M;i++){ const φ=a+(b-a)*i/M; pts.push(new THREE.Vector3(r(φ)*Math.cos(φ),r(φ)*Math.sin(φ),0.01)); }
+  const g=new THREE.BufferGeometry().setFromPoints(pts);
+  curveObj=new THREE.Group();
+  curveObj.add(new THREE.Line(g,new THREE.LineBasicMaterial({color:0x0b3d91})));
+  // радиальные границы
+  const e0=new THREE.Vector3(r(a)*Math.cos(a),r(a)*Math.sin(a),0.01);
+  const e1=new THREE.Vector3(r(b)*Math.cos(b),r(b)*Math.sin(b),0.01);
+  [e0,e1].forEach(e=>{ const lg=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0.01),e]);
+    curveObj.add(new THREE.Line(lg,new THREE.LineBasicMaterial({color:0x0b3d91}))); });
+  world.add(curveObj);
+}
+function frameCamera(){
+  const {r,a,b}=preset; let R=0;
+  for(let i=0;i<=400;i++){ const φ=a+(b-a)*i/400; R=Math.max(R,r(φ)); }
+  const D=R*2.6;
+  camera.position.set(0,0,D); camera.up.set(0,1,0);
+  controls.target.set(0,0,0); controls.update();
+}
+function rebuildAll(reframe){ buildCurve(); buildSectors(); if(reframe)frameCamera(); updateNumbers(); }
+function updateNumbers(){
+  const [lo,hi]=sums(), ex=exactArea();
+  document.getElementById('sUp').textContent=hi.toFixed(4);
+  document.getElementById('sLo').textContent=lo.toFixed(4);
+  document.getElementById('sEx').textContent=ex.toFixed(4);
+  document.getElementById('sGap').textContent=(hi-lo).toFixed(4);
+}
+function buildUI(){
+  const sel=document.getElementById('fnSel');
+  PRESETS.forEach((p,i)=>{const o=document.createElement('option');o.value=i;o.textContent=p.name;sel.appendChild(o);});
+  sel.addEventListener('change',()=>{preset=PRESETS[+sel.value];rebuildAll(true);});
+  const nr=document.getElementById('nRange');
+  nr.addEventListener('input',()=>{n=+nr.value;document.getElementById('nLabel').textContent=n;buildSectors();updateNumbers();});
+}
+buildUI(); init();
+</script>
+</body>
+</html>

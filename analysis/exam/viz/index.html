@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Визуализации к экзамену — матанализ</title>
+<style>
+  :root{ --accent:#1F6FEB; --ink:#1b1f24; --muted:#5b6573; --line:#d8dee6; }
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#fff;padding:32px 22px;max-width:760px;margin:0 auto}
+  h1{font-size:22px;margin:0 0 4px}
+  p.sub{color:var(--muted);margin:0 0 24px}
+  a.card{display:block;text-decoration:none;color:inherit;border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:14px;transition:.15s}
+  a.card:hover{border-color:var(--accent);box-shadow:0 2px 14px rgba(31,111,235,.12)}
+  a.card .t{font-size:16px;font-weight:600}
+  a.card .t .n{color:var(--accent)}
+  a.card .d{color:var(--muted);font-size:13px;margin-top:4px}
+  .foot{color:var(--muted);font-size:12px;margin-top:18px;line-height:1.5}
+</style>
+</head>
+<body>
+  <h1>Интерактивные визуализации</h1>
+  <p class="sub">Математический анализ · приложения определённого интеграла (тестовый набор)</p>
+
+  <a class="card" href="25-polar-sector.html">
+    <div class="t"><span class="n">№25.</span> Площадь сектора в полярных координатах</div>
+    <div class="d">Нижние/верхние круговые секторы (суммы Дарбу) → ½∫ρ²dφ. Ползунок n, выбор ρ(φ).</div>
+  </a>
+  <a class="card" href="26-arc-length.html">
+    <div class="t"><span class="n">№26.</span> Длина дуги гладкой кривой</div>
+    <div class="d">Вписанная ломаная → ∫√(1+y′²)dx. Ползунок числа звеньев, выбор y(x).</div>
+  </a>
+  <a class="card" href="27-volumes.html">
+    <div class="t"><span class="n">№27.</span> Объёмы тел вращения: диски и оболочки</div>
+    <div class="d">3D-тело вращения вокруг Ox (диски) или Oy (оболочки). Вращение мышью, ползунок n.</div>
+  </a>
+
+  <div class="foot">Полностью офлайн: <code>three.min.js</code> и <code>OrbitControls.js</code> лежат рядом.
+  Открывайте любой файл двойным щелчком — интернет не нужен.</div>
+</body>
+</html>

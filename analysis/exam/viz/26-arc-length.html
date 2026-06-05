@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>№26. Длина дуги гладкой кривой</title>
+<style>
+  :root{ --accent:#1F6FEB; --red:#C1121F; --ink:#1b1f24; --muted:#5b6573; --line:#d8dee6; }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#fff}
+  header{padding:14px 20px;border-bottom:1px solid var(--line)}
+  header h1{margin:0 0 4px;font-size:18px}
+  header h1 .n{color:var(--accent)}
+  header .formula{font-size:15px;background:#f3f6fb;border:1px solid var(--line);border-radius:8px;padding:6px 10px;display:inline-block;margin-top:6px}
+  header p{margin:8px 0 0;color:var(--muted);font-size:13px;max-width:900px;line-height:1.5}
+  #wrap{display:flex;flex-wrap:wrap}
+  #view{flex:1 1 540px;min-height:62vh;background:#f7f8fa}
+  aside{flex:0 0 320px;border-left:1px solid var(--line);padding:16px 18px}
+  .grp{margin-bottom:18px}
+  .grp h3{margin:0 0 8px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  select{width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;background:#fff}
+  input[type=range]{width:100%}
+  .nval{display:flex;justify-content:space-between;font-variant-numeric:tabular-nums;font-size:14px;padding:5px 0;border-bottom:1px dashed var(--line)}
+  .nval .v{font-family:ui-monospace,Menlo,Consolas,monospace}
+  .swatch{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px;vertical-align:middle}
+  .hint{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.45}
+  .nbig{font-size:15px}
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="n">№26.</span> Длина дуги гладкой кривой</h1>
+  <div class="formula">L = ∫<sub>a</sub><sup>b</sup> √(1 + y′(x)²) dx&nbsp;=&nbsp;lim Σ √(Δxᵢ² + Δyᵢ²)</div>
+  <p>Длина дуги — предел длин <b>вписанных ломаных</b>. На отрезке [x<sub>i−1</sub>, x<sub>i</sub>]
+  звено равно √(Δx² + Δy²); по теореме Лагранжа Δy<sub>i</sub> = y′(ξ<sub>i</sub>)Δx, и сумма
+  превращается в интегральную сумму для √(1+y′²). Ломаная (красная) всегда короче дуги (синяя) и
+  монотонно растёт к L при n→∞. Можно вращать сцену мышью.</p>
+</header>
+<div id="wrap">
+  <div id="view"></div>
+  <aside>
+    <div class="grp">
+      <h3>Кривая y(x)</h3>
+      <select id="fnSel"></select>
+    </div>
+    <div class="grp">
+      <h3>Число звеньев n = <span id="nLabel">6</span></h3>
+      <input type="range" id="nRange" min="1" max="60" value="6" step="1">
+    </div>
+    <div class="grp">
+      <h3>Значения</h3>
+      <div class="nval"><b><span class="swatch" style="background:#C1121F"></span>Ломаная Lₙ</b><span class="v" id="lPoly">—</span></div>
+      <div class="nval"><b><span class="swatch" style="background:#0b3d91"></span>Точная L</b><span class="v" id="lExact">—</span></div>
+      <div class="nval nbig"><b>L − Lₙ</b><span class="v" id="lDiff" style="color:var(--red)">—</span></div>
+      <div class="hint">Ломаная вписана ⇒ Lₙ ≤ L, и Lₙ ↑ L при измельчении (неравенство треугольника).</div>
+    </div>
+  </aside>
+</div>
+
+<script src="three.min.js"></script>
+<script src="OrbitControls.js"></script>
+<script>
+"use strict";
+const PRESETS=[
+  { name:"y = x²/4,  [0, 3]",          y:x=>x*x/4,                 a:0, b:3 },
+  { name:"y = sin x,  [0, π]",          y:x=>Math.sin(x),           a:0, b:Math.PI },
+  { name:"y = √x,  [0, 4]",            y:x=>Math.sqrt(x),          a:0, b:4 },
+  { name:"y = 1 + 0.5·sin 2x,  [0, π]", y:x=>1+0.5*Math.sin(2*x),   a:0, b:Math.PI },
+];
+let preset=PRESETS[0], n=6;
+
+function polyLen(k){ const {y,a,b}=preset, h=(b-a)/k; let L=0;
+  for(let i=0;i<k;i++){ const x0=a+i*h, x1=a+(i+1)*h, dx=x1-x0, dy=y(x1)-y(x0); L+=Math.hypot(dx,dy); } return L; }
+function exactLen(){ return polyLen(4000); } // очень мелкая ломаная ≈ точная длина
+
+let scene,camera,renderer,controls,world,curveObj=null,polyObj=null;
+
+function init(){
+  const holder=document.getElementById('view');
+  scene=new THREE.Scene(); scene.background=new THREE.Color(0xf7f8fa);
+  camera=new THREE.PerspectiveCamera(45,holder.clientWidth/holder.clientHeight,0.01,1000);
+  renderer=new THREE.WebGLRenderer({antialias:true});
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(holder.clientWidth,holder.clientHeight);
+  holder.appendChild(renderer.domElement);
+  controls=new THREE.OrbitControls(camera,renderer.domElement);
+  controls.enableDamping=true; controls.dampingFactor=0.08;
+  scene.add(new THREE.AmbientLight(0xffffff,0.95));
+  world=new THREE.Group(); scene.add(world);
+  window.addEventListener('resize',onResize);
+  rebuildAll(true); animate();
+}
+function onResize(){ const h=document.getElementById('view');
+  camera.aspect=h.clientWidth/h.clientHeight; camera.updateProjectionMatrix();
+  renderer.setSize(h.clientWidth,h.clientHeight); }
+function animate(){ requestAnimationFrame(animate); controls.update(); renderer.render(scene,camera); }
+function disposeObj(o){ if(!o)return; o.traverse(c=>{ if(c.geometry)c.geometry.dispose();
+  if(c.material){(Array.isArray(c.material)?c.material:[c.material]).forEach(m=>m.dispose());} }); }
+
+function buildCurve(){
+  if(curveObj){ world.remove(curveObj); disposeObj(curveObj); }
+  const {y,a,b}=preset, pts=[], M=400;
+  for(let i=0;i<=M;i++){ const x=a+(b-a)*i/M; pts.push(new THREE.Vector3(x,y(x),0)); }
+  const g=new THREE.BufferGeometry().setFromPoints(pts);
+  curveObj=new THREE.Line(g,new THREE.LineBasicMaterial({color:0x0b3d91}));
+  world.add(curveObj);
+}
+function buildPoly(){
+  if(polyObj){ world.remove(polyObj); disposeObj(polyObj); }
+  polyObj=new THREE.Group();
+  const {y,a,b}=preset, h=(b-a)/n, pts=[];
+  for(let i=0;i<=n;i++){ const x=a+i*h; pts.push(new THREE.Vector3(x,y(x),0.01)); }
+  const g=new THREE.BufferGeometry().setFromPoints(pts);
+  polyObj.add(new THREE.Line(g,new THREE.LineBasicMaterial({color:0xC1121F})));
+  const pg=new THREE.BufferGeometry().setFromPoints(pts);
+  polyObj.add(new THREE.Points(pg,new THREE.PointsMaterial({color:0xC1121F,size:6,sizeAttenuation:false})));
+  world.add(polyObj);
+}
+function frameCamera(){
+  const {y,a,b}=preset; let ymin=Infinity,ymax=-Infinity;
+  for(let i=0;i<=400;i++){ const v=y(a+(b-a)*i/400); if(v<ymin)ymin=v; if(v>ymax)ymax=v; }
+  const cx=(a+b)/2, cy=(ymin+ymax)/2;
+  const w=b-a, hgt=Math.max(ymax-ymin,0.5);
+  world.position.set(-cx,-cy,0);
+  const E=0.55*Math.max(w, hgt*(camera.aspect||1));
+  const D=Math.max(E/Math.tan(Math.PI/8), 2);
+  camera.position.set(0,0,D*1.05); camera.up.set(0,1,0);
+  controls.target.set(0,0,0); controls.update();
+}
+function rebuildAll(reframe){ buildCurve(); buildPoly(); if(reframe)frameCamera(); updateNumbers(); }
+function updateNumbers(){
+  const Ln=polyLen(n), L=exactLen();
+  document.getElementById('lPoly').textContent=Ln.toFixed(4);
+  document.getElementById('lExact').textContent=L.toFixed(4);
+  document.getElementById('lDiff').textContent=(L-Ln).toFixed(4);
+}
+function buildUI(){
+  const sel=document.getElementById('fnSel');
+  PRESETS.forEach((p,i)=>{const o=document.createElement('option');o.value=i;o.textContent=p.name;sel.appendChild(o);});
+  sel.addEventListener('change',()=>{preset=PRESETS[+sel.value];rebuildAll(true);});
+  const nr=document.getElementById('nRange');
+  nr.addEventListener('input',()=>{n=+nr.value;document.getElementById('nLabel').textContent=n;buildPoly();updateNumbers();});
+}
+buildUI(); init();
+</script>
+</body>
+</html>
