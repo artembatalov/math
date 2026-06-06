@@ -1,0 +1,211 @@
+% !TEX program = xelatex
+% Самодостаточный конспект. Компилировать XeLaTeX/LuaLaTeX (tectonic 03-sobstvennye-znacheniya.tex).
+\documentclass[11pt,a4paper]{article}
+\newcommand{\coursename}{Специальные разделы высшей математики}
+\newcommand{\rightheader}{§3. Собственные значения и диагонализуемость}
+\newcommand{\doctitle}{Собственные значения и диагонализуемость}
+% ==== Общая преамбула конспектов (собирается в каждый .tex как самодостаточная) ====
+% Перед этим файлом должны быть определены: \documentclass и макросы
+%   \coursename  — название курса (левый колонтитул, подзаголовок),
+%   \rightheader — правый колонтитул (напр. «§2. Рациональные дроби»),
+%   \doctitle    — заголовок раздела на титуле.
+\usepackage{fontspec}
+\setmainfont{cmunrm.otf}[
+  BoldFont       = cmunbx.otf,
+  ItalicFont     = cmunti.otf,
+  BoldItalicFont = cmunbi.otf]
+\usepackage{polyglossia}
+\setdefaultlanguage{russian}
+\setotherlanguage{english}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{xcolor}
+\definecolor{accent}{HTML}{1F6FEB}
+\definecolor{rulecol}{HTML}{D0D7DE}
+\usepackage[colorlinks=true,linkcolor=accent,urlcolor=accent,citecolor=accent]{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+
+% ----- Колонтитулы -----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape \coursename}
+\fancyhead[R]{\small\itshape \rightheader}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{rulecol}\leaders\hrule height \headrulewidth\hfill}}
+
+% ----- Заголовки -----
+\titleformat{\section}{\large\bfseries\color{accent}}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\bfseries}{\thesubsection.}{0.5em}{}
+
+% ----- Теоремные окружения (стиль конспекта) -----
+\theoremstyle{definition}
+\newtheorem{definition}{Определение}[section]
+\newtheorem{example}[definition]{Пример}
+\newtheorem{remark}[definition]{Замечание}
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Теорема}
+\newtheorem{lemma}[definition]{Лемма}
+\newtheorem{corollary}[definition]{Следствие}
+\newtheorem{property}[definition]{Свойство}
+\newtheorem{criterion}[definition]{Критерий}
+\renewcommand{\proofname}{Доказательство}
+
+% ----- Операторы и сокращения -----
+\DeclareMathOperator{\tg}{tg}
+\DeclareMathOperator{\ctg}{ctg}
+\DeclareMathOperator{\arctg}{arctg}
+\DeclareMathOperator{\arcctg}{arcctg}
+\DeclareMathOperator{\sh}{sh}
+\DeclareMathOperator{\ch}{ch}
+\DeclareMathOperator{\Th}{th}
+\DeclareMathOperator{\cth}{cth}
+\DeclareMathOperator{\Const}{const}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\rang}{rang}
+\DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\Img}{Im}
+\DeclareMathOperator{\tr}{tr}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\dx}{\,dx}
+\newcommand{\dt}{\,dt}
+\newcommand{\du}{\,du}
+\newcommand{\eps}{\varepsilon}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\renewcommand{\le}{\leqslant}
+\renewcommand{\ge}{\geqslant}
+\newcommand{\scal}[2]{\left( #1,\,#2\right)}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+
+\begin{document}
+\begin{center}
+  {\LARGE\bfseries \doctitle}\\[4pt]
+  {\large\itshape \coursename}
+\end{center}
+\vspace{6pt}
+
+\section{Собственные значения и собственные векторы}
+
+\begin{definition}
+Ненулевой вектор $x$ — \emph{собственный} для оператора $\mathcal A$, если
+$\mathcal Ax=\lambda x$ при некотором $\lambda$; число $\lambda$ — \emph{собственное значение}.
+Геометрически $\mathcal A$ лишь растягивает (в $\lambda$ раз) направление $x$, не поворачивая его.
+\end{definition}
+
+\begin{definition}
+\emph{Характеристический многочлен} $\chi_{\mathcal A}(\lambda)=\det(A-\lambda I)$. Собственные
+значения — его корни: $\det(A-\lambda I)=0$ (тогда $A-\lambda I$ вырождена и уравнение
+$(A-\lambda I)x=0$ имеет ненулевое решение).
+\end{definition}
+
+\begin{theorem}[инвариантность $\chi$]
+Характеристический многочлен не зависит от выбора базиса. Его коэффициенты при $\lambda^{n-1}$ и
+свободный член дают $\tr A$ и $\det A$: $\chi(\lambda)=(-1)^n\lambda^n+(-1)^{n-1}(\tr A)\lambda^{n-1}+\dots+\det A$.
+\end{theorem}
+
+\begin{proof}
+Для подобной матрицы $A'=S^{-1}AS$:
+\[
+  \det(A'-\lambda I)=\det\!\bigl(S^{-1}(A-\lambda I)S\bigr)=\det S^{-1}\det(A-\lambda I)\det S=\det(A-\lambda I).
+\]
+Значит $\chi$ — инвариант. Подставив $\lambda=0$: $\chi(0)=\det A$; коэффициент при
+$\lambda^{n-1}$ равен $(-1)^{n-1}\tr A$ (сумма диагональных миноров $1$-го порядка).
+\end{proof}
+
+\section{Собственные подпространства}
+
+\begin{theorem}
+Множество $V_\lambda=\Ker(\mathcal A-\lambda\mathcal I)=\{x:\mathcal Ax=\lambda x\}$ — подпространство
+(\emph{собственное подпространство}). Его размерность называют \emph{геометрической кратностью}
+$k_{\text{геом}}(\lambda)$.
+\end{theorem}
+
+\begin{proof}
+$V_\lambda$ — ядро линейного оператора $\mathcal A-\lambda\mathcal I$, а ядро всегда является
+подпространством.
+\end{proof}
+
+\begin{theorem}
+Собственные векторы, отвечающие \emph{попарно различным} собственным значениям, линейно независимы.
+\end{theorem}
+
+\begin{proof}
+Индукция по числу $m$ векторов. База $m=1$: один ненулевой вектор независим. Шаг: пусть
+$x_1,\dots,x_m$ отвечают различным $\lambda_1,\dots,\lambda_m$ и
+$\sum_{i=1}^m c_i x_i=0$. Применим $\mathcal A$ и вычтем уравнение, умноженное на $\lambda_m$:
+\[
+  0=\mathcal A\Bigl(\sum c_i x_i\Bigr)-\lambda_m\sum c_i x_i=\sum_{i=1}^{m-1}c_i(\lambda_i-\lambda_m)x_i .
+\]
+По предположению индукции $x_1,\dots,x_{m-1}$ независимы, а $\lambda_i-\lambda_m\ne0$, поэтому все
+$c_i=0$ ($i<m$). Тогда $c_m x_m=0$, откуда $c_m=0$.
+\end{proof}
+
+\begin{corollary}
+Если $\chi$ имеет $n=\dim V$ различных корней, то существует базис из собственных векторов.
+\end{corollary}
+
+\section{Алгебраическая и геометрическая кратности}
+
+\begin{definition}
+\emph{Алгебраическая кратность} $k_{\text{алг}}(\lambda)$ — кратность $\lambda$ как корня $\chi$.
+\emph{Геометрическая} $k_{\text{геом}}(\lambda)=\dim V_\lambda$.
+\end{definition}
+
+\begin{theorem}
+$1\le k_{\text{геом}}(\lambda)\le k_{\text{алг}}(\lambda)$.
+\end{theorem}
+
+\begin{proof}
+$\lambda$ — корень $\chi$, значит $V_\lambda\ne\{0\}$ и $k_{\text{геом}}\ge1$. Возьмём базис
+$e_1,\dots,e_g$ в $V_\lambda$ ($g=k_{\text{геом}}$) и дополним до базиса $V$. В нём матрица имеет
+блочный вид $\begin{psmallmatrix}\lambda I_g & *\\ 0 & B\end{psmallmatrix}$, поэтому
+$\chi(\mu)=(\lambda-\mu)^g\det(B-\mu I)$ делится на $(\lambda-\mu)^g$. Значит кратность корня
+$\lambda$ не меньше $g$: $k_{\text{алг}}\ge g=k_{\text{геом}}$.
+\end{proof}
+
+\begin{example}
+Жорданова клетка $\begin{psmallmatrix}2&1\\0&2\end{psmallmatrix}$: $k_{\text{алг}}(2)=2$, но
+$V_2=\Span(e_1)$, $k_{\text{геом}}(2)=1$ — кратности не совпадают (матрица не диагонализуема).
+\end{example}
+
+\section{Диагонализуемость}
+
+\begin{definition}
+Оператор \emph{диагонализуем}, если существует базис из собственных векторов (в нём матрица
+диагональна).
+\end{definition}
+
+\begin{theorem}[критерий]
+Оператор диагонализуем $\iff$ для каждого собственного значения
+$k_{\text{геом}}=k_{\text{алг}}$ и сумма алгебраических кратностей равна $n$ (т.е.\ $\chi$
+разлагается на линейные множители, и геометрические кратности «добирают» размерность). Равносильно:
+$V=\bigoplus_\lambda V_\lambda$.
+\end{theorem}
+
+\begin{proof}[Идея]
+Собственные подпространства, отвечающие разным $\lambda$, дают независимые векторы (предыдущая
+теорема), поэтому $\sum\dim V_\lambda\le n$ с равенством $\iff$ их объединённые базисы образуют
+базис всего $V$. Это и есть существование собственного базиса; равенство достигается ровно когда
+$\sum k_{\text{геом}}=\sum k_{\text{алг}}=n$.
+\end{proof}
+
+\begin{remark}[алгоритм]
+1) Найти корни $\chi(\lambda)=0$. 2) Для каждого $\lambda$ решить $(A-\lambda I)x=0$ — базис
+$V_\lambda$. 3) Если суммарно набралось $n$ независимых векторов, составить из них столбцы матрицы
+$S$; тогда $S^{-1}AS=\operatorname{diag}(\lambda_1,\dots,\lambda_n)$.
+\end{remark}
+
+\end{document}

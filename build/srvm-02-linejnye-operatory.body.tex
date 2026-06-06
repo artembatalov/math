@@ -1,0 +1,134 @@
+\section{Линейный оператор: основные понятия}
+
+\begin{definition}
+Отображение $\mathcal A\colon V\to W$ линейных пространств называется \emph{линейным оператором},
+если
+\[
+  \mathcal A(x+y)=\mathcal Ax+\mathcal Ay,\qquad \mathcal A(\alpha x)=\alpha\,\mathcal Ax
+\]
+(аддитивность и однородность). Эквивалентно: $\mathcal A(\alpha x+\beta y)=\alpha\mathcal Ax+\beta\mathcal Ay$.
+\end{definition}
+
+\begin{property}\leavevmode
+$\mathcal A0=0$; $\mathcal A(-x)=-\mathcal Ax$; $\mathcal A\bigl(\sum\alpha_i x_i\bigr)=\sum\alpha_i\mathcal Ax_i$.
+\end{property}
+
+\begin{example}
+Поворот плоскости, дифференцирование $\mathcal D\colon P_n\to P_{n-1}$, умножение на матрицу
+$x\mapsto Ax$ в $\R^n$.
+\end{example}
+
+\section{Ядро и образ. Теорема о ранге и дефекте}
+
+\begin{definition}
+\emph{Ядро} $\Ker\mathcal A=\{x\in V:\mathcal Ax=0\}$, \emph{образ}
+$\Img\mathcal A=\{\mathcal Ax:x\in V\}\subseteq W$. \emph{Ранг} $\rang\mathcal A=\dim\Img\mathcal A$,
+\emph{дефект} $\mathrm{def}\,\mathcal A=\dim\Ker\mathcal A$.
+\end{definition}
+
+\begin{theorem}
+$\Ker\mathcal A$ — подпространство $V$, $\Img\mathcal A$ — подпространство $W$.
+\end{theorem}
+
+\begin{proof}
+Если $x_1,x_2\in\Ker\mathcal A$, то $\mathcal A(\alpha x_1+\beta x_2)=\alpha\cdot0+\beta\cdot0=0$,
+т.е.\ $\Ker\mathcal A$ замкнуто относительно линейных комбинаций. Если $y_i=\mathcal Ax_i\in\Img$,
+то $\alpha y_1+\beta y_2=\mathcal A(\alpha x_1+\beta x_2)\in\Img$.
+\end{proof}
+
+\begin{theorem}[о ранге и дефекте]
+$\mathrm{def}\,\mathcal A+\rang\mathcal A=\dim V$.
+\end{theorem}
+
+\begin{proof}
+Возьмём базис $e_1,\dots,e_k$ ядра и дополним его до базиса $e_1,\dots,e_k,f_1,\dots,f_m$ всего $V$
+($k+m=\dim V$). Покажем, что $\mathcal Af_1,\dots,\mathcal Af_m$ — базис образа. Они порождают
+$\Img\mathcal A$: для $x=\sum a_ie_i+\sum b_jf_j$ имеем $\mathcal Ax=\sum b_j\mathcal Af_j$
+(слагаемые с $e_i$ обнуляются). Независимы: если $\sum c_j\mathcal Af_j=0$, то
+$\mathcal A(\sum c_jf_j)=0$, значит $\sum c_jf_j\in\Ker\mathcal A=\Span(e_i)$; но $f_j$ дополняют
+базис ядра, поэтому все $c_j=0$. Итак $\rang\mathcal A=m$, и $k+m=\dim V$.
+\end{proof}
+
+\section{Матричное представление линейного оператора}
+
+\begin{definition}
+Пусть в $V$ выбран базис $\{e_j\}$, в $W$ — базис $\{f_i\}$. \emph{Матрица оператора}
+$A=(a_{ij})$ задаётся разложениями образов базисных векторов: $\mathcal Ae_j=\sum_i a_{ij}f_i$
+(столбец $j$ матрицы — координаты $\mathcal Ae_j$).
+\end{definition}
+
+\begin{theorem}
+Если $X$ — столбец координат $x$, $Y$ — координат $\mathcal Ax$, то $Y=AX$. Отображение
+$\mathcal A\mapsto A$ — изоморфизм пространств $\mathcal L(V,W)\cong\mathrm{Mat}_{m\times n}$
+($n=\dim V$, $m=\dim W$).
+\end{theorem}
+
+\begin{proof}
+$\mathcal Ax=\sum_j x_j\mathcal Ae_j=\sum_j x_j\sum_i a_{ij}f_i=\sum_i\bigl(\sum_j a_{ij}x_j\bigr)f_i$,
+т.е.\ $Y_i=\sum_j a_{ij}x_j$ — это $Y=AX$. Соответствие сохраняет сложение и умножение на скаляр и
+биективно (по матрице оператор восстанавливается на базисе), значит изоморфизм.
+\end{proof}
+
+\section{Ранг матрицы. Обратимость оператора}
+
+\begin{theorem}
+Ранг матрицы оператора равен рангу оператора и не зависит от выбора базисов. Оператор
+$\mathcal A\colon V\to V$ обратим $\iff\det A\ne0\iff\rang A=\dim V$.
+\end{theorem}
+
+\begin{proof}
+Столбцы $A$ — координаты $\mathcal Ae_j$, их линейная оболочка — образ; число независимых столбцов
+$=\dim\Img\mathcal A=\rang\mathcal A$. Обратимость равносильна $\Ker\mathcal A=\{0\}$, т.е.\
+$\mathrm{def}=0$, что по теореме о ранге даёт $\rang=\dim V$ (полный ранг, $\det A\ne0$).
+\end{proof}
+
+\section{Эндоморфизмы и алгебра операторов}
+
+\begin{definition}
+\emph{Эндоморфизм} — линейный оператор $\mathcal A\colon V\to V$. На $\mathcal L(V,V)$ заданы
+операции: $(\mathcal A+\mathcal B)x=\mathcal Ax+\mathcal Bx$, $(\alpha\mathcal A)x=\alpha\mathcal Ax$,
+композиция $(\mathcal A\mathcal B)x=\mathcal A(\mathcal Bx)$.
+\end{definition}
+
+\begin{remark}
+$\mathcal L(V,V)\cong\mathrm{Mat}_{n\times n}$ как алгебры: композиции операторов отвечает
+произведение матриц. \emph{Многочлен от оператора}
+$p(\mathcal A)=c_k\mathcal A^k+\dots+c_1\mathcal A+c_0\mathcal I$.
+\end{remark}
+
+\section{Обратимые линейные операторы}
+
+\begin{theorem}[критерий обратимости]
+Для эндоморфизма конечномерного пространства инъективность, сюръективность и обратимость
+равносильны: $\Ker\mathcal A=\{0\}\iff\Img\mathcal A=V\iff\exists\mathcal A^{-1}$.
+\end{theorem}
+
+\begin{proof}
+По теореме о ранге $\dim\Ker+\dim\Img=\dim V$, поэтому $\Ker=\{0\}\iff\dim\Img=\dim V\iff\Img=V$.
+Биективность даёт обратное отображение, линейность которого проверяется:
+$\mathcal A^{-1}(\alpha y_1+\beta y_2)=\alpha\mathcal A^{-1}y_1+\beta\mathcal A^{-1}y_2$. Матрица
+обратного оператора есть $A^{-1}$.
+\end{proof}
+
+\section{Смена базиса. Подобие матриц}
+
+\begin{definition}
+\emph{Матрица перехода} $S$ от базиса $\{e_i\}$ к $\{e'_j\}$: столбцы $S$ — координаты новых
+базисных векторов в старом базисе, $e'_j=\sum_i s_{ij}e_i$. Координаты связаны как $X=SX'$. $S$
+обратима.
+\end{definition}
+
+\begin{theorem}
+При смене базиса матрица эндоморфизма преобразуется по закону подобия
+\[
+  A'=S^{-1}AS .
+\]
+След, определитель и ранг — инварианты подобия.
+\end{theorem}
+
+\begin{proof}
+В старом базисе $Y=AX$; в новом $X=SX'$, $Y=SY'$. Тогда $SY'=ASX'$, откуда
+$Y'=S^{-1}AS\,X'$, т.е.\ $A'=S^{-1}AS$. Инвариантность:
+$\det A'=\det S^{-1}\det A\det S=\det A$; $\tr(S^{-1}AS)=\tr(ASS^{-1})=\tr A$ (циклическое свойство
+следа); ранг сохраняется при умножении на обратимые матрицы.
+\end{proof}

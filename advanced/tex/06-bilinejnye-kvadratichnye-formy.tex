@@ -1,0 +1,183 @@
+% !TEX program = xelatex
+% Самодостаточный конспект. Компилировать XeLaTeX/LuaLaTeX (tectonic 06-bilinejnye-kvadratichnye-formy.tex).
+\documentclass[11pt,a4paper]{article}
+\newcommand{\coursename}{Специальные разделы высшей математики}
+\newcommand{\rightheader}{§6. Билинейные и квадратичные формы}
+\newcommand{\doctitle}{Билинейные и квадратичные формы}
+% ==== Общая преамбула конспектов (собирается в каждый .tex как самодостаточная) ====
+% Перед этим файлом должны быть определены: \documentclass и макросы
+%   \coursename  — название курса (левый колонтитул, подзаголовок),
+%   \rightheader — правый колонтитул (напр. «§2. Рациональные дроби»),
+%   \doctitle    — заголовок раздела на титуле.
+\usepackage{fontspec}
+\setmainfont{cmunrm.otf}[
+  BoldFont       = cmunbx.otf,
+  ItalicFont     = cmunti.otf,
+  BoldItalicFont = cmunbi.otf]
+\usepackage{polyglossia}
+\setdefaultlanguage{russian}
+\setotherlanguage{english}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{xcolor}
+\definecolor{accent}{HTML}{1F6FEB}
+\definecolor{rulecol}{HTML}{D0D7DE}
+\usepackage[colorlinks=true,linkcolor=accent,urlcolor=accent,citecolor=accent]{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+
+% ----- Колонтитулы -----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape \coursename}
+\fancyhead[R]{\small\itshape \rightheader}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{rulecol}\leaders\hrule height \headrulewidth\hfill}}
+
+% ----- Заголовки -----
+\titleformat{\section}{\large\bfseries\color{accent}}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\bfseries}{\thesubsection.}{0.5em}{}
+
+% ----- Теоремные окружения (стиль конспекта) -----
+\theoremstyle{definition}
+\newtheorem{definition}{Определение}[section]
+\newtheorem{example}[definition]{Пример}
+\newtheorem{remark}[definition]{Замечание}
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Теорема}
+\newtheorem{lemma}[definition]{Лемма}
+\newtheorem{corollary}[definition]{Следствие}
+\newtheorem{property}[definition]{Свойство}
+\newtheorem{criterion}[definition]{Критерий}
+\renewcommand{\proofname}{Доказательство}
+
+% ----- Операторы и сокращения -----
+\DeclareMathOperator{\tg}{tg}
+\DeclareMathOperator{\ctg}{ctg}
+\DeclareMathOperator{\arctg}{arctg}
+\DeclareMathOperator{\arcctg}{arcctg}
+\DeclareMathOperator{\sh}{sh}
+\DeclareMathOperator{\ch}{ch}
+\DeclareMathOperator{\Th}{th}
+\DeclareMathOperator{\cth}{cth}
+\DeclareMathOperator{\Const}{const}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\rang}{rang}
+\DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\Img}{Im}
+\DeclareMathOperator{\tr}{tr}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\dx}{\,dx}
+\newcommand{\dt}{\,dt}
+\newcommand{\du}{\,du}
+\newcommand{\eps}{\varepsilon}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\renewcommand{\le}{\leqslant}
+\renewcommand{\ge}{\geqslant}
+\newcommand{\scal}[2]{\left( #1,\,#2\right)}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+
+\begin{document}
+\begin{center}
+  {\LARGE\bfseries \doctitle}\\[4pt]
+  {\large\itshape \coursename}
+\end{center}
+\vspace{6pt}
+
+\section{Билинейные и квадратичные формы}
+
+\begin{definition}
+\emph{Билинейная форма} — отображение $B\colon V\times V\to\R$, линейное по каждому аргументу. В
+базисе $\{e_i\}$ её \emph{матрица} $A=(a_{ij})$, $a_{ij}=B(e_i,e_j)$, и
+$B(x,y)=X^{T}AY$, где $X,Y$ — столбцы координат.
+\end{definition}
+
+\begin{theorem}[закон изменения матрицы]
+При замене базиса с матрицей перехода $C$ ($X=CX'$) матрица формы преобразуется как
+\[
+  A'=C^{T}A\,C .
+\]
+\end{theorem}
+
+\begin{proof}
+$B(x,y)=X^{T}AY=(CX')^{T}A(CY')=X'^{T}(C^{T}AC)Y'$, поэтому матрица в новом базисе есть $C^TAC$.
+(Это \emph{конгруэнтность}, в отличие от подобия $S^{-1}AS$ для операторов.)
+\end{proof}
+
+\begin{definition}
+Форма \emph{симметрична}, если $B(x,y)=B(y,x)$ (т.е.\ $A=A^{T}$). \emph{Квадратичная форма}
+$Q(x)=B(x,x)=X^{T}AX$. По симметричной $B$ форма $Q$ определяется однозначно, и обратно $B$
+восстанавливается \emph{формулой поляризации}
+\[
+  B(x,y)=\tfrac12\bigl(Q(x+y)-Q(x)-Q(y)\bigr).
+\]
+\end{definition}
+
+\section{Канонический вид. Закон инерции}
+
+\begin{definition}
+\emph{Канонический вид} квадратичной формы — диагональный: подходящей заменой координат
+$Q=\sum_i \lambda_i z_i^2$. \emph{Нормальный} вид —
+$Q=z_1^2+\dots+z_p^2-z_{p+1}^2-\dots-z_{p+q}^2$. Числа $p$ (положительный индекс), $q$
+(отрицательный), $r=p+q$ (ранг) и $\sigma=p-q$ (сигнатура).
+\end{definition}
+
+\begin{theorem}[закон инерции Сильвестра]
+Числа $p$ и $q$ не зависят от способа приведения к каноническому виду.
+\end{theorem}
+
+\begin{proof}[Инвариантность положительного индекса]
+Покажем, что $p$ равно максимальной размерности подпространства, на котором $Q$ положительно
+определена; это описание не ссылается на базис, поэтому $p$ инвариантно.
+
+Пусть в каком-то нормальном базисе $L_+=\Span(e_1,\dots,e_p)$ — на нём $Q>0$ (для ненулевого
+вектора), значит существует подпространство размерности $p$ с $Q>0$. Допустим, нашлось
+подпространство $M$ большей размерности $\dim M>p$ с $Q>0$ на нём. Рассмотрим
+$L_-=\Span(e_{p+1},\dots,e_n)$ (размерности $n-p$), где $Q\le0$. Тогда
+$\dim M+\dim L_-=\dim M+(n-p)>n$, поэтому $M\cap L_-\ne\{0\}$: найдётся ненулевой вектор, на котором
+одновременно $Q>0$ (как в $M$) и $Q\le0$ (как в $L_-$) — противоречие. Значит максимум равен $p$, и
+$p$ — инвариант. Аналогично инвариантно $q$ (или из инвариантности ранга $r$).
+\end{proof}
+
+\section{Знакоопределённость квадратичных форм}
+
+\begin{definition}
+$Q$ \emph{положительно определена}, если $Q(x)>0$ при $x\ne0$ ($p=n$); \emph{отрицательно
+определена}, если $Q(x)<0$ ($q=n$); \emph{знакопеременна}, если принимает значения обоих знаков
+($p>0$ и $q>0$).
+\end{definition}
+
+\begin{theorem}[критерий Сильвестра]
+Симметрическая форма с матрицей $A$ положительно определена тогда и только тогда, когда все
+\emph{угловые} (главные) миноры положительны:
+\[
+  \Delta_1=a_{11}>0,\quad\Delta_2=\begin{vmatrix}a_{11}&a_{12}\\a_{21}&a_{22}\end{vmatrix}>0,\ \dots,\ \Delta_n=\det A>0 .
+\]
+Для отрицательной определённости знаки миноров чередуются: $(-1)^k\Delta_k>0$.
+\end{theorem}
+
+\begin{proof}[Идея (метод Якоби)]
+Если все $\Delta_k\ne0$, метод Якоби приводит форму к каноническому виду
+\[
+  Q=\Delta_1 z_1^2+\frac{\Delta_2}{\Delta_1}z_2^2+\dots+\frac{\Delta_n}{\Delta_{n-1}}z_n^2 ,
+\]
+где канонические коэффициенты суть отношения соседних угловых миноров. Положительная определённость
+равносильна положительности всех коэффициентов, т.е.\ $\tfrac{\Delta_k}{\Delta_{k-1}}>0$ при всех
+$k$ ($\Delta_0=1$), что по индукции эквивалентно $\Delta_k>0$ для всех $k$. Для отрицательной
+определённости все коэффициенты отрицательны, что даёт чередование знаков $\Delta_k$.
+\end{proof}
+
+\end{document}

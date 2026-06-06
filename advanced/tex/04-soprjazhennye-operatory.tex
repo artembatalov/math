@@ -1,0 +1,217 @@
+% !TEX program = xelatex
+% Самодостаточный конспект. Компилировать XeLaTeX/LuaLaTeX (tectonic 04-soprjazhennye-operatory.tex).
+\documentclass[11pt,a4paper]{article}
+\newcommand{\coursename}{Специальные разделы высшей математики}
+\newcommand{\rightheader}{§4. Сопряжённые и самосопряжённые операторы}
+\newcommand{\doctitle}{Сопряжённые и самосопряжённые операторы}
+% ==== Общая преамбула конспектов (собирается в каждый .tex как самодостаточная) ====
+% Перед этим файлом должны быть определены: \documentclass и макросы
+%   \coursename  — название курса (левый колонтитул, подзаголовок),
+%   \rightheader — правый колонтитул (напр. «§2. Рациональные дроби»),
+%   \doctitle    — заголовок раздела на титуле.
+\usepackage{fontspec}
+\setmainfont{cmunrm.otf}[
+  BoldFont       = cmunbx.otf,
+  ItalicFont     = cmunti.otf,
+  BoldItalicFont = cmunbi.otf]
+\usepackage{polyglossia}
+\setdefaultlanguage{russian}
+\setotherlanguage{english}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{xcolor}
+\definecolor{accent}{HTML}{1F6FEB}
+\definecolor{rulecol}{HTML}{D0D7DE}
+\usepackage[colorlinks=true,linkcolor=accent,urlcolor=accent,citecolor=accent]{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+
+% ----- Колонтитулы -----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape \coursename}
+\fancyhead[R]{\small\itshape \rightheader}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{rulecol}\leaders\hrule height \headrulewidth\hfill}}
+
+% ----- Заголовки -----
+\titleformat{\section}{\large\bfseries\color{accent}}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\bfseries}{\thesubsection.}{0.5em}{}
+
+% ----- Теоремные окружения (стиль конспекта) -----
+\theoremstyle{definition}
+\newtheorem{definition}{Определение}[section]
+\newtheorem{example}[definition]{Пример}
+\newtheorem{remark}[definition]{Замечание}
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Теорема}
+\newtheorem{lemma}[definition]{Лемма}
+\newtheorem{corollary}[definition]{Следствие}
+\newtheorem{property}[definition]{Свойство}
+\newtheorem{criterion}[definition]{Критерий}
+\renewcommand{\proofname}{Доказательство}
+
+% ----- Операторы и сокращения -----
+\DeclareMathOperator{\tg}{tg}
+\DeclareMathOperator{\ctg}{ctg}
+\DeclareMathOperator{\arctg}{arctg}
+\DeclareMathOperator{\arcctg}{arcctg}
+\DeclareMathOperator{\sh}{sh}
+\DeclareMathOperator{\ch}{ch}
+\DeclareMathOperator{\Th}{th}
+\DeclareMathOperator{\cth}{cth}
+\DeclareMathOperator{\Const}{const}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\rang}{rang}
+\DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\Img}{Im}
+\DeclareMathOperator{\tr}{tr}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\dx}{\,dx}
+\newcommand{\dt}{\,dt}
+\newcommand{\du}{\,du}
+\newcommand{\eps}{\varepsilon}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\renewcommand{\le}{\leqslant}
+\renewcommand{\ge}{\geqslant}
+\newcommand{\scal}[2]{\left( #1,\,#2\right)}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+
+\begin{document}
+\begin{center}
+  {\LARGE\bfseries \doctitle}\\[4pt]
+  {\large\itshape \coursename}
+\end{center}
+\vspace{6pt}
+
+\section{Сопряжённый оператор}
+
+\begin{definition}
+\emph{Сопряжённым} к оператору $\mathcal A$ в евклидовом пространстве называют оператор
+$\mathcal A^*$, для которого
+\[
+  \scal{\mathcal Ax}{y}=\scal{x}{\mathcal A^*y}\qquad\forall x,y .
+\]
+\end{definition}
+
+\begin{theorem}
+$\mathcal A^*$ существует, единствен и линеен. В ортонормированном базисе его матрица —
+транспонированная: $A^*=A^{T}$ (в унитарном случае $A^*=\overline{A}^{\,T}$).
+\end{theorem}
+
+\begin{proof}
+В ОНБ $\scal{\mathcal Ax}{y}=(Ax)^{T}y=x^{T}A^{T}y=\scal{x}{A^{T}y}$, поэтому оператор с матрицей
+$A^{T}$ удовлетворяет определению — существование. Единственность: если
+$\scal x{\mathcal By}=\scal x{\mathcal Cy}$ для всех $x$, то $\scal x{(\mathcal B-\mathcal C)y}=0$
+при всех $x$, в частности при $x=(\mathcal B-\mathcal C)y$, откуда $(\mathcal B-\mathcal C)y=0$ для
+всех $y$. Линейность $\mathcal A^*$ следует из линейности по $y$ обеих частей определения. (Чисто
+геометрически существование обеспечивает теорема Рисса о представлении линейного функционала
+$x\mapsto\scal{\mathcal Ax}{y}$ вектором $\mathcal A^*y$.)
+\end{proof}
+
+\section{Алгебраические свойства сопряжения}
+
+\begin{property}\leavevmode
+\begin{enumerate}[label=\arabic*),leftmargin=*,nosep]
+  \item $(\mathcal A+\mathcal B)^*=\mathcal A^*+\mathcal B^*$, $(\alpha\mathcal A)^*=\alpha\mathcal A^*$;
+  \item $(\mathcal A\mathcal B)^*=\mathcal B^*\mathcal A^*$;
+  \item инволютивность $(\mathcal A^*)^*=\mathcal A$;
+  \item $\Img\mathcal A^*=(\Ker\mathcal A)^\perp$.
+\end{enumerate}
+\end{property}
+
+\begin{proof}
+2) $\scal{\mathcal A\mathcal Bx}{y}=\scal{\mathcal Bx}{\mathcal A^*y}=\scal{x}{\mathcal B^*\mathcal A^*y}$,
+а по определению это $\scal x{(\mathcal A\mathcal B)^*y}$; в силу единственности
+$(\mathcal A\mathcal B)^*=\mathcal B^*\mathcal A^*$.\;
+4) $x\in\Ker\mathcal A\iff\mathcal Ax=0\iff\scal{\mathcal Ax}{y}=0\ \forall y
+\iff\scal{x}{\mathcal A^*y}=0\ \forall y\iff x\perp\Img\mathcal A^*$. Значит
+$\Ker\mathcal A=(\Img\mathcal A^*)^\perp$, откуда $\Img\mathcal A^*=(\Ker\mathcal A)^\perp$.
+\end{proof}
+
+\section{Самосопряжённые операторы}
+
+\begin{definition}
+Оператор \emph{самосопряжён} (симметрический), если $\mathcal A^*=\mathcal A$, т.е.\
+$\scal{\mathcal Ax}{y}=\scal{x}{\mathcal Ay}$. В ОНБ это равносильно $A=A^{T}$ (симметрическая
+матрица).
+\end{definition}
+
+\begin{remark}
+Самосопряжённые операторы образуют подпространство в $\mathcal L(V,V)$: сумма и скалярное кратное
+симметрических операторов симметричны.
+\end{remark}
+
+\section{Спектральные свойства самосопряжённых операторов}
+
+\begin{theorem}
+Все собственные значения самосопряжённого оператора вещественны.
+\end{theorem}
+
+\begin{proof}
+Рассмотрим (при необходимости комплексифицировав) собственный вектор $x\ne0$, $\mathcal Ax=\lambda x$.
+Тогда, используя эрмитово произведение и самосопряжённость,
+\[
+  \lambda\scal xx=\scal{\mathcal Ax}{x}=\scal{x}{\mathcal Ax}=\overline\lambda\,\scal xx .
+\]
+Так как $\scal xx>0$, получаем $\lambda=\overline\lambda$, т.е.\ $\lambda\in\R$.
+\end{proof}
+
+\begin{theorem}
+Собственные векторы, отвечающие различным собственным значениям самосопряжённого оператора,
+ортогональны.
+\end{theorem}
+
+\begin{proof}
+Пусть $\mathcal Ax=\lambda x$, $\mathcal Ay=\mu y$, $\lambda\ne\mu$. Тогда
+$\lambda\scal xy=\scal{\mathcal Ax}{y}=\scal{x}{\mathcal Ay}=\mu\scal xy$, откуда
+$(\lambda-\mu)\scal xy=0$ и $\scal xy=0$.
+\end{proof}
+
+\section{Спектральная теорема}
+
+\begin{lemma}
+Если подпространство $L$ инвариантно относительно самосопряжённого $\mathcal A$
+($\mathcal A L\subseteq L$), то и $L^\perp$ инвариантно.
+\end{lemma}
+
+\begin{proof}
+Пусть $y\in L^\perp$. Для любого $x\in L$ имеем $\mathcal Ax\in L$, поэтому
+$\scal{\mathcal Ay}{x}=\scal{y}{\mathcal Ax}=0$. Значит $\mathcal Ay\perp L$, т.е.\
+$\mathcal Ay\in L^\perp$.
+\end{proof}
+
+\begin{theorem}[спектральная теорема]
+Для самосопряжённого оператора в конечномерном евклидовом пространстве существует ортонормированный
+базис из собственных векторов; в нём матрица диагональна.
+\end{theorem}
+
+\begin{proof}
+Индукция по $\dim V$. При $\dim V=1$ утверждение очевидно. Шаг: характеристический многочлен имеет
+вещественный корень $\lambda_1$ (собственные значения вещественны), ему отвечает единичный
+собственный вектор $e_1$. Прямая $L=\Span(e_1)$ инвариантна, значит по лемме инвариантно
+$L^\perp$ ($\dim L^\perp=\dim V-1$). Сужение $\mathcal A|_{L^\perp}$ самосопряжённо, по
+предположению индукции в $L^\perp$ есть ОНБ из собственных векторов $e_2,\dots,e_n$. Вместе с $e_1$
+они дают искомый ОНБ.
+\end{proof}
+
+\begin{remark}[геометрический смысл]
+В этом базисе $\mathcal A=\sum_\lambda\lambda\,P_\lambda$, где $P_\lambda$ — ортогональный проектор
+на $V_\lambda$: оператор «растягивает» взаимно ортогональные собственные направления с
+коэффициентами $\lambda$.
+\end{remark}
+
+\end{document}
