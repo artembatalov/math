@@ -1,0 +1,60 @@
+\section{Ортогональные операторы (изометрии)}
+
+\begin{definition}
+Оператор $\mathcal Q$ евклидова пространства называется \emph{ортогональным}, если он сохраняет
+скалярное произведение: $\scal{\mathcal Qx}{\mathcal Qy}=\scal xy$ для всех $x,y$.
+\end{definition}
+
+\begin{theorem}[критерии ортогональности]
+Следующие условия равносильны:
+\begin{enumerate}[label=\arabic*),leftmargin=*,nosep]
+  \item $\mathcal Q$ сохраняет скалярное произведение;
+  \item $\mathcal Q$ сохраняет норму: $\norm{\mathcal Qx}=\norm x$ для всех $x$;
+  \item $\mathcal Q^*\mathcal Q=\mathcal I$, т.е.\ $\mathcal Q^*=\mathcal Q^{-1}$ (в ОНБ
+        $Q^{T}Q=I$).
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+$1\Rightarrow2$: при $y=x$ получаем $\norm{\mathcal Qx}^2=\norm x^2$. $2\Rightarrow1$: по формуле
+поляризации $\scal xy=\tfrac14(\norm{x+y}^2-\norm{x-y}^2)$ сохранение нормы влечёт сохранение
+произведения. $1\Leftrightarrow3$: $\scal{\mathcal Qx}{\mathcal Qy}=\scal{x}{\mathcal Q^*\mathcal Qy}$,
+и это равно $\scal xy$ для всех $x,y$ тогда и только тогда, когда $\mathcal Q^*\mathcal Q=\mathcal I$.
+\end{proof}
+
+\section{Свойства ортогональных матриц}
+
+\begin{property}\leavevmode
+\begin{enumerate}[label=\arabic*),leftmargin=*,nosep]
+  \item Столбцы (и строки) ортогональной матрицы образуют ОНБ ($Q^{T}Q=I$ — это и есть условие
+        $\scal{q_i}{q_j}=\delta_{ij}$).
+  \item $\det\mathcal Q=\pm1$.
+  \item Все собственные значения по модулю равны $1$; вещественные собственные значения — только
+        $\pm1$.
+\end{enumerate}
+\end{property}
+
+\begin{proof}
+2) Из $Q^{T}Q=I$: $(\det Q)^2=\det Q^{T}\det Q=\det I=1$, значит $\det Q=\pm1$.\;
+3) Если $\mathcal Qx=\lambda x$ ($x\ne0$), то $\norm x=\norm{\mathcal Qx}=\abs\lambda\,\norm x$,
+откуда $\abs\lambda=1$; для вещественного $\lambda$ это $\pm1$.
+\end{proof}
+
+\section{Классификация ортогональных операторов}
+
+\begin{definition}
+Ортогональный оператор \emph{собственный} (вращение), если $\det\mathcal Q=+1$, и
+\emph{несобственный} (с отражением), если $\det\mathcal Q=-1$.
+\end{definition}
+
+\begin{remark}[геометрия в $\R^2$ и $\R^3$]
+\begin{itemize}[leftmargin=*,nosep]
+  \item $\R^2$: при $\det=+1$ матрица есть поворот
+        $\begin{psmallmatrix}\cos\varphi&-\sin\varphi\\ \sin\varphi&\cos\varphi\end{psmallmatrix}$;
+        при $\det=-1$ — отражение относительно прямой.
+  \item $\R^3$: при $\det=+1$ — поворот вокруг некоторой оси (она отвечает собственному значению
+        $+1$); при $\det=-1$ — поворот, скомбинированный с отражением (зеркальный поворот).
+\end{itemize}
+В подходящем ОНБ любой ортогональный оператор блочно-диагонален: блоки $2\times2$ — повороты на углы
+$\varphi_k$, плюс отдельные значения $\pm1$ на диагонали.
+\end{remark}

@@ -52,13 +52,13 @@ TeX-конспекты, структурированные **по раздела
 
 | № | Раздел (вопросы) | Скачать |
 |:-:|:--|:--|
-| 1 | Евклидовы пространства, нормы, ортогональность (1–11) | `в работе` |
-| 2 | Линейные операторы (12–18) | `в работе` |
-| 3 | Собственные значения и диагонализуемость (19–25) | `в работе` |
-| 4 | Сопряжённые и самосопряжённые операторы (26–31) | `в работе` |
-| 5 | Ортогональные операторы (32–33) | `в работе` |
-| 6 | Билинейные и квадратичные формы (34–36) | `в работе` |
-| 7 | Дифференциальные уравнения и теория устойчивости (37–42) | `в работе` |
+| 1 | Евклидовы пространства, нормы, ортогональность (1–11) | [![tex](https://img.shields.io/badge/TeX-1F6FEB?logo=latex&logoColor=white)](advanced/tex/01-evklidovy-prostranstva.tex) [![pdf](https://img.shields.io/badge/PDF-C1121F?logo=adobeacrobatreader&logoColor=white)](advanced/pdf/01-evklidovy-prostranstva.pdf) |
+| 2 | Линейные операторы (12–18) | [![tex](https://img.shields.io/badge/TeX-1F6FEB?logo=latex&logoColor=white)](advanced/tex/02-linejnye-operatory.tex) [![pdf](https://img.shields.io/badge/PDF-C1121F?logo=adobeacrobatreader&logoColor=white)](advanced/pdf/02-linejnye-operatory.pdf) |
+| 3 | Собственные значения и диагонализуемость (19–25) | [![tex](https://img.shields.io/badge/TeX-1F6FEB?logo=latex&logoColor=white)](advanced/tex/03-sobstvennye-znacheniya.tex) [![pdf](https://img.shields.io/badge/PDF-C1121F?logo=adobeacrobatreader&logoColor=white)](advanced/pdf/03-sobstvennye-znacheniya.pdf) |
+| 4 | Сопряжённые и самосопряжённые операторы (26–31) | [![tex](https://img.shields.io/badge/TeX-1F6FEB?logo=latex&logoColor=white)](advanced/tex/04-soprjazhennye-operatory.tex) [![pdf](https://img.shields.io/badge/PDF-C1121F?logo=adobeacrobatreader&logoColor=white)](advanced/pdf/04-soprjazhennye-operatory.pdf) |
+| 5 | Ортогональные операторы (32–33) | [![tex](https://img.shields.io/badge/TeX-1F6FEB?logo=latex&logoColor=white)](advanced/tex/05-ortogonalnye-operatory.tex) [![pdf](https://img.shields.io/badge/PDF-C1121F?logo=adobeacrobatreader&logoColor=white)](advanced/pdf/05-ortogonalnye-operatory.pdf) |
+| 6 | Билинейные и квадратичные формы (34–36) | [![tex](https://img.shields.io/badge/TeX-1F6FEB?logo=latex&logoColor=white)](advanced/tex/06-bilinejnye-kvadratichnye-formy.tex) [![pdf](https://img.shields.io/badge/PDF-C1121F?logo=adobeacrobatreader&logoColor=white)](advanced/pdf/06-bilinejnye-kvadratichnye-formy.pdf) |
+| 7 | Дифференциальные уравнения и теория устойчивости (37–42) | [![tex](https://img.shields.io/badge/TeX-1F6FEB?logo=latex&logoColor=white)](advanced/tex/07-differencialnye-uravneniya.tex) [![pdf](https://img.shields.io/badge/PDF-C1121F?logo=adobeacrobatreader&logoColor=white)](advanced/pdf/07-differencialnye-uravneniya.pdf) |
 
 ---
 

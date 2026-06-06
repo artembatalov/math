@@ -1,0 +1,161 @@
+% !TEX program = xelatex
+% Самодостаточный конспект. Компилировать XeLaTeX/LuaLaTeX (tectonic 05-ortogonalnye-operatory.tex).
+\documentclass[11pt,a4paper]{article}
+\newcommand{\coursename}{Специальные разделы высшей математики}
+\newcommand{\rightheader}{§5. Ортогональные операторы}
+\newcommand{\doctitle}{Ортогональные операторы}
+% ==== Общая преамбула конспектов (собирается в каждый .tex как самодостаточная) ====
+% Перед этим файлом должны быть определены: \documentclass и макросы
+%   \coursename  — название курса (левый колонтитул, подзаголовок),
+%   \rightheader — правый колонтитул (напр. «§2. Рациональные дроби»),
+%   \doctitle    — заголовок раздела на титуле.
+\usepackage{fontspec}
+\setmainfont{cmunrm.otf}[
+  BoldFont       = cmunbx.otf,
+  ItalicFont     = cmunti.otf,
+  BoldItalicFont = cmunbi.otf]
+\usepackage{polyglossia}
+\setdefaultlanguage{russian}
+\setotherlanguage{english}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{xcolor}
+\definecolor{accent}{HTML}{1F6FEB}
+\definecolor{rulecol}{HTML}{D0D7DE}
+\usepackage[colorlinks=true,linkcolor=accent,urlcolor=accent,citecolor=accent]{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+
+% ----- Колонтитулы -----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape \coursename}
+\fancyhead[R]{\small\itshape \rightheader}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{rulecol}\leaders\hrule height \headrulewidth\hfill}}
+
+% ----- Заголовки -----
+\titleformat{\section}{\large\bfseries\color{accent}}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\bfseries}{\thesubsection.}{0.5em}{}
+
+% ----- Теоремные окружения (стиль конспекта) -----
+\theoremstyle{definition}
+\newtheorem{definition}{Определение}[section]
+\newtheorem{example}[definition]{Пример}
+\newtheorem{remark}[definition]{Замечание}
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Теорема}
+\newtheorem{lemma}[definition]{Лемма}
+\newtheorem{corollary}[definition]{Следствие}
+\newtheorem{property}[definition]{Свойство}
+\newtheorem{criterion}[definition]{Критерий}
+\renewcommand{\proofname}{Доказательство}
+
+% ----- Операторы и сокращения -----
+\DeclareMathOperator{\tg}{tg}
+\DeclareMathOperator{\ctg}{ctg}
+\DeclareMathOperator{\arctg}{arctg}
+\DeclareMathOperator{\arcctg}{arcctg}
+\DeclareMathOperator{\sh}{sh}
+\DeclareMathOperator{\ch}{ch}
+\DeclareMathOperator{\Th}{th}
+\DeclareMathOperator{\cth}{cth}
+\DeclareMathOperator{\Const}{const}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\rang}{rang}
+\DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\Img}{Im}
+\DeclareMathOperator{\tr}{tr}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\dx}{\,dx}
+\newcommand{\dt}{\,dt}
+\newcommand{\du}{\,du}
+\newcommand{\eps}{\varepsilon}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\renewcommand{\le}{\leqslant}
+\renewcommand{\ge}{\geqslant}
+\newcommand{\scal}[2]{\left( #1,\,#2\right)}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+
+\begin{document}
+\begin{center}
+  {\LARGE\bfseries \doctitle}\\[4pt]
+  {\large\itshape \coursename}
+\end{center}
+\vspace{6pt}
+
+\section{Ортогональные операторы (изометрии)}
+
+\begin{definition}
+Оператор $\mathcal Q$ евклидова пространства называется \emph{ортогональным}, если он сохраняет
+скалярное произведение: $\scal{\mathcal Qx}{\mathcal Qy}=\scal xy$ для всех $x,y$.
+\end{definition}
+
+\begin{theorem}[критерии ортогональности]
+Следующие условия равносильны:
+\begin{enumerate}[label=\arabic*),leftmargin=*,nosep]
+  \item $\mathcal Q$ сохраняет скалярное произведение;
+  \item $\mathcal Q$ сохраняет норму: $\norm{\mathcal Qx}=\norm x$ для всех $x$;
+  \item $\mathcal Q^*\mathcal Q=\mathcal I$, т.е.\ $\mathcal Q^*=\mathcal Q^{-1}$ (в ОНБ
+        $Q^{T}Q=I$).
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+$1\Rightarrow2$: при $y=x$ получаем $\norm{\mathcal Qx}^2=\norm x^2$. $2\Rightarrow1$: по формуле
+поляризации $\scal xy=\tfrac14(\norm{x+y}^2-\norm{x-y}^2)$ сохранение нормы влечёт сохранение
+произведения. $1\Leftrightarrow3$: $\scal{\mathcal Qx}{\mathcal Qy}=\scal{x}{\mathcal Q^*\mathcal Qy}$,
+и это равно $\scal xy$ для всех $x,y$ тогда и только тогда, когда $\mathcal Q^*\mathcal Q=\mathcal I$.
+\end{proof}
+
+\section{Свойства ортогональных матриц}
+
+\begin{property}\leavevmode
+\begin{enumerate}[label=\arabic*),leftmargin=*,nosep]
+  \item Столбцы (и строки) ортогональной матрицы образуют ОНБ ($Q^{T}Q=I$ — это и есть условие
+        $\scal{q_i}{q_j}=\delta_{ij}$).
+  \item $\det\mathcal Q=\pm1$.
+  \item Все собственные значения по модулю равны $1$; вещественные собственные значения — только
+        $\pm1$.
+\end{enumerate}
+\end{property}
+
+\begin{proof}
+2) Из $Q^{T}Q=I$: $(\det Q)^2=\det Q^{T}\det Q=\det I=1$, значит $\det Q=\pm1$.\;
+3) Если $\mathcal Qx=\lambda x$ ($x\ne0$), то $\norm x=\norm{\mathcal Qx}=\abs\lambda\,\norm x$,
+откуда $\abs\lambda=1$; для вещественного $\lambda$ это $\pm1$.
+\end{proof}
+
+\section{Классификация ортогональных операторов}
+
+\begin{definition}
+Ортогональный оператор \emph{собственный} (вращение), если $\det\mathcal Q=+1$, и
+\emph{несобственный} (с отражением), если $\det\mathcal Q=-1$.
+\end{definition}
+
+\begin{remark}[геометрия в $\R^2$ и $\R^3$]
+\begin{itemize}[leftmargin=*,nosep]
+  \item $\R^2$: при $\det=+1$ матрица есть поворот
+        $\begin{psmallmatrix}\cos\varphi&-\sin\varphi\\ \sin\varphi&\cos\varphi\end{psmallmatrix}$;
+        при $\det=-1$ — отражение относительно прямой.
+  \item $\R^3$: при $\det=+1$ — поворот вокруг некоторой оси (она отвечает собственному значению
+        $+1$); при $\det=-1$ — поворот, скомбинированный с отражением (зеркальный поворот).
+\end{itemize}
+В подходящем ОНБ любой ортогональный оператор блочно-диагонален: блоки $2\times2$ — повороты на углы
+$\varphi_k$, плюс отдельные значения $\pm1$ на диагонали.
+\end{remark}
+
+\end{document}

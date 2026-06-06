@@ -1,0 +1,242 @@
+\section{Евклидово пространство и скалярное произведение}
+
+\begin{definition}
+Вещественное линейное пространство $E$ называется \emph{евклидовым}, если каждой паре векторов
+$x,y\in E$ сопоставлено число $\scal xy\in\R$ (\emph{скалярное произведение}), удовлетворяющее
+аксиомам:
+\begin{enumerate}[label=\arabic*),leftmargin=*,nosep]
+  \item симметричность: $\scal xy=\scal yx$;
+  \item линейность по первому аргументу: $\scal{\alpha x_1+\beta x_2}{y}=\alpha\scal{x_1}y+\beta\scal{x_2}y$;
+  \item положительная определённость: $\scal xx\ge0$, причём $\scal xx=0\iff x=0$.
+\end{enumerate}
+\end{definition}
+
+\begin{remark}
+Из 1)+2) следует линейность и по второму аргументу, т.е.\ форма билинейна.
+\end{remark}
+
+\begin{example}\leavevmode
+\begin{enumerate}[label=\arabic*),leftmargin=*,nosep]
+  \item В $\R^n$: $\scal xy=\sum_{i=1}^n x_iy_i$ (стандартное).
+  \item В $C[a,b]$: $\displaystyle\scal fg=\int_a^b f(x)g(x)\dx$.
+  \item В $\mathrm{Mat}_{n\times n}$: $\scal AB=\tr(AB^{T})=\sum_{i,j}a_{ij}b_{ij}$.
+\end{enumerate}
+\end{example}
+
+\section{Неравенство Коши–Буняковского–Шварца}
+
+\begin{theorem}
+Для любых $x,y\in E$
+\[
+  \abs{\scal xy}\le\norm x\cdot\norm y,\qquad \norm x:=\sqrt{\scal xx},
+\]
+с равенством тогда и только тогда, когда $x,y$ линейно зависимы.
+\end{theorem}
+
+\begin{proof}
+Если $y=0$ — обе части нули. Пусть $y\ne0$. При любом $t\in\R$
+\[
+  0\le\scal{x-ty}{x-ty}=\norm x^2-2t\scal xy+t^2\norm y^2 .
+\]
+Это квадратный трёхчлен относительно $t$, неотрицательный при всех $t$, значит его дискриминант
+$\le0$:
+\[
+  4\scal xy^2-4\norm x^2\norm y^2\le0\ \Rightarrow\ \abs{\scal xy}\le\norm x\norm y .
+\]
+Равенство означает нулевой дискриминант, т.е.\ существует $t_0$ с $\norm{x-t_0y}^2=0$, откуда
+$x=t_0y$ — векторы зависимы (и обратно).
+\end{proof}
+
+\section{Унитарные (комплексные евклидовы) пространства}
+
+\begin{definition}
+Комплексное линейное пространство с \emph{эрмитовым скалярным произведением} $\scal xy\in\C$:
+\begin{enumerate}[label=\arabic*),leftmargin=*,nosep]
+  \item эрмитова симметрия: $\scal xy=\overline{\scal yx}$;
+  \item линейность по первому аргументу;
+  \item положительная определённость: $\scal xx>0$ при $x\ne0$ (число $\scal xx=\overline{\scal xx}$
+        вещественно).
+\end{enumerate}
+\end{definition}
+
+\begin{remark}
+По второму аргументу форма \emph{полулинейна} (сопряжённо-линейна):
+$\scal x{\alpha y}=\overline\alpha\,\scal xy$. Стандартный пример в $\C^n$:
+$\scal xy=\sum x_i\overline{y_i}$.
+\end{remark}
+
+\section{Норма. Неравенство треугольника}
+
+\begin{definition}
+\emph{Норма} на линейном пространстве — функция $\norm{\cdot}\colon V\to\R$ с аксиомами:
+1) $\norm x\ge0$, $\norm x=0\iff x=0$; 2) $\norm{\alpha x}=\abs\alpha\,\norm x$;
+3) $\norm{x+y}\le\norm x+\norm y$ (неравенство треугольника).
+\emph{Евклидова} норма порождается скалярным произведением: $\norm x=\sqrt{\scal xx}$.
+\end{definition}
+
+\begin{theorem}
+Евклидова норма удовлетворяет неравенству треугольника.
+\end{theorem}
+
+\begin{proof}
+\[
+  \norm{x+y}^2=\norm x^2+2\scal xy+\norm y^2\le\norm x^2+2\norm x\norm y+\norm y^2=(\norm x+\norm y)^2
+\]
+(использовано КБШ $\scal xy\le\abs{\scal xy}\le\norm x\norm y$). Извлекая корень, получаем
+$\norm{x+y}\le\norm x+\norm y$.
+\end{proof}
+
+\section{Тождество параллелограмма. Теорема Иордана–фон Неймана}
+
+\begin{theorem}[критерий параллелограмма]
+Норма порождается некоторым скалярным произведением тогда и только тогда, когда выполнено
+\emph{тождество параллелограмма}
+\[
+  \norm{x+y}^2+\norm{x-y}^2=2\norm x^2+2\norm y^2\qquad\forall x,y .
+\]
+При этом скалярное произведение восстанавливается формулой поляризации
+$\scal xy=\tfrac14\bigl(\norm{x+y}^2-\norm{x-y}^2\bigr)$.
+\end{theorem}
+
+\begin{proof}[Необходимость]
+Для евклидовой нормы раскроем оба квадрата:
+$\norm{x\pm y}^2=\norm x^2\pm2\scal xy+\norm y^2$; сложив, перекрёстные члены сокращаются и остаётся
+$2\norm x^2+2\norm y^2$. (Достаточность — проверка, что поляризационная формула задаёт скалярное
+произведение, технически громоздка и опускается.)
+\end{proof}
+
+\begin{example}[неевклидовы нормы $L_p$]
+Нормы $\norm x_1=\sum\abs{x_i}$ и $\norm x_\infty=\max\abs{x_i}$ \emph{не} евклидовы. Для
+$x=(1,0)$, $y=(0,1)$ в $\norm\cdot_1$: $\norm{x+y}_1^2+\norm{x-y}_1^2=2^2+2^2=8$, а
+$2\norm x_1^2+2\norm y_1^2=2+2=4$ — тождество параллелограмма нарушено. Значит при $p\ne2$ норма
+$L_p$ не порождается скалярным произведением.
+\end{example}
+
+\section{Ортогональность. Теорема Пифагора}
+
+\begin{definition}
+Векторы $x,y$ \emph{ортогональны} ($x\perp y$), если $\scal xy=0$. Система $\{e_i\}$
+\emph{ортогональна}, если $\scal{e_i}{e_j}=0$ при $i\ne j$.
+\end{definition}
+
+\begin{theorem}[Пифагор]
+Если $x\perp y$, то $\norm{x+y}^2=\norm x^2+\norm y^2$.
+\end{theorem}
+
+\begin{proof}
+$\norm{x+y}^2=\norm x^2+2\scal xy+\norm y^2=\norm x^2+\norm y^2$, так как $\scal xy=0$.
+\end{proof}
+
+\begin{theorem}
+Ортогональная система ненулевых векторов линейно независима.
+\end{theorem}
+
+\begin{proof}
+Пусть $\sum_i c_i e_i=0$. Умножив скалярно на $e_j$ и пользуясь ортогональностью, получаем
+$c_j\norm{e_j}^2=0$; так как $e_j\ne0$, то $c_j=0$ для всех $j$.
+\end{proof}
+
+\section{Ортонормированный базис. Коэффициенты Фурье}
+
+\begin{definition}
+Базис $\{e_i\}$ \emph{ортонормирован} (ОНБ), если $\scal{e_i}{e_j}=\delta_{ij}$.
+\end{definition}
+
+\begin{theorem}
+В ОНБ координаты вектора суть \emph{коэффициенты Фурье} $\xi_i=\scal x{e_i}$, т.е.\
+$x=\sum_i\scal x{e_i}\,e_i$. При этом для $x=\sum\xi_ie_i$, $y=\sum\eta_ie_i$
+\[
+  \scal xy=\sum_i\xi_i\eta_i,\qquad \norm x^2=\sum_i\xi_i^2\quad(\text{равенство Парсеваля}).
+\]
+\end{theorem}
+
+\begin{proof}
+Записав $x=\sum_k\xi_k e_k$ и умножив скалярно на $e_i$, получим
+$\scal x{e_i}=\sum_k\xi_k\delta_{ki}=\xi_i$. Далее
+$\scal xy=\sum_{i,k}\xi_i\eta_k\scal{e_i}{e_k}=\sum_i\xi_i\eta_i$; при $y=x$ — равенство Парсеваля.
+\end{proof}
+
+\section{Матрица Грама}
+
+\begin{definition}
+Для системы $a_1,\dots,a_k$ \emph{матрица Грама} $G=(g_{ij})$, $g_{ij}=\scal{a_i}{a_j}$. Она
+симметрична и положительно полуопределена.
+\end{definition}
+
+\begin{theorem}[критерий зависимости]
+$\det G(a_1,\dots,a_k)=0$ тогда и только тогда, когда система линейно зависима; для независимой
+системы $\det G>0$.
+\end{theorem}
+
+\begin{proof}
+Если $\sum c_j a_j=0$ с не всеми нулевыми $c_j$, то $\sum_j c_j g_{ij}=\scal{a_i}{\sum c_j a_j}=0$
+для всех $i$, т.е.\ столбцы $G$ линейно зависимы и $\det G=0$. Обратно, если $\det G=0$, существует
+$c\ne0$ с $Gc=0$; тогда $\sum_{i,j}c_i c_j g_{ij}=\norm{\sum c_j a_j}^2=0$, откуда $\sum c_j a_j=0$
+— зависимость.
+\end{proof}
+
+\begin{remark}[геометрический смысл]
+$\det G(a_1,\dots,a_k)=V_k^2$ — квадрат $k$-мерного объёма параллелепипеда, натянутого на
+$a_1,\dots,a_k$. В частности $\det G\ge0$ всегда.
+\end{remark}
+
+\section{Процесс ортогонализации Грама–Шмидта}
+
+\begin{theorem}
+По любому базису $a_1,\dots,a_n$ строится ортогональный базис $b_1,\dots,b_n$:
+\[
+  b_1=a_1,\qquad b_k=a_k-\sum_{j=1}^{k-1}\frac{\scal{a_k}{b_j}}{\scal{b_j}{b_j}}\,b_j\quad(k\ge2).
+\]
+Нормировка $e_k=b_k/\norm{b_k}$ даёт ОНБ. Следовательно, в каждом конечномерном евклидовом
+пространстве существует ОНБ.
+\end{theorem}
+
+\begin{proof}
+Индукция: пусть $b_1,\dots,b_{k-1}$ уже попарно ортогональны и порождают $\Span(a_1,\dots,a_{k-1})$.
+Умножив определение $b_k$ скалярно на $b_m$ ($m<k$), получаем
+$\scal{b_k}{b_m}=\scal{a_k}{b_m}-\frac{\scal{a_k}{b_m}}{\scal{b_m}{b_m}}\scal{b_m}{b_m}=0$. Значит
+$b_k\perp b_m$. Вектор $b_k\ne0$, иначе $a_k$ линейно выражался бы через предыдущие $b_j$ (и через
+$a_1,\dots,a_{k-1}$), противореча независимости.
+\end{proof}
+
+\section{Ортогональное дополнение и проекции}
+
+\begin{definition}
+\emph{Ортогональное дополнение} подпространства $L\subseteq E$:
+$L^\perp=\{x\in E:\ \scal xy=0\ \forall y\in L\}$. Это подпространство.
+\end{definition}
+
+\begin{theorem}
+$E=L\oplus L^\perp$: каждый $x\in E$ однозначно представляется как $x=x_\parallel+x_\perp$, где
+$x_\parallel\in L$ (\emph{ортогональная проекция}), $x_\perp\in L^\perp$ (\emph{ортогональная
+составляющая}). При этом $\dim L+\dim L^\perp=\dim E$.
+\end{theorem}
+
+\begin{proof}
+Возьмём ОНБ $e_1,\dots,e_k$ в $L$ (существует по Граму–Шмидту). Положим
+$x_\parallel=\sum_{i=1}^k\scal x{e_i}e_i$ и $x_\perp=x-x_\parallel$. Тогда для каждого $e_j$:
+$\scal{x_\perp}{e_j}=\scal x{e_j}-\scal x{e_j}=0$, значит $x_\perp\in L^\perp$. Единственность: если
+$x=u+v=u'+v'$ с $u,u'\in L$, $v,v'\in L^\perp$, то $u-u'=v'-v\in L\cap L^\perp$; но
+$L\cap L^\perp=\{0\}$ (вектор, ортогональный самому себе, нулевой), значит $u=u'$, $v=v'$.
+\end{proof}
+
+\section{Расстояние до подпространства}
+
+\begin{definition}
+\emph{Расстояние} от $x$ до подпространства $L$: $d(x,L)=\inf_{y\in L}\norm{x-y}$.
+\end{definition}
+
+\begin{theorem}
+Минимум достигается на ортогональной проекции: $d(x,L)=\norm{x_\perp}=\norm{x-x_\parallel}$, и
+$x_\parallel$ — единственная ближайшая точка.
+\end{theorem}
+
+\begin{proof}
+Для любого $y\in L$ вектор $x_\parallel-y\in L$ ортогонален $x_\perp$, поэтому по теореме Пифагора
+\[
+  \norm{x-y}^2=\norm{(x-x_\parallel)+(x_\parallel-y)}^2=\norm{x_\perp}^2+\norm{x_\parallel-y}^2
+  \ge\norm{x_\perp}^2 .
+\]
+Равенство достигается лишь при $y=x_\parallel$. Значит наименьшее расстояние равно
+$\norm{x_\perp}$.
+\end{proof}
