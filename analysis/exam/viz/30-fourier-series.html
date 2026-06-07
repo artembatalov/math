@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ряд Фурье и эффект Гиббса (§13)</title>
+<style>
+  :root{ --accent:#1F6FEB; --red:#C1121F; --ink:#1b1f24; --muted:#5b6573; --line:#d8dee6; }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#fff}
+  header{padding:14px 20px;border-bottom:1px solid var(--line)}
+  header h1{margin:0 0 4px;font-size:18px}
+  header h1 .n{color:var(--accent)}
+  header .formula{font-size:15px;background:#f3f6fb;border:1px solid var(--line);border-radius:8px;padding:6px 10px;display:inline-block;margin-top:6px}
+  header p{margin:8px 0 0;color:var(--muted);font-size:13px;max-width:900px;line-height:1.5}
+  #wrap{display:flex;flex-wrap:wrap}
+  #view{flex:1 1 540px;min-height:60vh}
+  aside{flex:0 0 320px;border-left:1px solid var(--line);padding:16px 18px}
+  .grp{margin-bottom:18px}
+  .grp h3{margin:0 0 8px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  select{width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;background:#fff}
+  input[type=range]{width:100%}
+  .nval{display:flex;justify-content:space-between;font-variant-numeric:tabular-nums;font-size:14px;padding:5px 0;border-bottom:1px dashed var(--line)}
+  .nval .v{font-family:ui-monospace,Menlo,Consolas,monospace}
+  .swatch{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px;vertical-align:middle}
+  .hint{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.45}
+  canvas{width:100%;height:100%;display:block}
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="n">§13.</span> Ряд Фурье и эффект Гиббса</h1>
+  <div class="formula">S<sub>N</sub>(x) = a₀/2 + Σ<sub>n=1</sub><sup>N</sup> (aₙcos nx + bₙsin nx)</div>
+  <p>Частичная сумма ряда Фурье (красная) приближает периодическую функцию (синяя). В точках разрыва
+  ряд сходится к полусумме односторонних пределов, а у самого скачка остаётся <b>перерегулирование
+  ≈ 9 % от величины скачка</b> — <b>эффект Гиббса</b>: оно не исчезает с ростом N, лишь сужается.</p>
+</header>
+<div id="wrap">
+  <div id="view"><canvas id="cv"></canvas></div>
+  <aside>
+    <div class="grp">
+      <h3>Волна</h3>
+      <select id="fnSel"></select>
+    </div>
+    <div class="grp">
+      <h3>Число гармоник N = <span id="nLabel">5</span></h3>
+      <input type="range" id="nRange" min="1" max="60" value="5">
+    </div>
+    <div class="grp">
+      <h3>Значения</h3>
+      <div class="nval"><b>Пик S_N у скачка</b><span class="v" id="vPeak">—</span></div>
+      <div class="nval"><b>Предел у скачка</b><span class="v" id="vLim">—</span></div>
+      <div class="nval"><b>Перерегулирование</b><span class="v" id="vOver" style="color:var(--red)">—</span></div>
+      <div class="hint" id="hint"></div>
+    </div>
+  </aside>
+</div>
+
+<script src="plot2d.js"></script>
+<script>
+"use strict";
+const PI=Math.PI;
+const PRESETS=[
+  { name:"Меандр  sgn(x)", target:x=>{const t=mod(x);return t>0?1:(t<0?-1:0);},
+    partial:(N,x)=>{let s=0;for(let j=1;j<=N;j++){const k=2*j-1;s+=Math.sin(k*x)/k;}return 4/PI*s;},
+    yr:[-1.45,1.45], gibbs:{from:0.0008,to:1.2,ref:1,jump:2} },
+  { name:"Пила  f(x)=x", target:x=>mod(x),
+    partial:(N,x)=>{let s=0;for(let k=1;k<=N;k++){s+=(k%2?1:-1)*Math.sin(k*x)/k;}return 2*s;},
+    yr:[-3.9,3.9], gibbs:{from:PI-1.2,to:PI-0.0008,ref:PI,jump:2*PI} },
+  { name:"Треугольник  |x|", target:x=>Math.abs(mod(x)),
+    partial:(N,x)=>{let s=PI/2;for(let j=1;j<=N;j++){const k=2*j-1;s-=4/PI*Math.cos(k*x)/(k*k);}return s;},
+    yr:[-0.35,PI+0.45], gibbs:null },
+];
+function mod(x){ // привести к (-π, π]
+  let t=((x+PI)%(2*PI)); if(t<0)t+=2*PI; return t-PI; }
+let preset=PRESETS[0], N=5;
+
+const cv=document.getElementById('cv'), plot=new Plot(cv,{});
+function draw(p){
+  p.grid(); p.axes();
+  p.curve(preset.target,{color:'#0b3d91',width:2.5,samples:1200});
+  p.curve(x=>preset.partial(N,x),{color:'#C1121F',width:2,samples:1400});
+}
+function gibbsPeak(){
+  const g=preset.gibbs; if(!g) return null;
+  let peak=-Infinity;
+  for(let i=0;i<=4000;i++){const x=g.from+(g.to-g.from)*i/4000;const v=preset.partial(N,x);if(v>peak)peak=v;}
+  return peak;
+}
+function refresh(){
+  plot.setRange({xmin:-PI,xmax:PI,ymin:preset.yr[0],ymax:preset.yr[1]});
+  plot.setDraw(draw);
+  const g=preset.gibbs;
+  if(g){ const peak=gibbsPeak(), over=peak-g.ref;
+    vPeak.textContent=peak.toFixed(4); vLim.textContent=g.ref.toFixed(4);
+    vOver.textContent=`${over.toFixed(4)}  (${(over/g.jump*100).toFixed(1)}% скачка)`;
+    hint.textContent="С ростом N пик не падает (~9% скачка), а лишь придвигается к разрыву — это и есть Гиббс.";
+  } else {
+    vPeak.textContent="—"; vLim.textContent="—"; vOver.textContent="нет";
+    hint.textContent="Функция непрерывна (хоть и с изломом) — эффекта Гиббса нет, сходимость равномерная.";
+  }
+}
+const vPeak=document.getElementById('vPeak'),vLim=document.getElementById('vLim'),vOver=document.getElementById('vOver'),hint=document.getElementById('hint');
+const sel=document.getElementById('fnSel');
+PRESETS.forEach((p,i)=>{const o=document.createElement('option');o.value=i;o.textContent=p.name;sel.appendChild(o);});
+sel.onchange=()=>{preset=PRESETS[+sel.value];refresh();};
+const nr=document.getElementById('nRange');
+nr.oninput=()=>{N=+nr.value;document.getElementById('nLabel').textContent=N;refresh();};
+refresh();
+</script>
+</body>
+</html>

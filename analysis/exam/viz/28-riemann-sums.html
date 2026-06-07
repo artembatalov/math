@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Суммы Римана и Дарбу (§4)</title>
+<style>
+  :root{ --accent:#1F6FEB; --red:#C1121F; --ink:#1b1f24; --muted:#5b6573; --line:#d8dee6; }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#fff}
+  header{padding:14px 20px;border-bottom:1px solid var(--line)}
+  header h1{margin:0 0 4px;font-size:18px}
+  header h1 .n{color:var(--accent)}
+  header .formula{font-size:15px;background:#f3f6fb;border:1px solid var(--line);border-radius:8px;padding:6px 10px;display:inline-block;margin-top:6px}
+  header p{margin:8px 0 0;color:var(--muted);font-size:13px;max-width:900px;line-height:1.5}
+  #wrap{display:flex;flex-wrap:wrap}
+  #view{flex:1 1 540px;min-height:60vh}
+  aside{flex:0 0 320px;border-left:1px solid var(--line);padding:16px 18px}
+  .grp{margin-bottom:18px}
+  .grp h3{margin:0 0 8px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  select{width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;background:#fff}
+  input[type=range]{width:100%}
+  .seg{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
+  .seg button{flex:1 1 30%;padding:6px 4px;border:1px solid var(--line);background:#fff;border-radius:6px;cursor:pointer;font-size:12px}
+  .seg button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .nval{display:flex;justify-content:space-between;font-variant-numeric:tabular-nums;font-size:14px;padding:5px 0;border-bottom:1px dashed var(--line)}
+  .nval .v{font-family:ui-monospace,Menlo,Consolas,monospace}
+  .swatch{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px;vertical-align:middle}
+  .hint{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.45}
+  canvas{width:100%;height:100%;display:block}
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="n">§4.</span> Суммы Римана и Дарбу</h1>
+  <div class="formula">σ(f,T,ξ) = Σ f(ξᵢ)Δxᵢ&nbsp;&nbsp;→&nbsp;&nbsp;∫<sub>a</sub><sup>b</sup> f dx&nbsp;&nbsp;при λ(T)→0</div>
+  <p>Площадь под кривой приближается прямоугольниками. <b>Нижняя</b> сумма Дарбу берёт на каждом
+  отрезке min функции, <b>верхняя</b> — max; между ними зажата любая интегральная сумма и сам
+  интеграл. При измельчении ($n\to\infty$) зазор S*−S∗ стремится к нулю — это и есть
+  интегрируемость.</p>
+</header>
+<div id="wrap">
+  <div id="view"><canvas id="cv"></canvas></div>
+  <aside>
+    <div class="grp">
+      <h3>Функция</h3>
+      <select id="fnSel"></select>
+    </div>
+    <div class="grp">
+      <h3>Выбор точки ξᵢ</h3>
+      <div class="seg" id="tagSeg">
+        <button data-t="left">левые</button>
+        <button data-t="right">правые</button>
+        <button data-t="mid" class="on">средние</button>
+        <button data-t="lower">нижние</button>
+        <button data-t="upper">верхние</button>
+      </div>
+    </div>
+    <div class="grp">
+      <h3>Число отрезков n = <span id="nLabel">8</span></h3>
+      <input type="range" id="nRange" min="1" max="80" value="8">
+    </div>
+    <div class="grp">
+      <h3>Значения</h3>
+      <div class="nval"><b><span class="swatch" style="background:#1F6FEB"></span>Текущая σ</b><span class="v" id="vCur">—</span></div>
+      <div class="nval"><b>Нижняя S∗</b><span class="v" id="vLo">—</span></div>
+      <div class="nval"><b>Верхняя S*</b><span class="v" id="vUp">—</span></div>
+      <div class="nval"><b>Точный ∫</b><span class="v" id="vEx">—</span></div>
+      <div class="nval"><b>Зазор S*−S∗</b><span class="v" id="vGap" style="color:var(--red)">—</span></div>
+      <div class="hint">S∗ ≤ ∫ ≤ S*. «Текущая σ» — сумма с выбранной точкой ξᵢ.</div>
+    </div>
+  </aside>
+</div>
+
+<script src="plot2d.js"></script>
+<script>
+"use strict";
+const PRESETS=[
+  { name:"f(x)=sin x,  [0, π]",      f:x=>Math.sin(x),      a:0, b:Math.PI },
+  { name:"f(x)=x²/4,  [0, 3]",       f:x=>x*x/4,            a:0, b:3 },
+  { name:"f(x)=√x,  [0, 4]",         f:x=>Math.sqrt(x),     a:0, b:4 },
+  { name:"f(x)=1+cos x,  [0, 2π]",   f:x=>1+Math.cos(x),    a:0, b:2*Math.PI },
+  { name:"f(x)=x·sin x,  [0, 2π]",   f:x=>x*Math.sin(x),    a:0, b:2*Math.PI },
+];
+let preset=PRESETS[0], n=8, tag="mid";
+
+function simpson(g,a,b,N){const h=(b-a)/N;let s=g(a)+g(b);for(let i=1;i<N;i++)s+=(i%2?4:2)*g(a+i*h);return s*h/3;}
+function minmax(a,b){const{f}=preset;let lo=Infinity,hi=-Infinity;for(let k=0;k<=20;k++){const v=f(a+(b-a)*k/20);if(v<lo)lo=v;if(v>hi)hi=v;}return[lo,hi];}
+function tagVal(x0,x1){const{f}=preset;
+  if(tag==="left")return f(x0); if(tag==="right")return f(x1); if(tag==="mid")return f((x0+x1)/2);
+  const[lo,hi]=minmax(x0,x1); return tag==="lower"?lo:hi;}
+function sums(){const{a,b}=preset,h=(b-a)/n;let cur=0,lo=0,hi=0;
+  for(let i=0;i<n;i++){const x0=a+i*h,x1=a+(i+1)*h;const[m,M]=minmax(x0,x1);cur+=h*tagVal(x0,x1);lo+=h*m;hi+=h*M;}
+  return{cur,lo,hi};}
+
+const cv=document.getElementById('cv');
+const plot=new Plot(cv,{});
+function frame(){const{f,a,b}=preset;let lo=Infinity,hi=-Infinity;
+  for(let i=0;i<=300;i++){const v=f(a+(b-a)*i/300);if(v<lo)lo=v;if(v>hi)hi=v;}
+  lo=Math.min(0,lo);hi=Math.max(0,hi);const m=(hi-lo)*0.08+1e-3;
+  const padx=(b-a)*0.04;
+  plot.setRange({xmin:a-padx,xmax:b+padx,ymin:lo-m,ymax:hi+m});}
+function draw(p){
+  const{f,a,b}=preset,h=(b-a)/n;
+  p.grid(); p.axes();
+  for(let i=0;i<n;i++){const x0=a+i*h,x1=a+(i+1)*h;p.bar(x0,x1,tagVal(x0,x1));}
+  p.curve(f,{color:'#0b3d91',width:2.5});
+}
+function refresh(){frame();plot.setDraw(draw);
+  const{cur,lo,hi}=sums(),ex=simpson(preset.f,preset.a,preset.b,2000);
+  vCur.textContent=cur.toFixed(4);vLo.textContent=lo.toFixed(4);vUp.textContent=hi.toFixed(4);
+  vEx.textContent=ex.toFixed(4);vGap.textContent=(hi-lo).toFixed(4);}
+const vCur=document.getElementById('vCur'),vLo=document.getElementById('vLo'),vUp=document.getElementById('vUp'),
+      vEx=document.getElementById('vEx'),vGap=document.getElementById('vGap');
+
+const sel=document.getElementById('fnSel');
+PRESETS.forEach((p,i)=>{const o=document.createElement('option');o.value=i;o.textContent=p.name;sel.appendChild(o);});
+sel.onchange=()=>{preset=PRESETS[+sel.value];refresh();};
+document.querySelectorAll('#tagSeg button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#tagSeg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');tag=b.dataset.t;refresh();});
+const nr=document.getElementById('nRange');
+nr.oninput=()=>{n=+nr.value;document.getElementById('nLabel').textContent=n;refresh();};
+refresh();
+</script>
+</body>
+</html>

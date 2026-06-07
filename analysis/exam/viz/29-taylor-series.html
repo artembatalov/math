@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ряд Тейлора (§11–12)</title>
+<style>
+  :root{ --accent:#1F6FEB; --red:#C1121F; --ink:#1b1f24; --muted:#5b6573; --line:#d8dee6; }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#fff}
+  header{padding:14px 20px;border-bottom:1px solid var(--line)}
+  header h1{margin:0 0 4px;font-size:18px}
+  header h1 .n{color:var(--accent)}
+  header .formula{font-size:15px;background:#f3f6fb;border:1px solid var(--line);border-radius:8px;padding:6px 10px;display:inline-block;margin-top:6px}
+  header p{margin:8px 0 0;color:var(--muted);font-size:13px;max-width:900px;line-height:1.5}
+  #wrap{display:flex;flex-wrap:wrap}
+  #view{flex:1 1 540px;min-height:60vh}
+  aside{flex:0 0 320px;border-left:1px solid var(--line);padding:16px 18px}
+  .grp{margin-bottom:18px}
+  .grp h3{margin:0 0 8px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  select{width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;font-size:14px;background:#fff}
+  input[type=range]{width:100%}
+  .nval{display:flex;justify-content:space-between;font-variant-numeric:tabular-nums;font-size:14px;padding:5px 0;border-bottom:1px dashed var(--line)}
+  .nval .v{font-family:ui-monospace,Menlo,Consolas,monospace}
+  .swatch{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px;vertical-align:middle}
+  .hint{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.45}
+  canvas{width:100%;height:100%;display:block}
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="n">§11–12.</span> Ряд Тейлора и его сходимость</h1>
+  <div class="formula">T<sub>N</sub>(x) = Σ<sub>k=0</sub><sup>N</sup> f⁽ᵏ⁾(0)/k! · xᵏ&nbsp;&nbsp;→&nbsp;&nbsp;f(x)&nbsp;&nbsp;при |x| &lt; R</div>
+  <p>Частичная сумма Тейлора (красная) приближает функцию (синяя) тем точнее, чем выше степень N —
+  но только внутри <b>радиуса сходимости</b> R (пунктир). Контрпример Коши $e^{-1/x^2}$ показывает,
+  что гладкость ещё не гарантирует сходимости ряда к функции: там все производные в нуле равны нулю,
+  и $T_N\equiv0$.</p>
+</header>
+<div id="wrap">
+  <div id="view"><canvas id="cv"></canvas></div>
+  <aside>
+    <div class="grp">
+      <h3>Функция</h3>
+      <select id="fnSel"></select>
+    </div>
+    <div class="grp">
+      <h3>Степень N = <span id="nLabel">3</span></h3>
+      <input type="range" id="nRange" min="0" max="24" value="3">
+    </div>
+    <div class="grp">
+      <h3>Значения</h3>
+      <div class="nval"><b><span class="swatch" style="background:#0b3d91"></span>f(x)</b><span class="v" id="vF">—</span></div>
+      <div class="nval"><b><span class="swatch" style="background:#C1121F"></span>T_N(x₀)</b><span class="v" id="vT">—</span></div>
+      <div class="nval"><b>Радиус R</b><span class="v" id="vR">—</span></div>
+      <div class="nval"><b>|f−T_N| в x₀</b><span class="v" id="vErr" style="color:var(--red)">—</span></div>
+      <div class="hint" id="hint"></div>
+    </div>
+  </aside>
+</div>
+
+<script src="plot2d.js"></script>
+<script>
+"use strict";
+function fact(k){let r=1;for(let i=2;i<=k;i++)r*=i;return r;}
+const PRESETS=[
+  { name:"eˣ", f:Math.exp, coef:k=>1/fact(k), R:"∞", xr:3, yr:[-2,12], x0:2 },
+  { name:"sin x", f:Math.sin, coef:k=>k%2===0?0:((((k-1)/2)%2===0?1:-1)/fact(k)), R:"∞", xr:8, yr:[-3,3], x0:5 },
+  { name:"cos x", f:Math.cos, coef:k=>k%2===1?0:(((k/2)%2===0?1:-1)/fact(k)), R:"∞", xr:8, yr:[-3,3], x0:5 },
+  { name:"ln(1+x)", f:x=>Math.log(1+x), coef:k=>k===0?0:((k%2===1?1:-1)/k), R:"1", xr:2, yr:[-4,3], x0:0.8 },
+  { name:"1/(1−x)", f:x=>1/(1-x), coef:k=>1, R:"1", xr:2, yr:[-4,8], x0:0.8 },
+  { name:"e^{−1/x²} (Коши)", f:x=>x===0?0:Math.exp(-1/(x*x)), coef:k=>0, R:"— (ряд ≡ 0)", xr:2.5, yr:[-0.3,1.2], x0:0.6 },
+];
+let preset=PRESETS[0], N=3;
+function taylor(x){let s=0,p=1;for(let k=0;k<=N;k++){s+=preset.coef(k)*p;p*=x;}return s;}
+
+const cv=document.getElementById('cv'), plot=new Plot(cv,{});
+function draw(p){
+  const xr=preset.xr, yr=preset.yr;
+  p.grid(); p.axes();
+  // граница сходимости
+  if(preset.R==="1"){ const ctx=p.ctx; ctx.save(); ctx.strokeStyle='#b9c2cf'; ctx.setLineDash([5,4]);
+    [-1,1].forEach(xb=>{ctx.beginPath();ctx.moveTo(p.px(xb),p.pad.t);ctx.lineTo(p.px(xb),p.H-p.pad.b);ctx.stroke();});
+    ctx.restore(); }
+  p.curve(preset.f,{color:'#0b3d91',width:2.5});
+  p.curve(taylor,{color:'#C1121F',width:2});
+  // точка x0
+  const ctx=p.ctx; ctx.save(); ctx.fillStyle='#C1121F';
+  ctx.beginPath();ctx.arc(p.px(preset.x0),p.py(taylor(preset.x0)),3.5,0,7);ctx.fill();
+  ctx.fillStyle='#0b3d91';
+  ctx.beginPath();ctx.arc(p.px(preset.x0),p.py(preset.f(preset.x0)),3.5,0,7);ctx.fill();
+  ctx.restore();
+}
+function refresh(){
+  plot.setRange({xmin:-preset.xr,xmax:preset.xr,ymin:preset.yr[0],ymax:preset.yr[1]});
+  plot.setDraw(draw);
+  const fx=preset.f(preset.x0), tx=taylor(preset.x0);
+  vF.textContent=fx.toFixed(4); vT.textContent=tx.toFixed(4);
+  vR.textContent=preset.R; vErr.textContent=Math.abs(fx-tx).toExponential(2);
+  hint.textContent = preset.R==="1"
+    ? "Вне |x|<1 ряд расходится — добавление членов не помогает."
+    : (preset.coef(1)===0&&preset.coef(0)===0&&preset.name.indexOf("Коши")>=0
+        ? "T_N≡0 при любом N: ряд не сходится к функции (негладкая аналитически)."
+        : "Ряд сходится на всей оси: с ростом N приближение улучшается всюду.");
+}
+const vF=document.getElementById('vF'),vT=document.getElementById('vT'),vR=document.getElementById('vR'),
+      vErr=document.getElementById('vErr'),hint=document.getElementById('hint');
+const sel=document.getElementById('fnSel');
+PRESETS.forEach((p,i)=>{const o=document.createElement('option');o.value=i;o.textContent=p.name;sel.appendChild(o);});
+sel.onchange=()=>{preset=PRESETS[+sel.value];refresh();};
+const nr=document.getElementById('nRange');
+nr.oninput=()=>{N=+nr.value;document.getElementById('nLabel').textContent=N;refresh();};
+refresh();
+</script>
+</body>
+</html>
