@@ -14,13 +14,33 @@
   a.card .t{font-size:16px;font-weight:600}
   a.card .t .n{color:var(--accent)}
   a.card .d{color:var(--muted);font-size:13px;margin-top:4px}
+  h2{font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:24px 0 12px}
   .foot{color:var(--muted);font-size:12px;margin-top:18px;line-height:1.5}
 </style>
 </head>
 <body>
   <h1>Интерактивные визуализации</h1>
-  <p class="sub">Математический анализ · приложения определённого интеграла (тестовый набор)</p>
+  <p class="sub">Математический анализ · дополнения к конспектам</p>
 
+  <h2>Предельные переходы — 2D (canvas)</h2>
+  <a class="card" href="28-riemann-sums.html">
+    <div class="t"><span class="n">§4.</span> Суммы Римана и Дарбу</div>
+    <div class="d">Прямоугольники под кривой → ∫f dx. Ползунок n, выбор точки (левые/правые/средние/нижние/верхние), нижняя и верхняя суммы.</div>
+  </a>
+  <a class="card" href="29-taylor-series.html">
+    <div class="t"><span class="n">§11–12.</span> Ряд Тейлора</div>
+    <div class="d">Частичные суммы Tₙ → f. Ползунок степени, радиус сходимости, контрпример Коши e^(−1/x²).</div>
+  </a>
+  <a class="card" href="30-fourier-series.html">
+    <div class="t"><span class="n">§13.</span> Ряд Фурье и эффект Гиббса</div>
+    <div class="d">Частичная сумма Sₙ → волна. Ползунок числа гармоник, меандр/пила/треугольник, перерегулирование Гиббса.</div>
+  </a>
+  <a class="card" href="31-uniform-convergence.html">
+    <div class="t"><span class="n">§10.</span> Равномерная vs поточечная сходимость</div>
+    <div class="d">ε-полоса вокруг предела, «бегущий горб», ρₙ = sup|fₙ−f|. Ползунки n и ε.</div>
+  </a>
+
+  <h2>Геометрия интеграла — 3D (Three.js)</h2>
   <a class="card" href="25-polar-sector.html">
     <div class="t"><span class="n">№25.</span> Площадь сектора в полярных координатах</div>
     <div class="d">Нижние/верхние круговые секторы (суммы Дарбу) → ½∫ρ²dφ. Ползунок n, выбор ρ(φ).</div>
@@ -34,7 +54,8 @@
     <div class="d">3D-тело вращения вокруг Ox (диски) или Oy (оболочки). Вращение мышью, ползунок n.</div>
   </a>
 
-  <div class="foot">Полностью офлайн: <code>three.min.js</code> и <code>OrbitControls.js</code> лежат рядом.
+  <div class="foot">Полностью офлайн. 2D-страницы используют общий <code>plot2d.js</code> (без зависимостей);
+  3D-страницы — <code>three.min.js</code> + <code>OrbitControls.js</code>, лежащие рядом.
   Открывайте любой файл двойным щелчком — интернет не нужен.</div>
 </body>
 </html>
